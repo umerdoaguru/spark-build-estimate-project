@@ -280,9 +280,9 @@ function Categories() {
   
             {showPopup && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="w-full max-w-md p-6 mx-2 bg-white rounded-lg shadow-lg h-[95%] overflow-y-auto">
+                <div className="w-full max-w-md p-6 mx-2 bg-white rounded-lg shadow-lg h-[25%] overflow-y-auto">
                   <h2 className="text-xl mb-4">
-                    {isEditing ? "Edit Lead" : "Add Lead"}
+                    {isEditing ? "Edit Category" : "Add Category"}
                   </h2>
                   <div className="mb-4">
                     <label className="block text-gray-700">Category Name</label>
@@ -291,7 +291,7 @@ function Categories() {
                       name="category_name"
                       value={currentLead.category_name}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 borderrounded`}
+                      className={`w-full px-3 py-2 border  rounded`}
                     />
                     
                   </div>
