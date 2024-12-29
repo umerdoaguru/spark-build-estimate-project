@@ -1,6 +1,6 @@
 const express = require('express');
-const { saveWebsiteAPI,updateWebsiteAPI,deleteWebsiteAPI, getwebsite_api} = require('../controllers/WebsiteController');
 const router = express.Router();
+const { saveWebsiteAPI,updateWebsiteAPI,deleteWebsiteAPI, getwebsite_api} = require('../controllers/WebsiteController');
 
 
 // Routes for form operations

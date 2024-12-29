@@ -1,20 +1,17 @@
 import React from 'react'
-import Logout from '../../pages/Logout'
 import MainHeader from '../../pages/MainHeader'
 import AdminSider from './AdminSider'
 
-function AdminDashboard() {
+function User_Selections() {
   return (
     <>
+    
+    
     <MainHeader/>
     <AdminSider/>
-    
-   <div className=" ml-[23rem]">
-
-   </div>
-      
+    <div className='ml-[23rem]'>User_Selections</div>
     </>
   )
 }
 
-export default AdminDashboard
+export default User_Selections

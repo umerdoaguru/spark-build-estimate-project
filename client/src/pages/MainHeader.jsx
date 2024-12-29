@@ -7,7 +7,7 @@ import LoginProfile from "./LoginProfile";
 function MainHeader() {
   return (
     <>
-      <div className="w-full  print:hidden z-10 ">
+      <div className="w-full fixed print:hidden z-10 top-0 ">
         <nav className="bg-white border-gray-200 dark:bg-gray-800">
           <div className="flex p-1  items-center  justify-between bg-slate-100">
             <a href="#" className="flex items-center mx-2">

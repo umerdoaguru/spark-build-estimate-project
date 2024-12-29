@@ -5,6 +5,10 @@ import {  Route, Routes } from "react-router-dom";
 import AdminDashboard from "../components/Admin/AdminDashboard";
 import AdminProfile from "../components/Admin/AdminProfile";
 import MainHeader from "../pages/MainHeader";
+import Categories from "../components/Admin/Categories";
+import Sub_Categories from "../components/Admin/Sub_Categories";
+import Items from "../components/Admin/Items";
+import User_Selections from "../components/Admin/User_Selections";
 
 
 
@@ -19,6 +23,10 @@ function AdminRoutes() {
         <Route path="/" element={<AdminDashboard />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/admin-profile" element={<AdminProfile />} />
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/sub-categories" element={<Sub_Categories />} />
+        <Route path="/items" element={<Items />} />
+        <Route path="/user-selections" element={<User_Selections />} />
       </Routes>
     </>
   );

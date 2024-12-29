@@ -1,20 +1,16 @@
 import React from 'react'
-import Logout from '../../pages/Logout'
 import MainHeader from '../../pages/MainHeader'
 import AdminSider from './AdminSider'
 
-function AdminDashboard() {
+function Sub_Categories() {
   return (
     <>
+    
     <MainHeader/>
     <AdminSider/>
-    
-   <div className=" ml-[23rem]">
-
-   </div>
-      
+    <div className='ml-[23rem]'>Sub_Categories</div>
     </>
   )
 }
 
-export default AdminDashboard
+export default Sub_Categories
