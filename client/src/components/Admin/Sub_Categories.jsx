@@ -191,7 +191,7 @@ function Sub_Categories() {
                   className="bg-blue-500 text-white px-4 py-2 mt-5 rounded hover:bg-blue-700 font-medium"
                   onClick={handleCreateClick}
                 >
-                  Sub Add  Categories
+                 Add Sub Categories
                 </button>
               </div>
            

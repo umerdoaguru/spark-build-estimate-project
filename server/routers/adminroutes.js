@@ -6,7 +6,11 @@ const { createcategories,getcategoriesbyid,
     getsubcategoriesbyid,
     getsubcategories,
     updatesubcategories,
-    deletesubcategories, } = require('../controllers/Admincontroller');
+    deletesubcategories,  createitems,
+    getitemsbyid,
+    getitems,
+    updateitems,
+    deleteitems} = require('../controllers/Admincontroller');
 const router = express.Router();
 
 // Routes for form operations
@@ -20,5 +24,10 @@ router.get("/subcategories/:id", getsubcategoriesbyid);
 router.get("/subcategories", getsubcategories);
 router.put("/subcategories/:subcategory_id", updatesubcategories);
 router.delete("/subcategories/:subcategory_id", deletesubcategories);
+router.post('/items',createitems);
+router.get("/items/:id", getitemsbyid);
+router.get("/items", getitems);
+router.put("/items/:item_id", updateitems);
+router.delete("/items/:item_id", deleteitems);
 
 module.exports = router;
