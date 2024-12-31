@@ -60,9 +60,121 @@ const register = async (req, res) => {
     });
   }
 };
+const user_register = async (req, res) => {
+  try {
+    const { name, email, password, roles, phone_no } = req.body;
+
+    // Assign default value to phone_no if not provided
+    const finalPhoneNo = phone_no || "NULL";
+
+    // Validate required fields
+    if (!name || !email || !password || !roles) {
+      return res.status(400).json({ message: "Name, email, password, and roles are required." });
+    }
+
+    // Hash the password
+    const saltRounds = 10;
+    const hashedPassword = bcrypt.hashSync(password, saltRounds);
+
+    // Check if the user already exists
+    const checkUserQuery = "SELECT * FROM user_enroll WHERE email = ?";
+    db.query(checkUserQuery, [email], (err, result) => {
+      if (err) {
+        console.error("Error checking user in MySQL:", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+
+      if (result.length > 0) {
+        return res.status(400).json({ message: "User already exists." });
+      }
+
+      // User not found, proceed with registration
+      const insertUserQuery = `
+        INSERT INTO user_enroll (user_name, email, password, roles, phone_no) 
+        VALUES (?, ?, ?, ?, ?)`;
+      const insertUserParams = [name, email, hashedPassword, roles, finalPhoneNo];
+
+      db.query(insertUserQuery, insertUserParams, (insertErr, insertResult) => {
+        if (insertErr) {
+          console.error("Error inserting user:", insertErr);
+          return res.status(500).json({ message: "Internal server error" });
+        }
+
+        console.log("User registered successfully");
+        return res.status(201).json({
+          success: true,
+          message: "User registered successfully",
+        });
+      });
+    });
+  } catch (error) {
+    console.error("Error in registration:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in registration",
+      error: error.message,
+    });
+  }
+};
 
 
 const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    //Validation
+    if (!email || !password) {
+      return res.status(404).send({
+        success: false,
+        message: "Invaild email or password ",
+      });
+    }
+    // check user in mysql
+    const checkUserQuery = "SELECT * FROM registered_data WHERE email =?";
+    db.query(checkUserQuery, [email], async (err, results) => {
+      if (err) {
+        console.log("Error checking  user in mysql", err);
+      }
+      if (results.length === 0) {
+        return res.status(404).send({
+          success: false,
+          message: "email is not  registered",
+        });
+      }
+      const user = results[0];
+
+      //compare  passwords
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
+        return res.status(404).send({
+          success: false,
+          message: "Invaild password ",
+        });
+      }
+
+      //generate  token
+      const token = await JWT.sign({ id: user.id }, process.env.JWT_SECRET, {
+        expiresIn: "7d",
+      });
+
+      res.status(200).send({
+        success: true,
+        message: "Login sucessfully",
+        user: {
+          id: user.user_id,
+          name: user.user_name,
+          email: user.email,
+          roles: user.roles,
+        },
+        token,
+      });
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ success: false, message: "error in login ", error });
+  }
+};
+const Userlogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -255,6 +367,7 @@ const adminLogin = async (req, res) => {
     });
   }
 };
+
 //smtp
 // const sendOtp = (req, res) => {
 //   const { email } = req.body;
@@ -772,4 +885,4 @@ const resetPasswordSuperAdmin = (req, res) => {
     res.status(500).send({ success: false, message: "Internal server error" });
   }
 };
-module.exports = { register, login, employeelogin, adminLogin,resetPasswordEmployee,verifyOtpEmployee,sendOtpEmployee,resetPasswordAdmin,verifyOtpAdmin,sendOtpAdmin,resetPasswordSuperAdmin,verifyOtpSuperAdmin,sendOtpSuperAdmin };
+module.exports = { register, login, employeelogin, adminLogin,resetPasswordEmployee,verifyOtpEmployee,sendOtpEmployee,resetPasswordAdmin,verifyOtpAdmin,sendOtpAdmin,resetPasswordSuperAdmin,verifyOtpSuperAdmin,sendOtpSuperAdmin ,user_register };

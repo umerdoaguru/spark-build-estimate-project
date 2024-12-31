@@ -98,6 +98,18 @@ const AdminSider = () => {
               </Link>
             </li>
             <hr className="w-full border-gray-400" />
+            <li className={`xl:w-full ${getSidebarClass("/user-management")}`}>
+              <Link
+                to="/user-management"
+                className="flex flex-col items-center py-3"
+              >
+                <FaUserCircle className="text-[#ffce08]  text-2xl md:text-3xl" />
+                <h3 className="text-xs text-center max-md:pt-3 lg:inline text-[#ffce08]  md:text-base">
+                 User Management 
+                </h3>
+              </Link>
+            </li>
+            <hr className="w-full border-gray-400" />
             <li className={`xl:w-full ${getSidebarClass("/user-selections")}`}>
               <Link
                 to="/user-selections"
