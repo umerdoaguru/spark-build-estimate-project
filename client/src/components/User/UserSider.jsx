@@ -58,7 +58,74 @@ const UserSider = () => {
               </Link>
             </li>
 
-       
+
+
+          <hr className="w-full border-gray-400" />
+                     <li className={`xl:w-full ${getSidebarClass("/user-categories-cards")}`}>
+                       <Link
+                         to="/user-categories-cards"
+                         className="flex flex-col items-center py-3"
+                       >
+                         <FaUserCircle className="text-[#ffce08]  text-2xl md:text-3xl" />
+                         <h3 className="text-xs text-center max-md:pt-3 lg:inline text-[#ffce08]  md:text-base">
+                  User Categories
+                         </h3>
+                       </Link>
+                     </li>
+
+          <hr className="w-full border-gray-400" />
+                     <li className={`xl:w-full ${getSidebarClass("/user-create-estimate")}`}>
+                       <Link
+                         to="/user-create-estimate"
+                         className="flex flex-col items-center py-3"
+                       >
+                         <FaUserCircle className="text-[#ffce08]  text-2xl md:text-3xl" />
+                         <h3 className="text-xs text-center max-md:pt-3 lg:inline text-[#ffce08]  md:text-base">
+                  User Seletion 
+                         </h3>
+                       </Link>
+                     </li>
+          <hr className="w-full border-gray-400" />
+                     <li className={`xl:w-full ${getSidebarClass("/user-select-categories")}`}>
+                       <Link
+                         to="/user-select-categories"
+                         className="flex flex-col items-center py-3"
+                       >
+                         <FaUserCircle className="text-[#ffce08]  text-2xl md:text-3xl" />
+                         <h3 className="text-xs text-center max-md:pt-3 lg:inline text-[#ffce08]  md:text-base">
+                   Categories
+                         </h3>
+                       </Link>
+                     </li>
+                
+          <hr className="w-full border-gray-400" />
+                     <li className={`xl:w-full ${getSidebarClass("/user-select-sub-categories")}`}>
+                       <Link
+                         to="/user-select-sub-categories"
+                         className="flex flex-col items-center py-3"
+                       >
+                         <FaUserCircle className="text-[#ffce08]  text-2xl md:text-3xl" />
+                         <h3 className="text-xs text-center max-md:pt-3 lg:inline text-[#ffce08]  md:text-base">
+                        Sub Categories
+                         </h3>
+                       </Link>
+                     </li>
+                
+                     <hr className="w-full border-gray-400" />
+                     <li className={`xl:w-full ${getSidebarClass("/user-select-items")}`}>
+                       <Link
+                         to="/user-select-items"
+                         className="flex flex-col items-center py-3"
+                       >
+                         <FaUserCircle className="text-[#ffce08]  text-2xl md:text-3xl" />
+                         <h3 className="text-xs text-center max-md:pt-3 lg:inline text-[#ffce08]  md:text-base">
+                          Items
+                         </h3>
+                       </Link>
+                     </li>
+                    
+                    
+                            
             <hr className="w-full border-gray-400" />
             <li className={`xl:w-full ${getSidebarClass("/user-profile")}`}>
               <Link
@@ -71,8 +138,7 @@ const UserSider = () => {
                 </h3>
               </Link>
             </li>
-
-         
+                
           </ul>
         </div>
       </div>

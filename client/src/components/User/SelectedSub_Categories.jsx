@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react'
-import MainHeader from '../../pages/MainHeader'
-import AdminSider from './AdminSider'
+
 import { Link, useNavigate } from 'react-router-dom';
 import ReactPaginate from "react-paginate";
 import  axios  from 'axios';
 import moment from 'moment';
 import { BsPencilSquare, BsTrash } from 'react-icons/bs';
+import MainHeader from '../../pages/MainHeader';
+import UserSider from './UserSider';
 
 
-function Categories() {
+function SelectedSub_Categories() {
     const navigate = useNavigate();
+    const [subcategories, setSubCategories] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [employees, setEmployees] = useState([]);
     const [currentLead, setCurrentLead] = useState({
-     category_name: ""
+     category_name: "",
+     category_id: "",
+     subcategory_name: ""
+   
     });
 
   
@@ -29,27 +33,50 @@ function Categories() {
   
     // Fetch leads and employees from the API
     useEffect(() => {
+      fetchSubCategories();
       fetchCategories();
       
     }, []);
   
-    const fetchCategories = async () => {
+    const fetchSubCategories = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:9000/api/categories"
+          "http://localhost:9000/api/subcategories"
         );
-        setCategories(response.data);
-        console.log(categories);
+        setSubCategories(response.data);
+        console.log(subcategories);
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.error("Error fetching subcategories:", error);
       }
     };
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("http://localhost:9000/api/categories");
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching categoriess:", error);
+      }
+    };
+
+
+
     const handleInputChange = (e) => {
       const { name, value } = e.target;
       setCurrentLead((prevLead) => {
         const updatedLead = { ...prevLead, [name]: value };
   
-        // If createdTime changes, update actual_date accordingly
+        if (name === "category_name") {
+          const selectedCategory = categories.find(
+            (category) => category.category_name === value
+          );
+          if (selectedCategory) {
+            updatedLead.category_id = selectedCategory.category_id;
+           
+          } else {
+            updatedLead.category_id = ""; // Reset if no match
+            
+          }
+        }
        
   
         return updatedLead;
@@ -58,16 +85,18 @@ function Categories() {
     const handleCreateClick = () => {
       setIsEditing(false);
       setCurrentLead({
-        category_name: ""
+        category_name: "",
+     category_id: "",
+     subcategory_name: ""
        
       });
       setShowPopup(true);
     };
   
-    const handleEditClick = (category) => {
+    const handleEditClick = (subcategory) => {
       setIsEditing(true);
       setCurrentLead({
-        ...category,
+        ...subcategory,
         
       });
       setShowPopup(true);
@@ -80,14 +109,13 @@ function Categories() {
       );
       if (isConfirmed) {
         try {
-          await axios.delete(`http://localhost:9000/api/categories/${id}`);
-          fetchCategories(); // Refresh the list after deletion
+          await axios.delete(`http://localhost:9000/api/subcategories/${id}`);
+          fetchSubCategories(); // Refresh the list after deletion
         } catch (error) {
-          console.error("Error deleting categories:", error);
+          console.error("Error deleting Subcategories:", error);
         }
       }
     };
-    
     const saveChanges = async () => {
       const leadData = {
         ...currentLead,
@@ -99,18 +127,18 @@ function Categories() {
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `http://localhost:9000/api/categories/${currentLead.category_id}`,
+              `http://localhost:9000/api/subcategories/${currentLead.subcategory_id}`,
               leadData
             );
-            fetchCategories(); // Refresh the list
+            fetchSubCategories(); // Refresh the list
             closePopup();
           } else {
             // Create new lead
-            await axios.post("http://localhost:9000/api/categories", leadData);
+            await axios.post("http://localhost:9000/api/subcategories", leadData);
     
             // Construct WhatsApp message link with encoded parameters
          
-            fetchCategories(); // Refresh the list
+            fetchSubCategories(); // Refresh the list
             closePopup();
           }
           setLoading(false)
@@ -131,12 +159,12 @@ function Categories() {
   
 
     // Calculate total number of pages
-  const pageCount = Math.ceil(categories.length / leadsPerPage);
+  const pageCount = Math.ceil(subcategories.length / leadsPerPage);
   
   // Pagination logic
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  const currentLeads = leadsPerPage === Infinity ? categories : categories.slice(indexOfFirstLead, indexOfLastLead);
+  const currentLeads = leadsPerPage === Infinity ? subcategories : subcategories.slice(indexOfFirstLead, indexOfLastLead);
   
   
   const handlePageClick = (data) => {
@@ -149,24 +177,17 @@ function Categories() {
     return (
       <>
         <MainHeader />
-        <AdminSider />
+        <UserSider />
         <>
           <div className="container  2xl:ml-40">
-            <div className="main 2xl:w-[89%] mt-[4rem]">
+            <div className="main 2xl:w-[89%] mt-[6rem]">
               <h1 className="text-2xl text-center font-medium">
-                Categories Management
+                Sub Categories Management
               </h1>
               <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
   
               {/* Button to create a new lead */}
-              <div className="mb-4">
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 mt-5 rounded hover:bg-blue-700 font-medium"
-                  onClick={handleCreateClick}
-                >
-                  Add  Categories
-                </button>
-              </div>
+        
            
             </div>
 
@@ -183,10 +204,16 @@ function Categories() {
                       S.no
                     </th>
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Sub Categories Id
+                    </th>
+                    <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Categories Id
                     </th>
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Categories Name
+                     Categories Name
+                    </th>
+                    <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Sub Categories Name
                     </th>
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                       Date
@@ -210,8 +237,8 @@ function Categories() {
                       </td>
                     </tr>
                   ) : (
-                    currentLeads.map((category, index) => {
-                        console.log(category, "fdfsdfsdfsdfds");
+                    currentLeads.map((subcategory, index) => {
+                        console.log(subcategory, "fdfsdfsdfsdfds");
                         
                       return (
                         <tr
@@ -222,27 +249,33 @@ function Categories() {
                         { index + 1 }
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                          {category.category_id}
+                          {subcategory.subcategory_id}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+                          {subcategory.category_id}
                         </td>
                         
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
-                          {category.category_name}
+                          {subcategory.category_name}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          {subcategory.subcategory_name}
                         </td>
                        
                         
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                          {moment(category.created_at).format("DD MMM YYYY").toUpperCase()}
+                          {moment(subcategory.created_at).format("DD MMM YYYY").toUpperCase()}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
                           <button
                             className="text-blue-500 hover:text-blue-700"
-                            onClick={() => handleEditClick(category)}
+                            onClick={() => handleEditClick(subcategory)}
                           >
                             <BsPencilSquare size={20} />
                           </button>
                           <button
                             className="text-red-500 hover:text-red-700 mx-2"
-                            onClick={() => handleDeleteClick(category.category_id)}
+                            onClick={() => handleDeleteClick(subcategory.subcategory_id)}
                           >
                             <BsTrash size={20} />
                           </button>
@@ -281,24 +314,48 @@ function Categories() {
   
             {showPopup && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="w-full max-w-md p-6 mx-2 bg-white rounded-lg shadow-lg h-[25%] overflow-y-auto">
+                <div className="w-full max-w-md p-6 mx-2 bg-white rounded-lg shadow-lg h-[35%] overflow-y-auto">
                   <h2 className="text-xl mb-4">
-                    {isEditing ? "Edit Category" : "Add Category"}
+                    {isEditing ? "Edit Sub Category" : "Add Sub Category"}
                   </h2>
+               
                   <div className="mb-4">
-                    <label className="block text-gray-700">Category Name</label>
+                  <label className="block text-gray-700">Categories Name</label>
+                  <select
+                    name="category_name"
+                    value={currentLead.category_name}
+                    onChange={handleInputChange}
+                    className={`w-full px-3 py-2 border  rounded`}
+                  >
+                    <option value="">Select Category</option>
+                    {categories.map((category) => (
+                      <option key={category.category_id} value={category.category_name}>
+                        {category.category_name}
+                      </option>
+                    ))}
+                  </select>
+                
+                </div>
+
+                {/* Hidden category_id field */}
+                <input
+                  type="hidden"
+                  id="category_id"
+                  name="category_id"
+                  value={currentLead.category_id}
+                />
+                
+                <div className="mb-4">
+                    <label className="block text-gray-700">Sub Category Name</label>
                     <input
                       type="text"
-                      name="category_name"
-                      value={currentLead.category_name}
+                      name="subcategory_name"
+                      value={currentLead.subcategory_name}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border  rounded`}
+                      className={`w-full px-3 py-2 border rounded`}
                     />
                     
                   </div>
-                 
-                
-                
   
                   <div className="flex justify-end">
                     <button
@@ -325,5 +382,5 @@ function Categories() {
     );
   }
 
-export default Categories
+export default SelectedSub_Categories
 

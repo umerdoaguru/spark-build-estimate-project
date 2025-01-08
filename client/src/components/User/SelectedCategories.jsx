@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import MainHeader from '../../pages/MainHeader'
-import AdminSider from './AdminSider'
+
 import { Link, useNavigate } from 'react-router-dom';
 import ReactPaginate from "react-paginate";
 import  axios  from 'axios';
 import moment from 'moment';
 import { BsPencilSquare, BsTrash } from 'react-icons/bs';
+import UserSider from './UserSider';
+import MainHeader from '../../pages/MainHeader';
 
 
-function Categories() {
+function SelectedCategories() {
     const navigate = useNavigate();
     const [categories, setCategories] = useState([]);
-    const [employees, setEmployees] = useState([]);
+   
     const [currentLead, setCurrentLead] = useState({
      category_name: ""
     });
@@ -19,8 +20,7 @@ function Categories() {
   
     const [showPopup, setShowPopup] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [errors, setErrors] = useState({});
-
+  
     const [currentPage, setCurrentPage] = useState(0);
     const [leadsPerPage, setLeadsPerPage] = useState(10);
  
@@ -149,24 +149,16 @@ function Categories() {
     return (
       <>
         <MainHeader />
-        <AdminSider />
+        <UserSider />
         <>
           <div className="container  2xl:ml-40">
-            <div className="main 2xl:w-[89%] mt-[4rem]">
+            <div className="main 2xl:w-[89%] mt-[6rem]">
               <h1 className="text-2xl text-center font-medium">
-                Categories Management
+             User Categories Management
               </h1>
               <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
   
-              {/* Button to create a new lead */}
-              <div className="mb-4">
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 mt-5 rounded hover:bg-blue-700 font-medium"
-                  onClick={handleCreateClick}
-                >
-                  Add  Categories
-                </button>
-              </div>
+            
            
             </div>
 
@@ -325,5 +317,5 @@ function Categories() {
     );
   }
 
-export default Categories
+export default SelectedCategories
 

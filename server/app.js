@@ -9,6 +9,7 @@ const bodyParser = require("body-parser");
 
 
 const Router = require("./routers/userdataroutes");
+const Routeruser = require("./routers/userenrolledRoutes");
 const Router1 = require("./routers/adminroutes");
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
 app.use("/api", Router);
+app.use("/api", Routeruser);
 app.use("/api", Router1);
 
 app.use(cors({ origin: "http://localhost:3000" }));

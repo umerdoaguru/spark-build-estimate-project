@@ -60,15 +60,18 @@ const register = async (req, res) => {
     });
   }
 };
+
 const user_register = async (req, res) => {
   try {
-    const { name, email, password, roles, phone_no } = req.body;
+    const { user_name, email, phone_no } = req.body;
 
     // Assign default value to phone_no if not provided
-    const finalPhoneNo = phone_no || "NULL";
+  
+    const password  = "232skdms34";
+    const roles = "User";
 
     // Validate required fields
-    if (!name || !email || !password || !roles) {
+    if (!user_name || !email || !phone_no) {
       return res.status(400).json({ message: "Name, email, password, and roles are required." });
     }
 
@@ -92,7 +95,7 @@ const user_register = async (req, res) => {
       const insertUserQuery = `
         INSERT INTO user_enroll (user_name, email, password, roles, phone_no) 
         VALUES (?, ?, ?, ?, ?)`;
-      const insertUserParams = [name, email, hashedPassword, roles, finalPhoneNo];
+      const insertUserParams = [user_name, email, hashedPassword, roles, phone_no];
 
       db.query(insertUserQuery, insertUserParams, (insertErr, insertResult) => {
         if (insertErr) {
@@ -174,7 +177,8 @@ const login = async (req, res) => {
     res.status(500).send({ success: false, message: "error in login ", error });
   }
 };
-const Userlogin = async (req, res) => {
+
+const userlogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -186,7 +190,7 @@ const Userlogin = async (req, res) => {
       });
     }
     // check user in mysql
-    const checkUserQuery = "SELECT * FROM registered_data WHERE email =?";
+    const checkUserQuery = "SELECT * FROM user_enroll WHERE email =?";
     db.query(checkUserQuery, [email], async (err, results) => {
       if (err) {
         console.log("Error checking  user in mysql", err);
@@ -217,7 +221,7 @@ const Userlogin = async (req, res) => {
         success: true,
         message: "Login sucessfully",
         user: {
-          id: user.user_id,
+          id: user.id,
           name: user.user_name,
           email: user.email,
           roles: user.roles,
@@ -885,4 +889,149 @@ const resetPasswordSuperAdmin = (req, res) => {
     res.status(500).send({ success: false, message: "Internal server error" });
   }
 };
-module.exports = { register, login, employeelogin, adminLogin,resetPasswordEmployee,verifyOtpEmployee,sendOtpEmployee,resetPasswordAdmin,verifyOtpAdmin,sendOtpAdmin,resetPasswordSuperAdmin,verifyOtpSuperAdmin,sendOtpSuperAdmin ,user_register };
+const sendOtpUser = (req, res) => {
+  const { email } = req.body;
+
+  const selectQuery = "SELECT * FROM user_enroll WHERE email = ?";
+
+  db.query(selectQuery, email, (err, result) => {
+    if (err) {
+      return res.status(400).json({ success: false, message: err.message });
+    } else {
+      if (!result || result.length === 0) {
+        return res.status(404).json({ success: false, message: "Email not found" });
+        
+      } 
+      else {
+        
+        
+        
+        // Random OTP generation
+        function generateOTP(length) {
+          const chars = "0123456789";
+          let otp = "";
+
+          for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * chars.length);
+            otp += chars[randomIndex];
+          }
+
+          return otp;
+        }
+
+        const OTP = generateOTP(6);
+
+        try {
+          const transporter = nodemailer.createTransport({
+            service: "Gmail",
+            auth: {
+              user: process.env.EMAILSENDER,
+              pass: process.env.EMAILPASSWORD,
+            },
+          });
+          
+
+          const mailOptions = {
+            from: process.env.EMAILSENDER,
+            to: email,
+            subject: "Password Reset OTP",
+            text: `Your OTP for password reset is: ${OTP}`,
+          };
+
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.error(error);
+              return res.status(500).json("An error occurred while sending the email.");
+            } else {
+              console.log("OTP sent:", info.response);
+
+              const updateQuery = "INSERT INTO otpcollections (email, code) VALUES (?, ?) ON DUPLICATE KEY UPDATE code = VALUES(code)";
+              db.query(updateQuery, [email, OTP], (upErr, upResult) => {
+                if (upErr) {
+                  return res.status(400).json({ success: false, message: upErr.message });
+                }
+                return res.status(200).json({ message: "OTP sent successfully" });
+              });
+            }
+          });
+        } catch (error) {
+          console.log(error);
+          return res.status(500).json("An error occurred.");
+        }
+     
+    }
+    }
+  });
+};
+
+const verifyOtpUser = (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    db.query(
+      "SELECT * FROM otpcollections WHERE email = ? AND code = ?",
+      [email, otp],
+      (err, result) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ success: false, message: "Internal server error" });
+        }
+        if (result.length > 0) {
+          return res
+            .status(200)
+            .json({ success: true, message: "Otp verification  success" });
+        } else {
+          return res
+            .status(404)
+            .json({ success: false, message: "Invalid email or OTP" });
+        }
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+const resetPasswordUser = (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const selectQuery =
+      "SELECT * FROM user_enroll WHERE email = ?";
+    db.query(selectQuery, email, (err, result) => {
+      if (err) {
+        res.status(400).json({ success: false, message: err.message });
+      }
+      if (result && result.length) {
+        const saltRounds = 10;
+        const hashedPassword = bcrypt.hashSync(password, saltRounds);
+        console.log(hashedPassword);
+        const updateQuery = `UPDATE user_enroll SET password = ? WHERE email = ?`;
+        db.query(updateQuery, [hashedPassword, email], (err, result) => {
+          if (err) {
+            return res
+              .status(400)
+              .json({ success: false, message: err.message });
+          } else {
+            return res.status(200).json({
+              success: true,
+              message: "Details updated successfully",
+            });
+          }
+        });
+      } else {
+        return res
+          .status(404)
+          .json({ success: false, message: "email not found" });
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ success: false, message: "Internal server error" });
+  }
+};
+
+
+
+module.exports = { register, login, employeelogin, adminLogin,resetPasswordEmployee,verifyOtpEmployee,sendOtpEmployee,resetPasswordAdmin,verifyOtpAdmin,sendOtpAdmin,resetPasswordSuperAdmin,verifyOtpSuperAdmin,sendOtpSuperAdmin ,user_register,userlogin,sendOtpUser ,verifyOtpUser,resetPasswordUser};

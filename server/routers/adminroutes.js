@@ -10,7 +10,11 @@ const { createcategories,getcategoriesbyid,
     getitemsbyid,
     getitems,
     updateitems,
-    deleteitems} = require('../controllers/Admincontroller');
+    deleteitems,
+    getuserbyid,
+    getuser,
+    updateuser,
+    deleteuser} = require('../controllers/Admincontroller');
 const router = express.Router();
 
 // Routes for form operations
@@ -29,6 +33,10 @@ router.get("/items/:id", getitemsbyid);
 router.get("/items", getitems);
 router.put("/items/:item_id", updateitems);
 router.delete("/items/:item_id", deleteitems);
+router.get("/user/:id", getuserbyid);
+router.get("/user", getuser);
+router.put("/user/:id", updateuser);
+router.delete("/user/:id", deleteuser);
 
 
 module.exports = router;

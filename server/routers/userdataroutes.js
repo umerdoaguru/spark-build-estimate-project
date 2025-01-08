@@ -67,6 +67,8 @@ const {
   sendOtpSuperAdmin,
   verifyOtpSuperAdmin,
   resetPasswordSuperAdmin,
+  user_register,
+  userlogin,sendOtpUser ,verifyOtpUser,resetPasswordUser
 } = require("../controllers/UserRegitrationlLogin");
 
 const {
@@ -248,6 +250,12 @@ router.post("/admin-login", adminLogin);
 
 router.post("/employee-login", employeelogin);
 router.post("/admin-login", adminLogin);
+router.post("/user-register", user_register);
+router.post("/user-login", userlogin);
+
+router.post("/sendOtp-user", sendOtpUser);
+router.post("/verifyOtp-user", verifyOtpUser);
+router.put("/resetPassword-user",resetPasswordUser);
 
 
 module.exports = router;

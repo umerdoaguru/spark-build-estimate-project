@@ -10,13 +10,11 @@ import { BsPencilSquare, BsTrash } from 'react-icons/bs';
 
 function UserManagement() {
     const navigate = useNavigate();
-    const [subcategories, setSubCategories] = useState([]);
-    const [categories, setCategories] = useState([]);
+    const [user, setUser] = useState([]);
+
     const [currentLead, setCurrentLead] = useState({
-     category_name: "",
-     category_id: "",
-     subcategory_name: ""
-   
+      name : "", email : "", phone_no : ""
+    
     });
 
   
@@ -32,50 +30,29 @@ function UserManagement() {
   
     // Fetch leads and employees from the API
     useEffect(() => {
-      fetchSubCategories();
-      fetchCategories();
+      fetchUser();
+  
       
     }, []);
   
-    const fetchSubCategories = async () => {
+    const fetchUser = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:9000/api/subcategories"
+          "http://localhost:9000/api/user"
         );
-        setSubCategories(response.data);
-        console.log(subcategories);
+        setUser(response.data);
+        console.log(user);
       } catch (error) {
-        console.error("Error fetching subcategories:", error);
+        console.error("Error fetching user:", error);
       }
     };
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get("http://localhost:9000/api/categories");
-        setCategories(response.data);
-      } catch (error) {
-        console.error("Error fetching categoriess:", error);
-      }
-    };
-
+ 
 
 
     const handleInputChange = (e) => {
       const { name, value } = e.target;
       setCurrentLead((prevLead) => {
-        const updatedLead = { ...prevLead, [name]: value };
-  
-        if (name === "category_name") {
-          const selectedCategory = categories.find(
-            (category) => category.category_name === value
-          );
-          if (selectedCategory) {
-            updatedLead.category_id = selectedCategory.category_id;
-           
-          } else {
-            updatedLead.category_id = ""; // Reset if no match
-            
-          }
-        }
+        const updatedLead = { ...prevLead, [name]: value }
        
   
         return updatedLead;
@@ -84,18 +61,16 @@ function UserManagement() {
     const handleCreateClick = () => {
       setIsEditing(false);
       setCurrentLead({
-        category_name: "",
-     category_id: "",
-     subcategory_name: ""
+         name : "", email : "", phone_no : ""
        
       });
       setShowPopup(true);
     };
   
-    const handleEditClick = (subcategory) => {
+    const handleEditClick = (user) => {
       setIsEditing(true);
       setCurrentLead({
-        ...subcategory,
+        ...user,
         
       });
       setShowPopup(true);
@@ -108,10 +83,10 @@ function UserManagement() {
       );
       if (isConfirmed) {
         try {
-          await axios.delete(`http://localhost:9000/api/subcategories/${id}`);
-          fetchSubCategories(); // Refresh the list after deletion
+          await axios.delete(`http://localhost:9000/api/user/${id}`);
+          fetchUser(); // Refresh the list after deletion
         } catch (error) {
-          console.error("Error deleting Subcategories:", error);
+          console.error("Error deleting user:", error);
         }
       }
     };
@@ -126,18 +101,18 @@ function UserManagement() {
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `http://localhost:9000/api/subcategories/${currentLead.subcategory_id}`,
+              `http://localhost:9000/api/user/${currentLead.id}`,
               leadData
             );
-            fetchSubCategories(); // Refresh the list
+            fetchUser(); // Refresh the list
             closePopup();
           } else {
             // Create new lead
-            await axios.post("http://localhost:9000/api/subcategories", leadData);
+            await axios.post("http://localhost:9000/api/user-register", leadData);
     
             // Construct WhatsApp message link with encoded parameters
          
-            fetchSubCategories(); // Refresh the list
+            fetchUser(); // Refresh the list
             closePopup();
           }
           setLoading(false)
@@ -158,12 +133,12 @@ function UserManagement() {
   
 
     // Calculate total number of pages
-  const pageCount = Math.ceil(subcategories.length / leadsPerPage);
+  const pageCount = Math.ceil(user.length / leadsPerPage);
   
   // Pagination logic
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  const currentLeads = leadsPerPage === Infinity ? subcategories : subcategories.slice(indexOfFirstLead, indexOfLastLead);
+  const currentLeads = leadsPerPage === Infinity ? user : user.slice(indexOfFirstLead, indexOfLastLead);
   
   
   const handlePageClick = (data) => {
@@ -210,16 +185,16 @@ function UserManagement() {
                       S.no
                     </th>
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Sub Categories Id
+                   Name 
                     </th>
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Categories Id
+                    Email Id
                     </th>
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                     Categories Name
+                     Phone Number 
                     </th>
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Sub Categories Name
+                    Role 
                     </th>
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                       Date
@@ -243,8 +218,8 @@ function UserManagement() {
                       </td>
                     </tr>
                   ) : (
-                    currentLeads.map((subcategory, index) => {
-                        console.log(subcategory, "fdfsdfsdfsdfds");
+                    currentLeads.map((user, index) => {
+                        console.log(user, "fdfsdfsdfsdfds");
                         
                       return (
                         <tr
@@ -254,34 +229,35 @@ function UserManagement() {
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
                         { index + 1 }
                         </td>
+                   
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                          {subcategory.subcategory_id}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                          {subcategory.category_id}
+                          {user.user_name}
                         </td>
                         
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
-                          {subcategory.category_name}
+                          {user.email}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
-                          {subcategory.subcategory_name}
+                          {user.phone_no}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          {user.roles}
                         </td>
                        
                         
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                          {moment(subcategory.created_at).format("DD MMM YYYY").toUpperCase()}
+                          {moment(user.created_at).format("DD MMM YYYY").toUpperCase()}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
                           <button
                             className="text-blue-500 hover:text-blue-700"
-                            onClick={() => handleEditClick(subcategory)}
+                            onClick={() => handleEditClick(user)}
                           >
                             <BsPencilSquare size={20} />
                           </button>
                           <button
                             className="text-red-500 hover:text-red-700 mx-2"
-                            onClick={() => handleDeleteClick(subcategory.subcategory_id)}
+                            onClick={() => handleDeleteClick(user.id)}
                           >
                             <BsTrash size={20} />
                           </button>
@@ -314,54 +290,57 @@ function UserManagement() {
     breakLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Link inside dots */
     activeClassName={"bg-blue-500 text-white border-blue-500"} /* Active page */
     disabledClassName={"opacity-50 cursor-not-allowed"} /* Disabled Previous/Next */
-  />
+  />  
 </div>
 
   
             {showPopup && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="w-full max-w-md p-6 mx-2 bg-white rounded-lg shadow-lg h-[35%] overflow-y-auto">
+                <div className="w-full max-w-md p-6 mx-2 bg-white rounded-lg shadow-lg h-[55%] overflow-y-auto">
                   <h2 className="text-xl mb-4">
-                    {isEditing ? "Edit Sub Category" : "Add Sub Category"}
+                    {isEditing ? "Edit User" : "Add User"}
                   </h2>
-               
-                  <div className="mb-4">
-                  <label className="block text-gray-700">Categories Name</label>
-                  <select
-                    name="category_name"
-                    value={currentLead.category_name}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map((category) => (
-                      <option key={category.category_id} value={category.category_name}>
-                        {category.category_name}
-                      </option>
-                    ))}
-                  </select>
-                
-                </div>
-
-                {/* Hidden category_id field */}
-                <input
-                  type="hidden"
-                  id="category_id"
-                  name="category_id"
-                  value={currentLead.category_id}
-                />
                 
                 <div className="mb-4">
-                    <label className="block text-gray-700">Sub Category Name</label>
+                    <label className="block text-gray-700">Name</label>
                     <input
                       type="text"
-                      name="subcategory_name"
-                      value={currentLead.subcategory_name}
+                      name="user_name"
+                      value={currentLead.user_name}
                       onChange={handleInputChange}
                       className={`w-full px-3 py-2 border rounded`}
                     />
                     
                   </div>
+                
+                <div className="mb-4">
+                    <label className="block text-gray-700">Email Id</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={currentLead.email}
+                      onChange={handleInputChange}
+                      className={`w-full px-3 py-2 border rounded`}
+                    />
+                    
+                  </div>
+                
+                
+                <div className="mb-4">
+                    <label className="block text-gray-700">Phone Number</label>
+                    <input
+                      type="text"
+                      name="phone_no"
+                      value={currentLead.phone_no}
+                      onChange={handleInputChange}
+                      className={`w-full px-3 py-2 border rounded`}
+                    />
+                    
+                  </div>
+                
+            
+                
+              
   
                   <div className="flex justify-end">
                     <button

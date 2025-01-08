@@ -25,7 +25,7 @@ function UserLogin() {
       try {
         setLoading(true)
         const res = await axios.post(
-          "http://localhost:9000/api/login",
+          "http://localhost:9000/api/user-login",
           formData
         );
         if (res.data.success) {
@@ -129,10 +129,10 @@ function UserLogin() {
          >
              {loading ? 'Submiting...' : 'Submit'}
           </button>
-          <p className="mt-4 text-sm text-center text-gray-600">
+          {/* <p className="mt-4 text-sm text-center text-gray-600">
            
             <Link to="/register-user" className="text-blue-500 hover:text-green-600  hover:underline">Signup</Link>
-          </p>
+          </p> */}
         </form>
       </div>
                 </div>

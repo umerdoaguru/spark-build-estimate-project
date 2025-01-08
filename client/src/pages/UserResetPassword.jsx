@@ -24,7 +24,7 @@ const UserResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.post(
-        "http://localhost:9000/api/sendOtp-superadmin",
+        "http://localhost:9000/api/sendOtp-user",
         {
           email,
         }
@@ -47,7 +47,7 @@ const UserResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.post(
-        "http://localhost:9000/api/verifyOtp-superadmin",
+        "http://localhost:9000/api/verifyOtp-user",
         {
           email,
           otp,
@@ -70,7 +70,7 @@ const UserResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.put(
-        "http://localhost:9000/api/resetPassword-superadmin",
+        "http://localhost:9000/api/resetPassword-user",
         {
           email,
           password: newPassword,
