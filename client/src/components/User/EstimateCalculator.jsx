@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MainHeader from '../../pages/MainHeader';
 import UserSider from './UserSider';
+import { useParams } from 'react-router-dom';
 
 function EstimateCalculator() {
   const [categories, setCategories] = useState([]);
@@ -12,32 +13,34 @@ function EstimateCalculator() {
   const [selectedItem, setSelectedItem] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
+  const {id} = useParams();
+  
   
   // Fetch categories on initial render
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await axios.get('http://localhost:9000/api/categories');
+      const response = await axios.get(`http://localhost:9000/api/categories/${id}`);
       setCategories(response.data);
       console.log(categories);
       
     };
     fetchCategories();
-  }, []);
+  }, [id]);
   
   // Fetch subcategories when category is selected
   useEffect(() => {
     const fetchSubcategories = async () => {
-      console.log(selectedCategory);
+      console.log(id);
       
-      if (selectedCategory) {
-        const response = await axios.get(`http://localhost:9000/api/subcategories/${selectedCategory}`);
+      if (id) {
+        const response = await axios.get(`http://localhost:9000/api/subcategories/${id}`);
         setSubcategories(response.data);
         console.log(subcategories);
         
       }
     };
     fetchSubcategories();
-  }, [selectedCategory]);
+  }, [id]);
   
   // Fetch items when subcategory is selected
   useEffect(() => {
@@ -84,7 +87,7 @@ function EstimateCalculator() {
            
            
     
-            <div className="p-6 max-w-lg mx-auto bg-white shadow-lg rounded-lg">
+            <div className="p-6 max-w-lg mx-auto bg-white shadow-lg rounded-lg border">
   <h1 className="text-2xl font-bold text-center mb-6">Estimate Calculator</h1>
 
   {/* Category Selection */}
@@ -96,7 +99,7 @@ function EstimateCalculator() {
       value={selectedCategory}
       className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
     >
-      <option value="">Select Category</option>
+    
       {categories.map((category) => (
         <option key={category.category_id} value={category.category_id}>
           {category.category_name}
@@ -106,7 +109,7 @@ function EstimateCalculator() {
   </div>
 
   {/* Subcategory Selection */}
-  {selectedCategory && (
+
     <div className="mb-4">
       <label htmlFor="subcategory" className="block text-sm font-medium text-gray-700 mb-2">Select Subcategory</label>
       <select
@@ -123,7 +126,7 @@ function EstimateCalculator() {
         ))}
       </select>
     </div>
-  )}
+  
 
   {/* Item Selection */}
   {selectedSubcategory && (
@@ -162,8 +165,15 @@ function EstimateCalculator() {
 
   {/* Total Price */}
   {selectedItem && (
-    <div className="mt-4 text-center">
+    <div className="mt-4 text-center ">
       <h3 className="text-xl font-semibold text-gray-800">Total Price: ₹{totalPrice}</h3>
+      <button
+            type="submit"
+            className="w-full px-4 py-2 mt-4  font-semibold bg-[black] text-[#ffce08] rounded-md shadow-sm hover:bg-yellow-500 hover:text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+          
+         >
+            Sumbit
+          </button>
     </div>
   )}
 </div>

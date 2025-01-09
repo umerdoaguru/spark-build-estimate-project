@@ -15,6 +15,7 @@ const { createcategories,getcategoriesbyid,
     getuser,
     updateuser,
     deleteuser} = require('../controllers/Admincontroller');
+const upload = require('../config/multerConfig');
 const router = express.Router();
 
 // Routes for form operations
@@ -28,7 +29,7 @@ router.get("/subcategories/:id", getsubcategoriesbyid);
 router.get("/subcategories", getsubcategories);
 router.put("/subcategories/:subcategory_id", updatesubcategories);
 router.delete("/subcategories/:subcategory_id", deletesubcategories);
-router.post('/items',createitems);
+router.post('/items',upload.single('image_items'),createitems);
 router.get("/items/:id", getitemsbyid);
 router.get("/items", getitems);
 router.put("/items/:item_id", updateitems);

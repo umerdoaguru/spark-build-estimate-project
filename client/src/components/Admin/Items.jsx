@@ -17,6 +17,8 @@ function items() {
     item_name: "",
     description: "",
     unit_price: "",
+    image_items: "",
+    unit_price_type: "",
   });
 
   const [showPopup, setShowPopup] = useState(false);
@@ -55,10 +57,10 @@ function items() {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
     setCurrentLead((prevLead) => {
-      const updatedLead = { ...prevLead, [name]: value };
-
+      const updatedLead = { ...prevLead, [name]: files ? files[0] : value };
+  
       if (name === "subcategory_name") {
         const selectedCategory = subcategories.find(
           (subcategory) => subcategory.subcategory_name === value
@@ -69,10 +71,12 @@ function items() {
           updatedLead.subcategory_id = ""; // Reset if no match
         }
       }
-
+  
       return updatedLead;
     });
   };
+  
+  
   const handleCreateClick = () => {
     setIsEditing(false);
     setCurrentLead({
@@ -81,6 +85,8 @@ function items() {
       item_name: "",
       description: "",
       unit_price: "",
+      image_items: "",
+      unit_price_type: "",
     });
     setShowPopup(true);
   };
@@ -194,16 +200,16 @@ function items() {
                     Sub Categories Id
                   </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                   Sub Categories Name
+                    Sub Categories Name
                   </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                   Items Name
+                    Items Name
                   </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                  Description
+                    Description
                   </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                  Unit Price
+                    Unit Price
                   </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Date
@@ -270,9 +276,7 @@ function items() {
                           </button>
                           <button
                             className="text-red-500 hover:text-red-700 mx-2"
-                            onClick={() =>
-                              handleDeleteClick(item.item_id)
-                            }
+                            onClick={() => handleDeleteClick(item.item_id)}
                           >
                             <BsTrash size={20} />
                           </button>
@@ -333,7 +337,9 @@ function items() {
                 </h2>
 
                 <div className="mb-4">
-                  <label className="block text-gray-700">Sub Categories Name</label>
+                  <label className="block text-gray-700">
+                    Sub Categories Name
+                  </label>
                   <select
                     name="subcategory_name"
                     value={currentLead.subcategory_name}
@@ -360,11 +366,8 @@ function items() {
                   value={currentLead.subcategory_id}
                 />
 
-              
                 <div className="mb-4">
-                  <label className="block text-gray-700">
-                    Item Name
-                  </label>
+                  <label className="block text-gray-700">Item Name</label>
                   <input
                     type="text"
                     name="item_name"
@@ -374,9 +377,7 @@ function items() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">
-                   Description
-                  </label>
+                  <label className="block text-gray-700">Description</label>
                   <input
                     type="text"
                     name="description"
@@ -386,13 +387,31 @@ function items() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">
-                    Unit Price
-                  </label>
+                  <label className="block text-gray-700">Unit Price</label>
                   <input
                     type="text"
                     name="unit_price"
                     value={currentLead.unit_price}
+                    onChange={handleInputChange}
+                    className={`w-full px-3 py-2 border rounded`}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Unit Price Type</label>
+                  <input
+                    type="text"
+                    name="unit_price_type"
+                    value={currentLead.unit_price_type}
+                    onChange={handleInputChange}
+                    className={`w-full px-3 py-2 border rounded`}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Image Items</label>
+                  <input
+                    type="file"
+                    name="image_items"
+                    value={currentLead.image_items}
                     onChange={handleInputChange}
                     className={`w-full px-3 py-2 border rounded`}
                   />

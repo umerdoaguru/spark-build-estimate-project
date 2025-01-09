@@ -31,7 +31,7 @@ function EmployeeRoutes() {
         <Route path="/user-select-sub-categories" element={<SelectedSub_Categories />} />
      
         <Route path="/user-select-items" element={<Selecteditems />} />
-        <Route path="/user-create-estimate" element={<EstimateCalculator />} />
+        <Route path="/categories/:id" element={<EstimateCalculator />} />
         <Route path="/user-categories-cards" element={<Categories_Card />} />
         </Routes>
       </div>

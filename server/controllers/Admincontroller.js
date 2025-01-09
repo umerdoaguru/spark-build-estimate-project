@@ -239,13 +239,15 @@ const createsubcategories = (req, res) => {
 
 const createitems = (req, res) => {
     const {
-        subcategory_id , subcategory_name,item_name,	description,	unit_price
+        subcategory_id , subcategory_name,item_name,	description,	unit_price,unit_price_type
     } = req.body;
-    const sql = `INSERT INTO items (subcategory_id , subcategory_name,item_name,	description,	unit_price) VALUES (?,?,?,?,?)`;
+    const { image_item} = req.files;
+    const ItemImagePath =  "http://localhost:9000/uploads/"  + image_item.filename 
+    const sql = `INSERT INTO items (subcategory_id , subcategory_name,item_name,	description,	unit_price,image_item,unit_price_type) VALUES (?,?,?,?,?,?)`;
     db.query(
       sql,
       [
-        subcategory_id , subcategory_name,item_name,	description,	unit_price
+        subcategory_id , subcategory_name,item_name,	description,unit_price,ItemImagePath,	unit_price_type
       ],
       (err, results) => {
         if (err) {
