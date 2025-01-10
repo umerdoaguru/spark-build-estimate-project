@@ -241,14 +241,39 @@ const createitems = (req, res) => {
     const {
         subcategory_id , subcategory_name,item_name,	description,	unit_price,unit_price_type
     } = req.body;
-    const { image_item} = req.files;
-    const ItemImagePath =  "http://localhost:9000/uploads/"  + image_item.filename 
-    const sql = `INSERT INTO items (subcategory_id , subcategory_name,item_name,	description,	unit_price,image_item,unit_price_type) VALUES (?,?,?,?,?,?)`;
-    db.query(
-      sql,
-      [
-        subcategory_id , subcategory_name,item_name,	description,unit_price,ItemImagePath,	unit_price_type
-      ],
+    if (!req.file) {
+      return res.status(400).json({ error: "Image file is required" });
+    }
+    
+    const { filename } = req.file; // Extract file details from multer
+    console.log(subcategory_id , subcategory_name,item_name,	description,	unit_price,unit_price_type,filename);
+    const ItemImagePath = "http://localhost:9000/uploads/" + filename;
+    console.log(ItemImagePath);
+    
+    const sql = `
+    INSERT INTO items (
+      subcategory_id, 
+      subcategory_name, 
+      item_name, 
+      description, 
+      unit_price, 
+      image_items, 
+      unit_price_type
+    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  // Execute the query
+  db.query(
+    sql,
+    [
+      subcategory_id,
+      subcategory_name,
+      item_name,
+      description,
+      unit_price,
+      ItemImagePath,
+      unit_price_type,
+    ],
       (err, results) => {
         if (err) {
           res.status(500).json({ error: "Error inserting data" });
@@ -296,12 +321,24 @@ const createitems = (req, res) => {
     try {
       const { item_id  } = req.params;
       const {
-        subcategory_id , subcategory_name,item_name,	description,	unit_price
+        subcategory_id , subcategory_name,item_name,	description,	unit_price,unit_price_type
       } = req.body;
+
+      let ItemImagePath = req.body.image_items; // Retain existing image if no new image uploaded
+
+console.log(ItemImagePath);
+
+      if (req.file) {
+        const { filename } = req.file; // Get new file details if provided
+        ItemImagePath = `http://localhost:9000/uploads/${filename}`;
+      }
+      console.log(ItemImagePath);
+      
+      
   
       // Construct SQL query to update the item
       const sql = `UPDATE items 
-                   SET  subcategory_id = ?  , subcategory_name = ? ,item_name = ? ,	description = ? ,	unit_price = ?
+                   SET  subcategory_id = ?  , subcategory_name = ? ,item_name = ? ,	description = ? ,	unit_price = ?, image_items = ?, unit_price_type = ?
                    WHERE item_id  = ?`;
   
       // Execute the update query asynchronously
@@ -309,7 +346,7 @@ const createitems = (req, res) => {
         db.query(
           sql,
           [
-            subcategory_id, subcategory_name, item_name,	description,	unit_price, item_id
+            subcategory_id, subcategory_name, item_name,	description,	unit_price,ItemImagePath,unit_price_type, item_id
           ],
           (err, results) => {
             if (err) {

@@ -13,9 +13,10 @@ function EstimateCalculator() {
   const [selectedItem, setSelectedItem] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
   const {id} = useParams();
   
-  
+  const toggleDropdown = () => setIsOpen(!isOpen);
   // Fetch categories on initial render
   useEffect(() => {
     const fetchCategories = async () => {
@@ -61,6 +62,7 @@ function EstimateCalculator() {
     
     setSelectedItem(item);
     setTotalPrice(item.unit_price * quantity);
+    setIsOpen(false);
   };
 
   const handleQuantityChange = (e) => {
@@ -128,24 +130,67 @@ function EstimateCalculator() {
     </div>
   
 
-  {/* Item Selection */}
-  {selectedSubcategory && (
-    <div className="mb-4">
-      <label htmlFor="item" className="block text-sm font-medium text-gray-700 mb-2">Select Item</label>
-      <select
-        id="item"
-        onChange={(e) => handleItemSelect(items.find(item => item.item_id === parseInt(e.target.value)))}
-        value={selectedItem?.item_id || ''}
-        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    {selectedSubcategory && (
+   <button
+        onClick={toggleDropdown}
+        className="w-full p-2 border border-gray-300 rounded-md flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
-        <option value="">Select Item</option>
-        {items.map((item) => (
-          <option key={item.item_id} value={item.item_id}>
-            {item.item_name} - ₹{item.unit_price} per unit
-          </option>
-        ))}
-      </select>
-    </div>
+        {selectedItem ? (
+          <div className="flex items-center">
+            <img
+              src={selectedItem.image_items}
+              alt={selectedItem.item_name}
+              className="w-8 h-8 object-cover rounded mr-2"
+            />
+            <span>{selectedItem.item_name}</span>
+          </div>
+        ) : (
+          <span>Select Item</span>
+        )}
+        <span className="ml-2">&#x25BC;</span> 
+      </button>
+       )}
+
+
+      {isOpen && (
+        <ul className="absolute z-10 w-96 bg-white border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto">
+          {items.map((item) => (
+            <li
+              key={item.item_id}
+              className="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
+              onClick={() => handleItemSelect(item)}
+            >
+              <img
+                src={item.image_items}
+                alt={item.item_name}
+                className="w-32 h-28 object-cover rounded mr-2"
+              />
+              <span>{item.item_name} - ₹{item.unit_price} per unit</span>
+            </li>
+          ))}
+        </ul>
+      )}
+
+
+       {/* Item Selection */}
+  {selectedSubcategory && (
+ <div className="mb-4">
+ 
+
+ {/* Show image preview if an item is selected */}
+ {selectedItem?.image_items && (
+   <div className="mt-4">
+     <img
+       src={selectedItem.image_items}
+       alt={selectedItem.item_name}
+       className="w-32 h-32 object-cover rounded"
+       
+     />
+      <span>{selectedItem.item_name} - ₹{selectedItem.unit_price} per unit</span>
+   </div>
+ )}
+</div>
+
   )}
 
   {/* Quantity Input */}

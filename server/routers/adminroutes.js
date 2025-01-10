@@ -32,12 +32,13 @@ router.delete("/subcategories/:subcategory_id", deletesubcategories);
 router.post('/items',upload.single('image_items'),createitems);
 router.get("/items/:id", getitemsbyid);
 router.get("/items", getitems);
-router.put("/items/:item_id", updateitems);
+router.put("/items/:item_id",upload.single('image_items'), updateitems);
 router.delete("/items/:item_id", deleteitems);
 router.get("/user/:id", getuserbyid);
 router.get("/user", getuser);
 router.put("/user/:id", updateuser);
 router.delete("/user/:id", deleteuser);
+
 
 
 module.exports = router;

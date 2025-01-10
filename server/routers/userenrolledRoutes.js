@@ -4,7 +4,12 @@ const {   createUser,
     getuser_profile,
 
     deleteuser_profile,
-    updateuser_profile,} = require('../controllers/UserEnrolled');
+    updateuser_profile,
+    createUserSelection,
+    getSelectionbyid,
+    getuser_Selection,
+    updateuser_Selection,
+    deleteuser_Selection,} = require('../controllers/UserEnrolled');
 const router = express.Router();
 
 
@@ -13,6 +18,11 @@ router.get("/user-profile/:id", getuser_profilebyid);
 router.get("/user-profile", getuser_profile);
 router.put("/user-profile/:id", updateuser_profile);
 router.delete("/user-profile/:id", deleteuser_profile);
+router.post('/user-selection',createUserSelection); 
+router.get("/user-selection/:id", getSelectionbyid);
+router.get("/user-selection", getuser_Selection);
+router.put("/user-selection/:id", updateuser_Selection);
+router.delete("/user-selection/:id", deleteuser_Selection);
 
 
 

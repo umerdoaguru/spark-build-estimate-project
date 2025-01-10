@@ -124,6 +124,125 @@ const createUser = (req, res) => {
       });
     });
   };
+
+const createUserSelection = (req, res) => {
+    const {
+       user_id, item_id, category_name, subcategory_name, item_name, quantity, total_price
+    } = req.body;
+    console.log(user_id, item_id, category_name, subcategory_name, item_name, quantity, total_price);
+    
+    const sql = `INSERT INTO user_selections (user_id, item_id, category_name, subcategory_name, item_name, quantity, total_price) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    db.query(
+      sql,
+      [
+       user_id, item_id, category_name, subcategory_name, item_name, quantity, total_price
+      ],
+      (err, results) => {
+        if (err) {
+          res.status(500).json({ error: "Error inserting data" });
+        } else {
+          res
+            .status(201)
+            .json({ success: true, message: "user_selections data successfully submitted" });
+        }
+      }
+    );
+  };
+
+  const getSelectionbyid = (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      const getQuery = `SELECT * FROM user_selections WHERE user_id  = ?`;
+  
+      db.query(getQuery, [id], (error, result) => {
+        if (error) {
+          res.status(500).json({ error: "Internal Server Error" });
+        } else {
+          res.status(200).json(result);
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
+ 
+  
+  const getuser_Selection = (req, res) => {
+    const sql = "SELECT * FROM user_selections"; 
+    db.query(sql, (err, results) => {
+      if (err) {
+        res.status(500).json({ error: "Error fetching data" });
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  };
+  
+  
+  const updateuser_Selection = async (req, res) => {
+    try {
+      const { id  } = req.params;
+      const {
+        user_id, item_id, category_name, subcategory_name, item_name, quantity, total_price
+      } = req.body;
+  
+      // Construct SQL query to update the item
+      const sql = `UPDATE user_selections 
+                   SET     user_id = ?, item_id = ?, category_name = ?, subcategory_name = ?, item_name = ?, quantity = ?, total_price = ?
+                   WHERE user_id  = ?`;
+  
+      // Execute the update query asynchronously
+      await new Promise((resolve, reject) => {
+        db.query(
+          sql,
+          [
+            user_id, item_id, category_name, subcategory_name, item_name, quantity, total_price
+          ],
+          (err, results) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(results);
+            }
+          }
+        );
+      });
+  
+      res.status(200).json({ message: "user_selections updated successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
+  
+  const deleteuser_Selection = (req, res) => {
+    const { id  } = req.params;
+  
+    // Validate the id 
+    if (!id ) {
+      return res.status(400).json({ error: " ID is required" });
+    }
+  
+    // SQL query to delete the User Profile
+    const sqlDeleteCategory = `DELETE FROM user_selections WHERE user_id  = ?`;
+  
+    db.query(sqlDeleteCategory, [id], (err, results) => {
+      if (err) {
+        console.error("Error deleting User:", err);
+        return res.status(500).json({ error: "Error deleting the User" });
+      }
+  
+      if (results.affectedRows === 0) {
+        // No rows affected means the id  does not exist
+        return res.status(404).json({ error: "User not found" });
+      }
+  
+      res.status(200).json({
+        success: true,
+        message: "Item successfully deleted",
+      });
+    });
+  };
   
 
   
@@ -136,6 +255,11 @@ const createUser = (req, res) => {
   getuser_profile,
   updateuser_profile,
   deleteuser_profile,
+  createUserSelection,
+  getSelectionbyid,
+  getuser_Selection,
+  updateuser_Selection,
+  deleteuser_Selection,
 
    
   };

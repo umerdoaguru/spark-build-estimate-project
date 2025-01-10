@@ -17,8 +17,9 @@ function items() {
     item_name: "",
     description: "",
     unit_price: "",
-    image_items: "",
+    image_items: null,
     unit_price_type: "",
+    image_preview: ""
   });
 
   const [showPopup, setShowPopup] = useState(false);
@@ -58,13 +59,20 @@ function items() {
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
-    setCurrentLead((prevLead) => {
-      const updatedLead = { ...prevLead, [name]: files ? files[0] : value };
   
+    setCurrentLead((prevLead) => {
+      // Handle file inputs separately
+      const updatedLead = { 
+        ...prevLead, 
+        [name]: files && files.length > 0 ? files[0] : value 
+      };
+  
+      // Special logic for "subcategory_name"
       if (name === "subcategory_name") {
         const selectedCategory = subcategories.find(
           (subcategory) => subcategory.subcategory_name === value
         );
+        
         if (selectedCategory) {
           updatedLead.subcategory_id = selectedCategory.subcategory_id;
         } else {
@@ -87,6 +95,7 @@ function items() {
       unit_price: "",
       image_items: "",
       unit_price_type: "",
+      
     });
     setShowPopup(true);
   };
@@ -94,7 +103,15 @@ function items() {
   const handleEditClick = (item) => {
     setIsEditing(true);
     setCurrentLead({
-      ...item,
+      item_id: item.item_id,
+      subcategory_id: item.subcategory_id,
+      subcategory_name: item.subcategory_name,
+      item_name: item.item_name,
+      description: item.description,
+      unit_price: item.unit_price,
+      unit_price_type: item.unit_price_type,
+      image_items: null, 
+      image_preview: item.image_items, 
     });
     setShowPopup(true);
   };
@@ -113,36 +130,45 @@ function items() {
     }
   };
   const saveChanges = async () => {
-    const leadData = {
-      ...currentLead,
-    };
-
+    const formData = new FormData();
+    formData.append("subcategory_id", currentLead.subcategory_id);
+    formData.append("subcategory_name", currentLead.subcategory_name);
+    formData.append("item_name", currentLead.item_name);
+    formData.append("description", currentLead.description);
+    formData.append("unit_price", currentLead.unit_price);
+    formData.append("unit_price_type", currentLead.unit_price_type);
+    if (currentLead.image_items) {
+      formData.append("image_items", currentLead.image_items);
+    } else if (currentLead.image_preview) {
+      formData.append("image_items", currentLead.image_preview);
+    }
+  
     try {
       setLoading(true);
       if (isEditing) {
         // Update existing lead
         await axios.put(
           `http://localhost:9000/api/items/${currentLead.item_id}`,
-          leadData
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
         );
         fetchItems(); // Refresh the list
-        closePopup();
       } else {
         // Create new lead
-        await axios.post("http://localhost:9000/api/items", leadData);
-
-        // Construct WhatsApp message link with encoded parameters
-
+        await axios.post("http://localhost:9000/api/items", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         fetchItems(); // Refresh the list
-        closePopup();
       }
-      setLoading(false);
+      closePopup();
     } catch (error) {
-      setLoading(false);
       console.error("Error saving lead:", error);
+    } finally {
+      setLoading(false);
     }
   };
-
   const closePopup = () => {
     setShowPopup(false);
     setErrors({});
@@ -212,6 +238,12 @@ function items() {
                     Unit Price
                   </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Unit Type
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                  Image
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Date
                   </th>
 
@@ -260,6 +292,16 @@ function items() {
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                           {item.unit_price}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          {item.unit_price_type}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                        <img
+        src={item.image_items}
+        alt="Preview"
+        className="w-22 h-32 object-cover rounded"
+      />
                         </td>
 
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
@@ -396,26 +438,66 @@ function items() {
                     className={`w-full px-3 py-2 border rounded`}
                   />
                 </div>
+               
                 <div className="mb-4">
-                  <label className="block text-gray-700">Unit Price Type</label>
-                  <input
-                    type="text"
-                    name="unit_price_type"
-                    value={currentLead.unit_price_type}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border rounded`}
-                  />
-                </div>
+  <label className="block text-gray-700">Unit Type</label>
+  <select
+    name="unit_price_type"
+    value={currentLead.unit_price_type}
+    onChange={handleInputChange}
+    className="w-full px-3 py-2 border rounded"
+  >
+    <option value="" disabled>Select Unit Type</option>
+    <optgroup label="Volume">
+      <option value="per m³">per m³ (per cubic meter)</option>
+      <option value="per ft³">per ft³ (per cubic foot)</option>
+      <option value="per yd³">per yd³ (per cubic yard)</option>
+      <option value="per L">per L (per liter)</option>
+      <option value="per gallon">per gallon</option>
+    </optgroup>
+    <optgroup label="Weight">
+      <option value="per kg">per kg (per kilogram)</option>
+      <option value="per ton">per ton (per metric ton)</option>
+      <option value="per lb">per lb (per pound)</option>
+    </optgroup>
+    <optgroup label="Area">
+      <option value="per m²">per m² (per square meter)</option>
+      <option value="per ft²">per ft² (per square foot)</option>
+      <option value="per yd²">per yd² (per square yard)</option>
+    </optgroup>
+    <optgroup label="Quantity">
+      <option value="per piece">per piece</option>
+      <option value="per unit">per unit</option>
+      <option value="per bag">per bag</option>
+      <option value="per roll">per roll</option>
+    </optgroup>
+    <optgroup label="Time">
+      <option value="per hour">per hour</option>
+      <option value="per day">per day</option>
+      <option value="per week">per week</option>
+    </optgroup>
+  </select>
+</div>
+
                 <div className="mb-4">
-                  <label className="block text-gray-700">Image Items</label>
-                  <input
-                    type="file"
-                    name="image_items"
-                    value={currentLead.image_items}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border rounded`}
-                  />
-                </div>
+  <label className="block text-gray-700">Image Items</label>
+  {currentLead.image_preview && (
+    <div className="mb-2">
+      <img
+        src={currentLead.image_preview}
+        alt="Preview"
+        className="w-32 h-32 object-cover rounded"
+      />
+    </div>
+  )}
+  <input
+    type="file"
+    name="image_items"
+    onChange={handleInputChange}
+    className={`w-full px-3 py-2 border rounded`}
+  />
+</div>
+
 
                 <div className="flex justify-end">
                   <button
