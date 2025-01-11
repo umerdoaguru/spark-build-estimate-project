@@ -3,11 +3,14 @@ import axios from 'axios';
 import MainHeader from '../../pages/MainHeader';
 import UserSider from './UserSider';
 import { useParams } from 'react-router-dom';
+import cogoToast from 'cogo-toast';
+import { useSelector } from 'react-redux';
 
 function EstimateCalculator() {
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [items, setItems] = useState([]);
+  const [userselection, setUserSelection] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSubcategory, setSelectedSubcategory] = useState('');
   const [selectedItem, setSelectedItem] = useState('');
@@ -15,7 +18,7 @@ function EstimateCalculator() {
   const [totalPrice, setTotalPrice] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const {id} = useParams();
-  
+  const user = useSelector((state) => state.auth.user);
   const toggleDropdown = () => setIsOpen(!isOpen);
   // Fetch categories on initial render
   useEffect(() => {
@@ -72,6 +75,74 @@ function EstimateCalculator() {
       setTotalPrice(selectedItem.unit_price * qty);
     }
   };
+
+  const handleSubmit = async () => {
+   
+ 
+    
+
+    const data = {
+      user_id: user.id, // Assuming `id` from `useParams` is the logged-in user ID
+      item_id: selectedItem.item_id,
+      category_name: categories.find((c) => c.category_id === Number(id))?.category_name,
+      subcategory_name: selectedItem.subcategory_name,
+      item_name: selectedItem.item_name,
+      image_items:selectedItem.image_items,
+      quantity: quantity,
+      total_price: totalPrice,
+    };
+    console.log(data);
+    
+  
+    try {
+      const response = await axios.post('http://localhost:9000/api/user-selection', data);
+  
+      // Check response for success or error
+      if (response.data.success) {
+        cogoToast.success(response.data.message || 'User selection successfully submitted!');
+       setSelectedSubcategory('');
+        setSelectedItem('');
+      
+       
+      } else {
+        cogoToast.error(response.data.message || 'Error submitting user selection. Please try again.');
+      }
+    } catch (error) {
+   
+      console.error('Error during submission:', error);
+      cogoToast.error(error.response?.data?.error || 'Error submitting user selection. Please try again.');
+    }
+  };
+  useEffect(() => {
+    if (categories.length > 0 && id) {
+      fetchSelecteddata();
+    }
+  }, [id, categories]); // Trigger fetch when `id` or `categories` change
+  
+  const fetchSelecteddata = async () => {
+    try {
+      // Ensure category_name is derived correctly
+      const category_name = categories.find((c) => c.category_id === Number(id))?.category_name;
+  
+      if (!category_name) {
+        console.warn("Category name not found for the given ID.");
+        return;
+      }
+  
+      // Fetch data
+      const response = await axios.get(`http://localhost:9000/api/user-selection/${user.id}`, {
+        params: { category_name },
+      });
+  
+      setUserSelection(response.data);
+      console.log(response.data); // Log the fetched data for debugging
+    } catch (error) {
+      console.error("Error fetching selected data:", error);
+    }
+  };
+  
+
+
 
   return (
     <>
@@ -215,7 +286,7 @@ function EstimateCalculator() {
       <button
             type="submit"
             className="w-full px-4 py-2 mt-4  font-semibold bg-[black] text-[#ffce08] rounded-md shadow-sm hover:bg-yellow-500 hover:text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-          
+            onClick={handleSubmit}
          >
             Sumbit
           </button>

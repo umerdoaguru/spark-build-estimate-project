@@ -6,6 +6,7 @@ import ReactPaginate from "react-paginate";
 import axios from "axios";
 import moment from "moment";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
+import cogoToast from "cogo-toast";
 
 function items() {
   const navigate = useNavigate();
@@ -164,7 +165,8 @@ function items() {
       }
       closePopup();
     } catch (error) {
-      console.error("Error saving lead:", error);
+      console.error("Error saving Items:", error);
+      cogoToast.error(error?.response?.data?.message || "An error occurred formate is image Invalid file type. Only JPG, JPEG, WEBP, and PNG are allowed");
     } finally {
       setLoading(false);
     }

@@ -125,17 +125,24 @@ const createUser = (req, res) => {
     });
   };
 
+  
+
 const createUserSelection = (req, res) => {
     const {
-       user_id, item_id, category_name, subcategory_name, item_name, quantity, total_price
+       user_id, item_id, category_name, subcategory_name, item_name,image_items, quantity, total_price
     } = req.body;
-    console.log(user_id, item_id, category_name, subcategory_name, item_name, quantity, total_price);
-    
-    const sql = `INSERT INTO user_selections (user_id, item_id, category_name, subcategory_name, item_name, quantity, total_price) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    console.log(user_id, item_id, category_name, subcategory_name, item_name, image_items, quantity, total_price);
+
+   
+    const sql = `
+    INSERT INTO user_selections 
+    (user_id, item_id, category_name, subcategory_name, item_name, image_items, quantity, total_price) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `;
     db.query(
       sql,
       [
-       user_id, item_id, category_name, subcategory_name, item_name, quantity, total_price
+       user_id, item_id, category_name, subcategory_name, item_name,image_items, quantity, total_price
       ],
       (err, results) => {
         if (err) {
@@ -143,30 +150,34 @@ const createUserSelection = (req, res) => {
         } else {
           res
             .status(201)
-            .json({ success: true, message: "user_selections data successfully submitted" });
+            .json({ success: true, message: "user selection data successfully submitted" });
         }
       }
     );
   };
-
   const getSelectionbyid = (req, res) => {
     try {
-      const { id } = req.params;
+      const { id } = req.params; // Extract `id` from URL params
+      const { category_name } = req.query; // Extract `category_name` from query params
+      console.log(category_name,id);
+      
   
-      const getQuery = `SELECT * FROM user_selections WHERE user_id  = ?`;
+      const getQuery = `SELECT * FROM user_selections WHERE user_id = ? AND category_name = ?`;
   
-      db.query(getQuery, [id], (error, result) => {
+      db.query(getQuery, [id, category_name], (error, result) => {
         if (error) {
+          console.error('Database query error:', error);
           res.status(500).json({ error: "Internal Server Error" });
         } else {
-          res.status(200).json(result);
+          res.status(200).json(result); // Send the result back to the client
         }
       });
     } catch (error) {
+      console.error('Unexpected server error:', error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   };
- 
+  
   
   const getuser_Selection = (req, res) => {
     const sql = "SELECT * FROM user_selections"; 

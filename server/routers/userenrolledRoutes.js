@@ -10,6 +10,7 @@ const {   createUser,
     getuser_Selection,
     updateuser_Selection,
     deleteuser_Selection,} = require('../controllers/UserEnrolled');
+const upload = require('../config/multerConfig');
 const router = express.Router();
 
 
