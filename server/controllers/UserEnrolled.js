@@ -235,7 +235,7 @@ const createUserSelection = (req, res) => {
     }
   
     // SQL query to delete the User Profile
-    const sqlDeleteCategory = `DELETE FROM user_selections WHERE user_id  = ?`;
+    const sqlDeleteCategory = `DELETE FROM user_selections WHERE  selection_id = ?`;
   
     db.query(sqlDeleteCategory, [id], (err, results) => {
       if (err) {

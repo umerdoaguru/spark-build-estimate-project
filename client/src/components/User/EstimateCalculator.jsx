@@ -5,21 +5,32 @@ import UserSider from './UserSider';
 import { useParams } from 'react-router-dom';
 import cogoToast from 'cogo-toast';
 import { useSelector } from 'react-redux';
+import ReactPaginate from 'react-paginate';
+import moment from 'moment';
+import { BsPencilSquare, BsTrash } from 'react-icons/bs';
+import { FaShoppingCart } from 'react-icons/fa';
 
 function EstimateCalculator() {
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [items, setItems] = useState([]);
   const [userselection, setUserSelection] = useState([]);
+  const [alluserselection, setAllUserSelection] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSubcategory, setSelectedSubcategory] = useState('');
   const [selectedItem, setSelectedItem] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [leadsPerPage, setLeadsPerPage] = useState(10);
   const [isOpen, setIsOpen] = useState(false);
   const {id} = useParams();
   const user = useSelector((state) => state.auth.user);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
   const toggleDropdown = () => setIsOpen(!isOpen);
+  const toggleCart = () => setIsCartOpen(!isCartOpen);
+
   // Fetch categories on initial render
   useEffect(() => {
     const fetchCategories = async () => {
@@ -102,6 +113,8 @@ function EstimateCalculator() {
         cogoToast.success(response.data.message || 'User selection successfully submitted!');
        setSelectedSubcategory('');
         setSelectedItem('');
+        fetchSelecteddata();
+        fetchAllSelectedData();
       
        
       } else {
@@ -118,6 +131,21 @@ function EstimateCalculator() {
       fetchSelecteddata();
     }
   }, [id, categories]); // Trigger fetch when `id` or `categories` change
+
+  const handleDeleteClick = async (selection_id) => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this data?"
+    );
+    if (isConfirmed) {
+      try {
+        await axios.delete(`http://localhost:9000/api/user-selection/${selection_id}`);
+        fetchSelecteddata(); // Refresh the list after deletion
+        fetchAllSelectedData(); 
+      } catch (error) {
+        console.error("Error deleting item:", error);
+      }
+    }
+  };
   
   const fetchSelecteddata = async () => {
     try {
@@ -141,6 +169,33 @@ function EstimateCalculator() {
     }
   };
   
+  // Calculate total number of pages
+  const pageCount = Math.ceil(userselection.length / leadsPerPage);
+
+  // Pagination logic
+  const indexOfLastLead = (currentPage + 1) * leadsPerPage;
+  const indexOfFirstLead = indexOfLastLead - leadsPerPage;
+  const currentLeads =  userselection.slice(indexOfFirstLead, indexOfLastLead);
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected);
+  };
+
+  useEffect(() => {
+    
+    fetchAllSelectedData();
+  }, []);
+const fetchAllSelectedData = async () => {
+      const response = await axios.get(`http://localhost:9000/api/user-selection`);
+      setAllUserSelection(response.data);
+      console.log(alluserselection);
+      
+    };
+
+
+
+  const finalAmount = alluserselection.reduce((sum, item) => sum + item.total_price, 0);
+
 
 
 
@@ -151,6 +206,70 @@ function EstimateCalculator() {
         
           <div className="container  2xl:ml-40">
             <div className="main 2xl:w-[89%] mt-[6rem]">
+            <button
+  onClick={toggleCart}
+  className="fixed top-15 right-5 bg-gray-800 text-white p-3 rounded-full shadow-lg focus:outline-none"
+  aria-label="Toggle Cart"
+>
+  <FaShoppingCart className="text-2xl " />
+  {alluserselection.length > 0 && (
+    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+      {alluserselection.length}
+    </span>
+  )}
+</button>
+
+{/* Selected Items Box */}
+{isCartOpen && (
+  <div className="w-80 p-4 bg-white border border-gray-300 rounded-md shadow-lg fixed top-20 right-10 z-50">
+    {/* Close Button */}
+    <button
+      onClick={() => setIsCartOpen(false)}
+      className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 focus:outline-none"
+      aria-label="Close"
+    >
+      ✖
+    </button>
+
+    <h2 className="text-lg font-semibold text-center mb-4">Selected Items</h2>
+    <table className="w-full text-left border-collapse">
+      <thead>
+        <tr className="border-b">
+          <th className="p-2 text-sm font-medium">Category</th>
+          <th className="p-2 text-sm font-medium">Subcategory</th>
+          <th className="p-2 text-sm font-medium">Qty</th>
+          <th className="p-2 text-sm font-medium">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {alluserselection.length > 0 ? (
+          alluserselection.map((item, index) => (
+            <tr key={index} className="border-b">
+              <td className="p-2 text-sm">{item.category_name}</td>
+              <td className="p-2 text-sm">{item.subcategory_name}</td>
+              <td className="p-2 text-sm">{item.quantity}</td>
+              <td className="p-2 text-sm">₹{item.total_price}</td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="4" className="p-2 text-sm text-center">
+              No items selected
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+
+    <div className="border-t mt-4 pt-4 flex justify-between items-center">
+      <span className="text-sm font-medium">Final Amount:</span>
+      <span className="text-lg font-bold text-green-600">
+        ₹{alluserselection.reduce((sum, item) => sum + item.total_price, 0)}
+      </span>
+    </div>
+  </div>
+)}
+
               <h1 className="text-2xl text-center font-medium">
              User Selection Mangement 
               </h1>
@@ -293,6 +412,157 @@ function EstimateCalculator() {
     </div>
   )}
 </div>
+<div className=" overflow-x-auto mt-4  2xl:w-[89%]">
+            <table className="min-w-full bg-white border">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    S.no
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Items Id
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Categories Name
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Sub Categories Name
+                  </th>
+              
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Items Name
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                  Quantity
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Total  Price
+                  </th>
+                  
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                  Image
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Date
+                  </th>
+
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentLeads.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan="15"
+                      className="px-6 py-4 border-b border-gray-200 text-center text-gray-500"
+                    >
+                      No data found
+                    </td>
+                  </tr>
+                ) : (
+                  currentLeads.map((item, index) => {
+                    console.log(item, "fdfsdfsdfsdfds");
+
+                    return (
+                      <tr
+                        key={index}
+                        className={index % 2 === 0 ? "bg-gray-100" : ""}
+                      >
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+                          {index + 1}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+                          {item.item_id}
+                        </td>
+
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          {item.category_name}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          {item.subcategory_name}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          {item.item_name}
+                        </td>
+                       
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          {item.quantity}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          {item.total_price}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                        <img
+        src={item.image_items}
+        alt="Preview"
+        className="w-22 h-32 object-cover rounded"
+      />
+                        </td>
+
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+                          {moment(item.created_at)
+                            .format("DD MMM YYYY")
+                            .toUpperCase()}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+                          
+                          <button
+                            className="text-red-500 hover:text-red-700 mx-2"
+                            onClick={() => handleDeleteClick(item.selection_id)}
+                          >
+                            <BsTrash size={20} />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+          <div className="2xl:w-[89%] mt-4 mb-3 flex justify-center">
+            <ReactPaginate
+              previousLabel={"Previous"}
+              nextLabel={"Next"}
+              breakLabel={"..."}
+              pageCount={pageCount}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={3}
+              onPageChange={handlePageClick}
+              containerClassName={
+                "flex justify-center gap-2"
+              } /* Main container for pagination */
+              pageClassName={
+                "px-4 py-2 border rounded"
+              } /* Individual page buttons */
+              pageLinkClassName={
+                "hover:bg-gray-100 text-gray-700"
+              } /* Links inside buttons */
+              previousClassName={
+                "px-4 py-2 border rounded"
+              } /* Previous button */
+              previousLinkClassName={
+                "hover:bg-gray-100 text-gray-700"
+              } /* Link inside Previous */
+              nextClassName={"px-4 py-2 border rounded"} /* Next button */
+              nextLinkClassName={
+                "hover:bg-gray-100 text-gray-700"
+              } /* Link inside Next */
+              breakClassName={"px-4 py-2 border rounded"} /* Dots ("...") */
+              breakLinkClassName={
+                "hover:bg-gray-100 text-gray-700"
+              } /* Link inside dots */
+              activeClassName={
+                "bg-blue-500 text-white border-blue-500"
+              } /* Active page */
+              disabledClassName={
+                "opacity-50 cursor-not-allowed"
+              } /* Disabled Previous/Next */
+            />
+          </div>
+
  </div>
     </div>
     </>

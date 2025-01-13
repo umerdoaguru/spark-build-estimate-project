@@ -182,10 +182,7 @@ function items() {
   // Pagination logic
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  const currentLeads =
-    leadsPerPage === Infinity
-      ? items
-      : items.slice(indexOfFirstLead, indexOfLastLead);
+  const currentLeads = items.slice(indexOfFirstLead, indexOfLastLead);
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
