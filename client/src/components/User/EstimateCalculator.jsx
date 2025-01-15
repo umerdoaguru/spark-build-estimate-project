@@ -12,6 +12,7 @@ import { FaShoppingCart } from 'react-icons/fa';
 
 function EstimateCalculator() {
   const [categories, setCategories] = useState([]);
+  const [userprofile, setUseProfile] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [items, setItems] = useState([]);
   const [userselection, setUserSelection] = useState([]);
@@ -29,6 +30,13 @@ function EstimateCalculator() {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
+  const toggleDropdownclose = () => {
+    setIsOpen(false); 
+    setSelectedSubcategory(''); 
+    setSelectedItem('');
+    setQuantity('');
+  };
+  
   const toggleCart = () => setIsCartOpen(!isCartOpen);
 
   // Fetch categories on initial render
@@ -40,6 +48,15 @@ function EstimateCalculator() {
       
     };
     fetchCategories();
+  }, [id]);
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const response = await axios.get(`http://localhost:9000/api/user-profile/${user.id}`);
+      setUseProfile(response.data[0]);
+      console.log(userprofile);
+      
+    };
+    fetchUserProfile();
   }, [id]);
   
   // Fetch subcategories when category is selected
@@ -98,6 +115,7 @@ function EstimateCalculator() {
       category_name: categories.find((c) => c.category_id === Number(id))?.category_name,
       subcategory_name: selectedItem.subcategory_name,
       item_name: selectedItem.item_name,
+      description: selectedItem.description,
       image_items:selectedItem.image_items,
       quantity: quantity,
       total_price: totalPrice,
@@ -115,6 +133,7 @@ function EstimateCalculator() {
         setSelectedItem('');
         fetchSelecteddata();
         fetchAllSelectedData();
+        setQuantity('');
       
        
       } else {
@@ -344,6 +363,7 @@ const fetchAllSelectedData = async () => {
 
       {isOpen && (
         <ul className="absolute z-10 w-96 bg-white border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto">
+           <button className='hover:bg-black hover:text-white my-2 bg-slate-300 cursor-pointer w-32 h-18 object-cover rounded mr-2' onClick={toggleDropdownclose}>UnSelected Item</button> 
           {items.map((item) => (
             <li
               key={item.item_id}
@@ -355,7 +375,10 @@ const fetchAllSelectedData = async () => {
                 alt={item.item_name}
                 className="w-32 h-28 object-cover rounded mr-2"
               />
-              <span>{item.item_name} - ₹{item.unit_price} per unit</span>
+              
+            
+              <span>{item.item_name} - ₹{item.unit_price} per unit   Description : - {item.description}</span> 
+          
             </li>
           ))}
         </ul>
@@ -373,10 +396,11 @@ const fetchAllSelectedData = async () => {
      <img
        src={selectedItem.image_items}
        alt={selectedItem.item_name}
+
        className="w-32 h-32 object-cover rounded"
        
      />
-      <span>{selectedItem.item_name} - ₹{selectedItem.unit_price} per unit</span>
+      <span>{selectedItem.item_name} - ₹{selectedItem.unit_price} per unit <br /> Description {selectedItem.description}</span>
    </div>
  )}
 </div>
@@ -412,7 +436,7 @@ const fetchAllSelectedData = async () => {
     </div>
   )}
 </div>
-<div className=" overflow-x-auto mt-4  2xl:w-[89%]">
+<div className=" overflow-x-auto mt-10  ">
             <table className="min-w-full bg-white border">
               <thead>
                 <tr>
@@ -432,12 +456,16 @@ const fetchAllSelectedData = async () => {
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Items Name
                   </th>
+                        <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                  Description
+                  </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                   Quantity
                   </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Total  Price
                   </th>
+            
                   
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                   Image
@@ -485,6 +513,9 @@ const fetchAllSelectedData = async () => {
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                           {item.item_name}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          {item.description}
                         </td>
                        
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">

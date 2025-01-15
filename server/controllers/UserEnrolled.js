@@ -11,12 +11,23 @@ const createUser = (req, res) => {
         user_id,name,email,plot_size,project_type,budgest
     } = req.body;
     console.log(user_id,name,email,plot_size,project_type,budgest);
+      // Extract numeric value from `plot_size`
+      const numericPlotSize = parseFloat(plot_size.match(/\d+/)); // Extracts numeric part (e.g., 1000 from "1000 sq fit")
     
-    const sql = `INSERT INTO user_profile (user_id,name,email,plot_size,project_type,budgest) VALUES (?,?,?,?,?,?)`;
+      if (isNaN(numericPlotSize) || numericPlotSize <= 0) {
+          return res.status(400).json({ error: "Invalid plot size provided" });
+      }
+  
+      // Calculate per square foot budget
+      const per_sq_fit = budgest / numericPlotSize;
+      console.log(`Per square foot budget: ${per_sq_fit}`);
+  
+    
+    const sql = `INSERT INTO user_profile (user_id,name,email,plot_size,project_type,budgest,per_sq_fit) VALUES (?,?,?,?,?,?,?)`;
     db.query(
       sql,
       [
-        user_id,name,email,plot_size,project_type,budgest
+        user_id,name,email,plot_size,project_type,budgest,per_sq_fit
       ],
       (err, results) => {
         if (err) {
@@ -129,20 +140,20 @@ const createUser = (req, res) => {
 
 const createUserSelection = (req, res) => {
     const {
-       user_id, item_id, category_name, subcategory_name, item_name,image_items, quantity, total_price
+       user_id, item_id, category_name, subcategory_name, item_name,description,image_items, quantity, total_price
     } = req.body;
-    console.log(user_id, item_id, category_name, subcategory_name, item_name, image_items, quantity, total_price);
+    console.log(user_id, item_id, category_name, subcategory_name, item_name,description, image_items, quantity, total_price);
 
    
     const sql = `
     INSERT INTO user_selections 
-    (user_id, item_id, category_name, subcategory_name, item_name, image_items, quantity, total_price) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    (user_id, item_id, category_name, subcategory_name, item_name,description, image_items, quantity, total_price) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)
   `;
     db.query(
       sql,
       [
-       user_id, item_id, category_name, subcategory_name, item_name,image_items, quantity, total_price
+       user_id, item_id, category_name, subcategory_name, item_name,description,image_items, quantity, total_price
       ],
       (err, results) => {
         if (err) {

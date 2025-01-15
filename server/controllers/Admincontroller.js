@@ -239,14 +239,14 @@ const createsubcategories = (req, res) => {
 
 const createitems = (req, res) => {
     const {
-        subcategory_id , subcategory_name,item_name,	description,	unit_price,unit_price_type
+        subcategory_id , subcategory_name,item_name,	description,	unit_price,unit_price_type,recommendation_description,sq_fit_range
     } = req.body;
     if (!req.file) {
       return res.status(400).json({ error: "Image file is required" });
     }
     
     const { filename } = req.file; // Extract file details from multer
-    console.log(subcategory_id , subcategory_name,item_name,	description,	unit_price,unit_price_type,filename);
+    console.log(subcategory_id , subcategory_name,item_name,	description,	unit_price,unit_price_type,filename,recommendation_description,sq_fit_range);
     const ItemImagePath = "http://localhost:9000/uploads/" + filename;
     console.log(ItemImagePath);
     
@@ -258,8 +258,8 @@ const createitems = (req, res) => {
       description, 
       unit_price, 
       image_items, 
-      unit_price_type
-    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+      unit_price_type,recommendation_description,sq_fit_range
+    ) VALUES (?, ?, ?, ?, ?, ?, ? , ? , ?)
   `;
 
   // Execute the query
@@ -273,6 +273,7 @@ const createitems = (req, res) => {
       unit_price,
       ItemImagePath,
       unit_price_type,
+      recommendation_description,sq_fit_range
     ],
       (err, results) => {
         if (err) {
@@ -321,7 +322,7 @@ const createitems = (req, res) => {
     try {
       const { item_id  } = req.params;
       const {
-        subcategory_id , subcategory_name,item_name,	description,	unit_price,unit_price_type
+        subcategory_id , subcategory_name,item_name,	description,	unit_price,unit_price_type,recommendation_description,sq_fit_range
       } = req.body;
 
       let ItemImagePath = req.body.image_items; // Retain existing image if no new image uploaded
@@ -338,7 +339,7 @@ console.log(ItemImagePath);
   
       // Construct SQL query to update the item
       const sql = `UPDATE items 
-                   SET  subcategory_id = ?  , subcategory_name = ? ,item_name = ? ,	description = ? ,	unit_price = ?, image_items = ?, unit_price_type = ?
+                   SET  subcategory_id = ?  , subcategory_name = ? ,item_name = ? ,	description = ? ,	unit_price = ?, image_items = ?, unit_price_type = ?,recommendation_description = ? ,sq_fit_range = ?
                    WHERE item_id  = ?`;
   
       // Execute the update query asynchronously
@@ -346,7 +347,7 @@ console.log(ItemImagePath);
         db.query(
           sql,
           [
-            subcategory_id, subcategory_name, item_name,	description,	unit_price,ItemImagePath,unit_price_type, item_id
+            subcategory_id, subcategory_name, item_name,	description,	unit_price,ItemImagePath,unit_price_type,recommendation_description,sq_fit_range, item_id
           ],
           (err, results) => {
             if (err) {

@@ -20,7 +20,9 @@ function items() {
     unit_price: "",
     image_items: null,
     unit_price_type: "",
-    image_preview: ""
+    image_preview: "",
+    recommendation_description:"",
+    sq_fit_range:""
   });
 
   const [showPopup, setShowPopup] = useState(false);
@@ -96,7 +98,8 @@ function items() {
       unit_price: "",
       image_items: "",
       unit_price_type: "",
-      
+      recommendation_description:"",
+      sq_fit_range:""
     });
     setShowPopup(true);
   };
@@ -113,6 +116,8 @@ function items() {
       unit_price_type: item.unit_price_type,
       image_items: null, 
       image_preview: item.image_items, 
+      recommendation_description:item.recommendation_description,
+      sq_fit_range:item.sq_fit_range,
     });
     setShowPopup(true);
   };
@@ -138,6 +143,8 @@ function items() {
     formData.append("description", currentLead.description);
     formData.append("unit_price", currentLead.unit_price);
     formData.append("unit_price_type", currentLead.unit_price_type);
+    formData.append("recommendation_description", currentLead.recommendation_description);
+    formData.append("sq_fit_range", currentLead.sq_fit_range);
     if (currentLead.image_items) {
       formData.append("image_items", currentLead.image_items);
     } else if (currentLead.image_preview) {
@@ -196,7 +203,7 @@ function items() {
         <div className="container  2xl:ml-40">
           <div className="main 2xl:w-[89%] mt-[4rem]">
             <h1 className="text-2xl text-center font-medium">
-              items Management
+              Items Management
             </h1>
             <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
 
@@ -241,6 +248,12 @@ function items() {
                   </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                   Image
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                  Recommendation Description
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                  Sq Fit Range
                   </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Date
@@ -301,6 +314,13 @@ function items() {
         alt="Preview"
         className="w-22 h-32 object-cover rounded"
       />
+      
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          {item.recommendation_description}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          {item.sq_fit_range}
                         </td>
 
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
@@ -496,6 +516,26 @@ function items() {
     className={`w-full px-3 py-2 border rounded`}
   />
 </div>
+<div className="mb-4">
+                  <label className="block text-gray-700">Recommendation</label>
+                  <input
+                    type="text"
+                    name="recommendation_description"
+                    value={currentLead.recommendation_description}
+                    onChange={handleInputChange}
+                    className={`w-full px-3 py-2 border rounded`}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Square Fit Range</label>
+                  <input
+                    type="text"
+                    name="sq_fit_range"
+                    value={currentLead.sq_fit_range}
+                    onChange={handleInputChange}
+                    className={`w-full px-3 py-2 border rounded`}
+                  />
+                </div>
 
 
                 <div className="flex justify-end">
