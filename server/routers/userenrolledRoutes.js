@@ -9,7 +9,8 @@ const {   createUser,
     getSelectionbyid,
     getuser_Selection,
     updateuser_Selection,
-    deleteuser_Selection,} = require('../controllers/UserEnrolled');
+    deleteuser_Selection,
+    getUserRecommendationById,} = require('../controllers/UserEnrolled');
 const upload = require('../config/multerConfig');
 const router = express.Router();
 
@@ -27,6 +28,7 @@ router.get("/user-selection", getuser_Selection);
 router.put("/user-selection/:id", updateuser_Selection);
 router.delete("/user-selection/:id", deleteuser_Selection);
 
+router.get("/user-recommendation/:id", getUserRecommendationById);
 
 
 module.exports = router;

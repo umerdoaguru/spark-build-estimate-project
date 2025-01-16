@@ -78,10 +78,20 @@ const createUser = (req, res) => {
       const {
         name,email,plot_size,project_type,budgest
       } = req.body;
+
+      const numericPlotSize = parseFloat(plot_size.match(/\d+/)); // Extracts numeric part (e.g., 1000 from "1000 sq fit")
+    
+      if (isNaN(numericPlotSize) || numericPlotSize <= 0) {
+          return res.status(400).json({ error: "Invalid plot size provided" });
+      }
+  
+      // Calculate per square foot budget
+      const per_sq_fit = budgest / numericPlotSize;
+      console.log(`Per square foot budget: ${per_sq_fit}`);
   
       // Construct SQL query to update the item
       const sql = `UPDATE user_profile 
-                   SET     name = ?,email = ?,plot_size = ?,project_type = ?,budgest = ?
+                   SET     name = ?,email = ?,plot_size = ?,project_type = ?,budgest = ?,per_sq_fit=?
                    WHERE user_id  = ?`;
   
       // Execute the update query asynchronously
@@ -89,7 +99,7 @@ const createUser = (req, res) => {
         db.query(
           sql,
           [
-          name,email,plot_size,project_type,budgest,id
+          name,email,plot_size,project_type,budgest,per_sq_fit,id
           ],
           (err, results) => {
             if (err) {
@@ -265,7 +275,54 @@ const createUserSelection = (req, res) => {
       });
     });
   };
+
   
+  const getUserRecommendationById = (req, res) => {
+    try {
+        const { id } = req.params;
+        const { subcategory_name } = req.query;
+
+        // Query to fetch user profile data
+        const getUserProfileQuery = `SELECT * FROM user_profile WHERE user_id = ?`;
+
+        db.query(getUserProfileQuery, [id], (error, userProfileResult) => {
+            if (error) {
+                return res.status(500).json({ error: "Internal Server Error while fetching user profile" });
+            }
+
+            if (userProfileResult.length === 0) {
+                return res.status(404).json({ error: "User profile not found" });
+            }
+
+            const { per_sq_fit } = userProfileResult[0];
+
+            // Query to fetch recommendations based on per_sq_fit
+            const getItemsQuery = `
+                SELECT *
+                FROM items
+                WHERE ? BETWEEN 
+                    CAST(SUBSTRING_INDEX(sq_fit_range, '-', 1) AS UNSIGNED) AND 
+                    CAST(SUBSTRING_INDEX(sq_fit_range, '-', -1) AS UNSIGNED) AND subcategory_name = ?
+            `;
+
+            db.query(getItemsQuery, [per_sq_fit,subcategory_name], (err, itemsResult) => {
+                if (err) {
+                    return res.status(500).json({ error: "Error fetching recommendations" });
+                }
+
+                // Respond with combined user profile and recommendations
+                res.status(200).json({
+                    userProfile: userProfileResult[0],
+                    recommendations: itemsResult
+                });
+            });
+        });
+    } catch (error) {
+        console.error("Error in getUserRecommendationById:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
 
   
   
@@ -282,6 +339,7 @@ const createUserSelection = (req, res) => {
   getuser_Selection,
   updateuser_Selection,
   deleteuser_Selection,
+  getUserRecommendationById
 
    
   };

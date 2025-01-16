@@ -17,6 +17,7 @@ function EstimateCalculator() {
   const [items, setItems] = useState([]);
   const [userselection, setUserSelection] = useState([]);
   const [alluserselection, setAllUserSelection] = useState([]);
+  const [alluserrecommendation, setAllUserCommendation] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSubcategory, setSelectedSubcategory] = useState('');
   const [selectedItem, setSelectedItem] = useState('');
@@ -28,6 +29,9 @@ function EstimateCalculator() {
   const {id} = useParams();
   const user = useSelector((state) => state.auth.user);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+
 
   const toggleDropdown = () => setIsOpen(!isOpen);
   const toggleDropdownclose = () => {
@@ -38,6 +42,14 @@ function EstimateCalculator() {
   };
   
   const toggleCart = () => setIsCartOpen(!isCartOpen);
+
+  const openPopup = () => {
+    setIsPopupOpen(true);
+  };
+
+  const closePopup = () => {
+    setIsPopupOpen(false);
+  };
 
   // Fetch categories on initial render
   useEffect(() => {
@@ -79,6 +91,7 @@ function EstimateCalculator() {
     const fetchItems = async () => {
       if (selectedSubcategory) {
         const response = await axios.get(`http://localhost:9000/api/items/${selectedSubcategory}`);
+        openPopup();
         setItems(response.data);
         console.log(items);
         
@@ -170,6 +183,7 @@ function EstimateCalculator() {
     try {
       // Ensure category_name is derived correctly
       const category_name = categories.find((c) => c.category_id === Number(id))?.category_name;
+
   
       if (!category_name) {
         console.warn("Category name not found for the given ID.");
@@ -203,21 +217,33 @@ function EstimateCalculator() {
   useEffect(() => {
     
     fetchAllSelectedData();
+
   }, []);
-const fetchAllSelectedData = async () => {
-      const response = await axios.get(`http://localhost:9000/api/user-selection`);
-      setAllUserSelection(response.data);
-      console.log(alluserselection);
-      
-    };
+  
+  const fetchAllSelectedData = async () => {
+        const response = await axios.get(`http://localhost:9000/api/user-selection`);
+        setAllUserSelection(response.data);
+        console.log(alluserselection);
+        
+      };
+      useEffect(() => {
+    
+     
+        fetchUserRecommendationData();
+      }, [selectedSubcategory]);
 
-
-
-  const finalAmount = alluserselection.reduce((sum, item) => sum + item.total_price, 0);
-
-
-
-
+  const fetchUserRecommendationData = async () => {
+    const subcategory_name = subcategories.find((c) => c.subcategory_id === Number(selectedSubcategory))?.subcategory_name;
+    console.log(subcategory_name);
+        const response = await axios.get(`http://localhost:9000/api/user-recommendation/${user.id}`, {
+          params: { subcategory_name },
+        });
+        setAllUserCommendation(response.data.recommendations);
+        console.log(alluserrecommendation);
+        
+      };
+      const recommendation_subcategory_name = subcategories.find((c) => c.subcategory_id === Number(selectedSubcategory))?.subcategory_name;
+const selectedcategory_name = categories.find((c) => c.category_id === Number(id))?.category_name;
   return (
     <>
      <MainHeader />
@@ -287,11 +313,15 @@ const fetchAllSelectedData = async () => {
       </span>
     </div>
   </div>
+   
 )}
+
+
 
               <h1 className="text-2xl text-center font-medium">
              User Selection Mangement 
               </h1>
+              
               <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
   
             
@@ -299,7 +329,7 @@ const fetchAllSelectedData = async () => {
            
     
             <div className="p-6 max-w-lg mx-auto bg-white shadow-lg rounded-lg border">
-  <h1 className="text-2xl font-bold text-center mb-6">Estimate Calculator</h1>
+  <h1 className="text-2xl font-bold text-center mb-6">Estimate Calculator {selectedcategory_name}</h1>
 
   {/* Category Selection */}
   <div className="mb-4">
@@ -435,8 +465,11 @@ const fetchAllSelectedData = async () => {
           </button>
     </div>
   )}
+   
 </div>
-<div className=" overflow-x-auto mt-10  ">
+{userselection.length>0 && (
+<>
+  <div className=" overflow-x-auto mt-10  ">
             <table className="min-w-full bg-white border">
               <thead>
                 <tr>
@@ -553,6 +586,9 @@ const fetchAllSelectedData = async () => {
               </tbody>
             </table>
           </div>
+
+
+
           <div className="2xl:w-[89%] mt-4 mb-3 flex justify-center">
             <ReactPaginate
               previousLabel={"Previous"}
@@ -593,8 +629,68 @@ const fetchAllSelectedData = async () => {
               } /* Disabled Previous/Next */
             />
           </div>
+</>
+
+   )}       
 
  </div>
+ {isPopupOpen && (
+            <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-bold">
+                    
+                    Recommendations for {recommendation_subcategory_name}
+                  </h2>
+                  <button
+                    onClick={closePopup}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    ✖
+                  </button>
+                </div>
+
+                {/* Map through alluserrecommendations */}
+                {alluserrecommendation && alluserrecommendation.length > 0 ? (
+                  alluserrecommendation.map((recommendation, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col items-center border-b py-4"
+                    >
+                      <img
+                        src={recommendation.image_items}
+                        alt={recommendation.item_name}
+                        className="w-32 h-32 object-cover rounded mb-4"
+                      />
+                      <h3 className="text-md font-semibold">
+                        {recommendation.item_name}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        ₹{recommendation.unit_price} per unit
+                      </p>
+                      <p className="text-sm text-gray-600 mt-2">
+                        {recommendation.description}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500 text-center">
+                    No recommendations available.
+                  </p>
+                )}
+
+                <button
+                  onClick={closePopup}
+                  className="bg-blue-500 text-white px-4 py-2 rounded mt-4 w-full"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
+       
+
+ 
     </div>
     </>
    
