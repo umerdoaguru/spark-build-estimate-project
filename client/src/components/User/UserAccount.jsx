@@ -208,6 +208,9 @@ function UserAccount() {
           <span className="font-semibold">User ID:</span> {userprofile?.user_id}
         </p>
         <p className="text-gray-600 mb-2">
+          <span className="font-semibold">After Selection Amount : -</span> {userprofile?.after_selection_amount == 0 ? "pending":userprofile.after_selection_amount}
+        </p>
+        <p className="text-gray-600 mb-2">
           <span className="font-semibold">Created Date:</span>{" "}
           {new Date(userprofile?.created_date).toLocaleString()}
         </p>
@@ -230,7 +233,7 @@ function UserAccount() {
           ):(
             <div className="max-w-2xl mx-auto mt-10 bg-white shadow-lg rounded-lg border border-gray-200">
       <div className="p-6">
-       <h1 className="text-center font-bold text-2xl ">Please Create User Profile By User Profile Button</h1>
+       <h1 className="text-center font-bold text-2xl ">PleaseCreate User Profile By User Profile Button</h1>
       </div>
      
     </div>
@@ -238,7 +241,7 @@ function UserAccount() {
           </div>
 
 
-          {showPopup && (
+          {showPopup && ( 
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
               <div className="w-full max-w-md p-6 mx-2 bg-white rounded-lg shadow-lg h-[65%] overflow-y-auto">
                 <h2 className="text-xl mb-4">
