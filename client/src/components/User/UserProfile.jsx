@@ -4,6 +4,7 @@ import moment from "moment";
 import { useSelector } from 'react-redux';
 import MainHeader from '../../pages/MainHeader';
 import UserSider from './UserSider';
+import Selected_Items_Cart from './Selected_Items_Cart';
 function UserProfile() {
     const User = useSelector((state) => state.auth.user); 
     console.log(User);
@@ -13,6 +14,7 @@ function UserProfile() {
         <MainHeader />
         <UserSider />
         <div className="container 2xl:w-[100%] 2xl:ml-36 ">
+          <Selected_Items_Cart/>
         <div className="flex flex-col  lg:flex-row mt-14">
           <div className="flex-grow md:p-4 mt-14 lg:mt-0 sm:ml-0">
 

@@ -8,6 +8,7 @@ import moment from "moment";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import UserSider from "./UserSider";
 import { useSelector } from "react-redux";
+import Selected_Items_Cart from "./Selected_Items_Cart";
 
 function UserAccount() {
   const navigate = useNavigate();
@@ -170,6 +171,7 @@ function UserAccount() {
       <>
         <div className="container  2xl:ml-40 ">
           <div className="main 2xl:w-[89%] mt-[6rem]">
+            <Selected_Items_Cart/>
             <h1 className="text-2xl text-center font-medium">User Account</h1>
             <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
 

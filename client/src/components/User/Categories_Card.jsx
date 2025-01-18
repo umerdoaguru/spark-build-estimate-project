@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import axios from "axios"; // Make sure axios is imported
 import MainHeader from '../../pages/MainHeader';
 import UserSider from './UserSider';
+import Selected_Items_Cart from './Selected_Items_Cart';
 
 function Categories_Card() {
   const [categories, setCategories] = useState([]);
@@ -25,6 +26,7 @@ function Categories_Card() {
       <MainHeader />
       <UserSider />
       <div className="flex-1 max-w-full 2xl:w-[93%] 2xl:ml-32 mt-[5rem]">
+        <Selected_Items_Cart/>
         <h1 className="text-2xl text-center font-medium">
           Categories Management
         </h1>

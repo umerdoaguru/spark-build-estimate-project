@@ -9,6 +9,7 @@ import ReactPaginate from 'react-paginate';
 import moment from 'moment';
 import { BsPencilSquare, BsTrash } from 'react-icons/bs';
 import { FaShoppingCart } from 'react-icons/fa';
+import Selected_Items_Cart from './Selected_Items_Cart';
 
 function EstimateCalculator() {
   const [categories, setCategories] = useState([]);
@@ -251,71 +252,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
         
           <div className="container  2xl:ml-40">
             <div className="main 2xl:w-[89%] mt-[6rem]">
-            <button
-  onClick={toggleCart}
-  className="fixed top-15 right-5 bg-gray-800 text-white p-3 rounded-full shadow-lg focus:outline-none"
-  aria-label="Toggle Cart"
->
-  <FaShoppingCart className="text-2xl " />
-  {alluserselection.length > 0 && (
-    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-      {alluserselection.length}
-    </span>
-  )}
-</button>
-
-{/* Selected Items Box */}
-{isCartOpen && (
-  <div className="w-80 p-4 bg-white border border-gray-300 rounded-md shadow-lg fixed top-20 right-10 z-50">
-    {/* Close Button */}
-    <button
-      onClick={() => setIsCartOpen(false)}
-      className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 focus:outline-none"
-      aria-label="Close"
-    >
-      ✖
-    </button>
-
-    <h2 className="text-lg font-semibold text-center mb-4">Selected Items</h2>
-    <table className="w-full text-left border-collapse">
-      <thead>
-        <tr className="border-b">
-          <th className="p-2 text-sm font-medium">Category</th>
-          <th className="p-2 text-sm font-medium">Subcategory</th>
-          <th className="p-2 text-sm font-medium">Qty</th>
-          <th className="p-2 text-sm font-medium">Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        {alluserselection.length > 0 ? (
-          alluserselection.map((item, index) => (
-            <tr key={index} className="border-b">
-              <td className="p-2 text-sm">{item.category_name}</td>
-              <td className="p-2 text-sm">{item.subcategory_name}</td>
-              <td className="p-2 text-sm">{item.quantity}</td>
-              <td className="p-2 text-sm">₹{item.total_price}</td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan="4" className="p-2 text-sm text-center">
-              No items selected
-            </td>
-          </tr>
-        )}
-      </tbody>
-    </table>
-
-    <div className="border-t mt-4 pt-4 flex justify-between items-center">
-      <span className="text-sm font-medium">Final Amount:</span>
-      <span className="text-lg font-bold text-green-600">
-        ₹{alluserselection.reduce((sum, item) => sum + item.total_price, 0)}
-      </span>
-    </div>
-  </div>
-   
-)}
-
+       <Selected_Items_Cart/>
 
 
               <h1 className="text-2xl text-center font-medium">

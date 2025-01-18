@@ -324,6 +324,36 @@ const createUserSelection = (req, res) => {
 };
 
 
+const updateOnlyUserFianlAmount = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { after_selection_amount	 } = req.body;
+
+    console.log(after_selection_amount, id);
+
+    const sql = `UPDATE user_profile SET 
+    after_selection_amount = ?
+    
+    WHERE user_id = ?`;
+
+    await new Promise((resolve, reject) => {
+      db.query(sql, [after_selection_amount	, id], (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+
+    res.status(200).json({ message: "after_selection_amount	 Status updated successfully" });
+  } catch (error) {
+    console.error("Database update error:", error);
+    res.status(500).json({ message: "Internal Server Error", error: err });
+  }
+};
+
+
   
   
 
@@ -339,7 +369,7 @@ const createUserSelection = (req, res) => {
   getuser_Selection,
   updateuser_Selection,
   deleteuser_Selection,
-  getUserRecommendationById
+  getUserRecommendationById,updateOnlyUserFianlAmount
 
    
   };

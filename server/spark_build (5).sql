@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 17, 2025 at 08:13 AM
+-- Generation Time: Jan 18, 2025 at 11:24 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -233,6 +233,7 @@ CREATE TABLE `user_profile` (
   `project_type` varchar(255) NOT NULL,
   `budgest` int(255) NOT NULL,
   `per_sq_fit` varchar(255) NOT NULL,
+  `after_selection_amount` int(255) NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -240,8 +241,8 @@ CREATE TABLE `user_profile` (
 -- Dumping data for table `user_profile`
 --
 
-INSERT INTO `user_profile` (`id`, `user_id`, `name`, `email`, `plot_size`, `project_type`, `budgest`, `per_sq_fit`, `created_date`) VALUES
-(12, 1, 'Umer Doaguru', 'umerqureshidoaguru@gmail.com', '1000 sq fit ', 'Commercial', 1000000, '1000', '2025-01-16 12:06:35');
+INSERT INTO `user_profile` (`id`, `user_id`, `name`, `email`, `plot_size`, `project_type`, `budgest`, `per_sq_fit`, `after_selection_amount`, `created_date`) VALUES
+(12, 1, 'Umer Doaguru', 'umerqureshidoaguru@gmail.com', '1000 sq fit ', 'Commercial', 1000000, '1000', 21280, '2025-01-18 08:34:32');
 
 -- --------------------------------------------------------
 
