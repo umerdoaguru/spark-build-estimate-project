@@ -83,36 +83,60 @@ function Selected_Items_Cart() {
         </button>
     
         <h2 className="text-lg font-semibold text-center mb-4">Selected Items</h2>
-        <div className=" overflow-auto h-[23rem]">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="border-b bg-slate-200 fixed ">
-              <th className="p-2 text-sm font-medium">Category</th>
-              <th className="p-2 text-sm font-medium">Subcategory</th>
-              <th className="p-2 text-sm font-medium">Qty</th>
-              <th className="p-2 text-sm font-medium">Total</th>
-            </tr>
-          </thead>
-          <div className="mt-10">
-          <tbody>
-            {alluserselection.length > 0 ? (
-              alluserselection.map((item, index) => (
-                <tr key={index} className="border-b">
-                  <td className="p-2 text-sm">{item.category_name}</td>
-                  <td className="p-2 text-sm">{item.subcategory_name}</td>
-                  <td className="p-2 text-sm">{item.quantity}</td>
-                  <td className="p-2 text-sm">₹{item.total_price}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" className="p-2 text-sm text-center">
-                  No items selected
-                </td>
-              </tr>
-            )}
-          </tbody></div>
-        </table></div>
+        <div className=" overflow-auto  ">
+        
+                    <table className="min-w-full bg-white border">
+                      <thead>
+                        <tr>
+                          
+                          <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                          Category
+                          </th>
+                          <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                          Subcategory
+                          </th>
+                          
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {alluserselection.length === 0 ? (
+                          <tr>
+                            <td
+                              colSpan="15"
+                              className="px-6 py-4 border-b border-gray-200 text-center text-gray-500"
+                            >
+                              No data found
+                            </td>
+                          </tr>
+                        ) : (
+                          alluserselection.map((item, index) => {
+                            console.log(item, "fdfsdfsdfsdfds");
+        
+                            return (
+                              <tr
+                                key={index}
+                                className={index % 2 === 0 ? "bg-gray-100" : ""}
+                              >
+                                
+                                <td className="px-6 py-1 border-b border-gray-200 text-gray-800 text-wrap">
+                                {item.category_name}
+                                </td>
+        
+                                <td className="px-6 py-1 border-b border-gray-200 text-gray-800  text-wrap">
+                                {item.subcategory_name}
+                                </td>
+                               
+                                
+                              
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </table>
+                 
+        
+        </div>
     
         <div className="border-t mt-4 pt-4 flex justify-between items-center">
           <span className="text-sm font-medium">Final Amount:</span>
