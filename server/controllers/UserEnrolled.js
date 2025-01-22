@@ -8,26 +8,21 @@ const { db } = require("../db");
 
 const createUser = (req, res) => {
     const {
-        user_id,name,email,plot_size,project_type,budgest
+        user_id,name,email,plot_area,project_type,construction_area,no_floor,tower,balcony,total_construction_area,budgest
     } = req.body;
-    console.log(user_id,name,email,plot_size,project_type,budgest);
-      // Extract numeric value from `plot_size`
-      const numericPlotSize = parseFloat(plot_size.match(/\d+/)); // Extracts numeric part (e.g., 1000 from "1000 sq fit")
-    
-      if (isNaN(numericPlotSize) || numericPlotSize <= 0) {
-          return res.status(400).json({ error: "Invalid plot size provided" });
-      }
+    console.log(user_id,name,email,plot_area,project_type,construction_area,no_floor,tower,balcony,total_construction_area,budgest);
+      // Extract numeric value from `plot_area`
   
       // Calculate per square foot budget
-      const per_sq_fit = budgest / numericPlotSize;
+      const per_sq_fit = Math.floor(budgest / total_construction_area); 
       console.log(`Per square foot budget: ${per_sq_fit}`);
   
     
-    const sql = `INSERT INTO user_profile (user_id,name,email,plot_size,project_type,budgest,per_sq_fit) VALUES (?,?,?,?,?,?,?)`;
+    const sql = `INSERT INTO user_profile (user_id,name,email,plot_area,project_type,construction_area,no_floor,tower,balcony,total_construction_area,per_sq_fit,budgest) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
     db.query(
       sql,
       [
-        user_id,name,email,plot_size,project_type,budgest,per_sq_fit
+        user_id,name,email,plot_area,project_type,construction_area,no_floor,tower,balcony,total_construction_area,per_sq_fit,budgest
       ],
       (err, results) => {
         if (err) {
@@ -76,22 +71,16 @@ const createUser = (req, res) => {
     try {
       const { id  } = req.params;
       const {
-        name,email,plot_size,project_type,budgest
+        name,email,plot_area,project_type,construction_area,no_floor,tower,balcony,total_construction_area,budgest
       } = req.body;
+console.log( name,email,plot_area,project_type,construction_area,no_floor,tower,balcony,total_construction_area,budgest,id);
 
-      const numericPlotSize = parseFloat(plot_size.match(/\d+/)); // Extracts numeric part (e.g., 1000 from "1000 sq fit")
-    
-      if (isNaN(numericPlotSize) || numericPlotSize <= 0) {
-          return res.status(400).json({ error: "Invalid plot size provided" });
-      }
-  
-      // Calculate per square foot budget
-      const per_sq_fit = budgest / numericPlotSize;
+      const per_sq_fit = Math.floor(budgest / total_construction_area); 
       console.log(`Per square foot budget: ${per_sq_fit}`);
   
       // Construct SQL query to update the item
       const sql = `UPDATE user_profile 
-                   SET     name = ?,email = ?,plot_size = ?,project_type = ?,budgest = ?,per_sq_fit=?
+                   SET     name = ?,email = ?,plot_area = ?,project_type = ?,construction_area = ?,no_floor = ?,tower = ?,balcony = ?,total_construction_area = ?, budgest = ?,per_sq_fit=?
                    WHERE user_id  = ?`;
   
       // Execute the update query asynchronously
@@ -99,7 +88,7 @@ const createUser = (req, res) => {
         db.query(
           sql,
           [
-          name,email,plot_size,project_type,budgest,per_sq_fit,id
+           name,email,plot_area,project_type,construction_area,no_floor,tower,balcony,total_construction_area,budgest,per_sq_fit,id
           ],
           (err, results) => {
             if (err) {

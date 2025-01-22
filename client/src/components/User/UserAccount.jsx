@@ -22,9 +22,15 @@ function UserAccount() {
     user_id: "",
     name: "",
     email: "",
-    plot_size: "",
+    plot_area: "",
     project_type: "",
+    construction_area: "",
+    no_floor: "",
+    tower: "",
+    balcony: "",
+    total_construction_area: "",
     budgest: "",
+    
   });
 
   const [showPopup, setShowPopup] = useState(false);
@@ -50,13 +56,32 @@ function UserAccount() {
       console.error("Error fetching categories:", error);
     }
   };
+
+
   
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    // Update the currentLead state
     setCurrentLead((prevLead) => {
       const updatedLead = { ...prevLead, [name]: value };
 
-      // If createdTime changes, update actual_date accordingly
+      // Automatically calculate total construction area
+      if (
+        name === "construction_area" ||
+        name === "no_floor" ||
+        name === "tower" ||
+        name === "balcony"
+      ) {
+        const constructionArea = parseFloat(updatedLead.construction_area) || 0;
+        const noFloor = parseInt(updatedLead.no_floor, 10) || 0;
+        const tower = parseFloat(updatedLead.tower) || 0;
+        const balcony = parseFloat(updatedLead.balcony) || 0;
+
+        updatedLead.total_construction_area =
+          constructionArea * noFloor + tower + balcony;
+      }
 
       return updatedLead;
     });
@@ -72,10 +97,18 @@ function UserAccount() {
     setIsEditing(false);
     setCurrentLead({
      
-      plot_size: "",
+     
+      plot_area: "",
       project_type: "",
+      construction_area: "",
+      no_floor: "",
+      tower: "",
+      balcony: "",
+      total_construction_area: "",
       budgest: "",
+      
     });
+    setCustomProjectType('');
     setShowPopup(true);
   };
 
@@ -113,7 +146,7 @@ function UserAccount() {
             : currentLead.project_type,
             name: user.name,
             email: user.email,
-            plot_size: currentLead.plot_size,
+            plot_area: currentLead.plot_area,
             budgest: currentLead.budgest,
             user_id: user.id, // Send user.id here
       };
@@ -140,6 +173,7 @@ function UserAccount() {
     } catch (error) {
       setLoading(false);
       console.error("Error saving lead:", error);
+      
     }
   };
   
@@ -198,7 +232,7 @@ function UserAccount() {
           <span className="font-semibold">Email:</span> {userprofile?.email}
         </p>
         <p className="text-gray-600 mb-2">
-          <span className="font-semibold">Plot Size:</span> {userprofile?.plot_size}
+          <span className="font-semibold">Plot Size:</span> {userprofile?.plot_area}
         </p>
         <p className="text-gray-600 mb-2">
           <span className="font-semibold">Project Type:</span> {userprofile?.project_type}
@@ -272,13 +306,69 @@ function UserAccount() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-gray-700">Plot Size</label>
+                  <label className="block text-gray-700">Plot Area</label>
                   <input
-                    type="text"
-                    name="plot_size"
-                    value={currentLead.plot_size}
+                    type="number"
+                    name="plot_area"
+                    value={currentLead.plot_area}
                     onChange={handleInputChange}
                     className={`w-full px-3 py-2 border  rounded`}
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Construction Area</label>
+                  <input
+                    type="number"
+                    name="construction_area"
+                    value={currentLead.construction_area}
+                    onChange={handleInputChange}
+                    className={`w-full px-3 py-2 border  rounded`}
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Number of Floor</label>
+                  <input
+                    type="number"
+                    name="no_floor"
+                    value={currentLead.no_floor}
+                    onChange={handleInputChange}
+                    className={`w-full px-3 py-2 border  rounded`}
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Tower</label>
+                  <input
+                    type="number"
+                    name="tower"
+                    value={currentLead.tower}
+                    onChange={handleInputChange}
+                    className={`w-full px-3 py-2 border  rounded`}
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">balcony</label>
+                  <input
+                    type="number"
+                    name="balcony"
+                    value={currentLead.balcony}
+                    onChange={handleInputChange}
+                    className={`w-full px-3 py-2 border  rounded`}
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Total Construction Area</label>
+                  <input
+                    type="number"
+                    name="total_construction_area"
+                    value={currentLead.total_construction_area}
+                    onChange={handleInputChange}
+                    className={`w-full px-3 py-2 border  rounded`}
+                    required
                   />
                 </div>
 
