@@ -227,7 +227,11 @@ function UserAccount() {
           {userprofile? ( 
           <div className="max-w-md mx-auto mt-10 bg-white shadow-lg rounded-lg border border-gray-200">
       <div className="p-6">
+        
         <h2 className="text-2xl font-bold text-gray-800 mb-4">{userprofile?.name}</h2>
+        <p className="text-gray-600 mb-2">
+          <span className="font-semibold">User ID:</span> {userprofile?.user_id}
+        </p>
         <p className="text-gray-600 mb-2">
           <span className="font-semibold">Email:</span> {userprofile?.email}
         </p>
@@ -238,11 +242,25 @@ function UserAccount() {
           <span className="font-semibold">Project Type:</span> {userprofile?.project_type}
         </p>
         <p className="text-gray-600 mb-2">
-          <span className="font-semibold">Budget:</span> ₹{userprofile?.budgest}
+          <span className="font-semibold">Construction Area:</span> {userprofile?.construction_area}
         </p>
         <p className="text-gray-600 mb-2">
-          <span className="font-semibold">User ID:</span> {userprofile?.user_id}
+          <span className="font-semibold">Number of Floor :</span> {userprofile?.no_floor}
         </p>
+        <p className="text-gray-600 mb-2">
+          <span className="font-semibold">Tower Area:</span> {userprofile?.tower}
+        </p>
+        <p className="text-gray-600 mb-2">
+          <span className="font-semibold">Balcony Area:</span> {userprofile?.balcony}
+        </p>
+        <p className="text-gray-600 mb-2">
+          <span className="font-semibold">Total Contruction Area:</span> {userprofile?.total_construction_area}
+        </p>
+      
+        <p className="text-gray-600 mb-2">
+          <span className="font-semibold">Budget:</span> ₹{userprofile?.budgest}
+        </p>
+ 
         <p className="text-gray-600 mb-2">
           <span className="font-semibold">After Selection Amount : -</span> {userprofile?.after_selection_amount == 0 ? "pending":userprofile.after_selection_amount}
         </p>

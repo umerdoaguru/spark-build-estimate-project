@@ -11,7 +11,8 @@ const {   createUser,
     updateuser_Selection,
     deleteuser_Selection,
     getUserRecommendationById,
-    updateOnlyUserFianlAmount,} = require('../controllers/UserEnrolled');
+    updateOnlyUserFianlAmount,
+    getSelectionbyuserid,} = require('../controllers/UserEnrolled');
 const upload = require('../config/multerConfig');
 const router = express.Router();
 
@@ -23,6 +24,7 @@ router.put("/user-profile/:id", updateuser_profile);
 router.delete("/user-profile/:id", deleteuser_profile);
 router.post('/user-selection',createUserSelection); 
 router.get("/user-selection/:id", getSelectionbyid);    
+router.get("/user-selection-by-userid/:id", getSelectionbyuserid);    
 
 
 router.get("/user-selection", getuser_Selection);

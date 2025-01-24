@@ -15,6 +15,9 @@ function App() {
   const user = useSelector((state) => state.auth.user);
   return (
     
+    <>
+    <div className=" overflow-hidden">
+    
     <Routes>
         <Route path="/register-doaguru-spark-build" element={<RegisteredAdmin />} />
         <Route path="/register-user" element={<RegisteredUser />} />
@@ -36,6 +39,9 @@ function App() {
 
 
       </Routes>
+      </div>
+    </>
+    
 
   );
 }

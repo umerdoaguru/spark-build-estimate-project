@@ -10,6 +10,7 @@ import Sub_Categories from "../components/Admin/Sub_Categories";
 import Items from "../components/Admin/Items";
 import User_Selections from "../components/Admin/User_Selections";
 import UserManagement from "../components/Admin/UserManagement";
+import UserProfileEdit from "../components/Admin/UserProfileEdit";
 
 
 
@@ -29,6 +30,7 @@ function AdminRoutes() {
         <Route path="/user-management" element={<UserManagement />} />
         <Route path="/items" element={<Items />} />
         <Route path="/user-selections" element={<User_Selections />} />
+        <Route path="/user-profile-data/:id" element={<UserProfileEdit />} />
       </Routes>
     </>
   );

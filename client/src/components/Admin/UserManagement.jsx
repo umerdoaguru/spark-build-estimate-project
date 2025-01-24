@@ -68,6 +68,8 @@ function UserManagement() {
     };
   
     const handleEditClick = (user) => {
+      console.log(user);
+      
       setIsEditing(true);
       setCurrentLead({
         ...user,
@@ -229,11 +231,11 @@ function UserManagement() {
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
                         { index + 1 }
                         </td>
-                   
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+                        <Link to={`/user-profile-data/${user.id}`} className=''>
+                        <td className="px-6 py-4 border-b border-gray-200 font-semibold underline text-[blue]">
                           {user.user_name}
                         </td>
-                        
+                        </Link>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                           {user.email}
                         </td>

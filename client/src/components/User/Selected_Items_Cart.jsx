@@ -3,29 +3,49 @@ import cogoToast from 'cogo-toast';
 import React, { useEffect, useState } from 'react'
 import { FaShoppingCart } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Selected_Items_Cart() {
    
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [alluserselection, setAllUserSelection] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const navigate = useNavigate();
     const user = useSelector((state) => state.auth.user);
-
     const toggleCart = () => setIsCartOpen(!isCartOpen);
 
 
 
 
 
-  useEffect(() => {
-     const fetchAllSelectedData = async () => {
-        const response = await axios.get(`http://localhost:9000/api/user-selection`);
-        setAllUserSelection(response.data);
-        console.log(alluserselection);
+    useEffect(() => {
+      const fetchAllSelectedData = async () => {
+        try {
+          const response = await axios.get(`http://localhost:9000/api/user-selection-by-userid/${user.id}`);
+          setAllUserSelection(response.data);
+          console.log(response.data);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+    
+    
+      fetchAllSelectedData();
+      const interval = setInterval(fetchAllSelectedData, 1000);
+    
+     
+      return () => clearInterval(interval);
+    }, []);
+    
+    useEffect(() => {
+      const fetchCategories = async () => {
+        const response = await axios.get(`http://localhost:9000/api/categories`);
+        setCategories(response.data);
+        console.log(categories);
         
       };
-    fetchAllSelectedData();
-
-  }, []);
+      fetchCategories();
+    }, []);
   const updateFinalAmount = async () => {
     const finalAmount = alluserselection.reduce((sum, item) => sum + item.total_price, 0);
   
@@ -51,11 +71,23 @@ function Selected_Items_Cart() {
       }
     }
   };
+
+  const handleCategoryClick = (categoryName) => {
+    // Find the category by name
+    const category = categories.find((c) => c.category_name === categoryName);
+    if (category && category.category_id) {
+      // Navigate to the category detail page
+      navigate(`/categories/${category.category_id}`);
+    } else {
+      console.error('Category not found or category_id is missing');
+    }
+  };
+
  
 
   return (
     <>
-    
+    <div className="">
         <button
       onClick={toggleCart}
       className="fixed top-15 right-5 bg-gray-800 text-white p-3 rounded-full shadow-lg focus:outline-none"
@@ -68,7 +100,22 @@ function Selected_Items_Cart() {
           {alluserselection.length}
         </span>
       )}
+      
     </button>
+    <div className="border-t  flex justify-start gap-3 mx-7 text-end items-center">
+          <span className="text-sm font-medium">Final Amount:</span>
+          <span className="text-lg font-bold text-green-600">
+            ₹{alluserselection.reduce((sum, item) => sum + item.total_price, 0)}
+          </span>
+          
+        {/* <button
+            onClick={updateFinalAmount}
+            className="bg-blue-500 text-white   py-2 rounded mt-4 hover:bg-blue-600"
+          >
+            Save Final Amount
+          </button> */}
+        </div>
+</div>
     
     {/* Selected Items Box */}
     {isCartOpen && (
@@ -118,14 +165,20 @@ function Selected_Items_Cart() {
                                 className={index % 2 === 0 ? "bg-gray-100" : ""}
                               >
                                 
-                                <td className="px-6 py-1 border-b border-gray-200 text-gray-800 text-wrap">
-                                {item.category_name}
-                                </td>
-        
+                                <td className="px-2 py-1 border-b border-gray-200 text-gray-800 text-nowrap">
+              <button
+              
+                onClick={() => handleCategoryClick(item.category_name)}
+                className="text-blue-600 hover:underline"
+              >
+                {item.category_name}
+              </button>
+            </td>
                                 <td className="px-6 py-1 border-b border-gray-200 text-gray-800  text-wrap">
                                 {item.subcategory_name}
+                                
                                 </td>
-                               
+                             
                                 
                               
                               </tr>

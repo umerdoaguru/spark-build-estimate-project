@@ -187,6 +187,28 @@ const createUserSelection = (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     }
   };
+  const getSelectionbyuserid = (req, res) => {
+    try {
+      const { id } = req.params; // Extract `id` from URL params
+   
+     
+      
+  
+      const getQuery = `SELECT * FROM user_selections WHERE user_id = ?`;
+  
+      db.query(getQuery, [id], (error, result) => {
+        if (error) {
+          console.error('Database query error:', error);
+          res.status(500).json({ error: "Internal Server Error" });
+        } else {
+          res.status(200).json(result); // Send the result back to the client
+        }
+      });
+    } catch (error) {
+      console.error('Unexpected server error:', error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
   
   
   const getuser_Selection = (req, res) => {
@@ -358,7 +380,7 @@ const updateOnlyUserFianlAmount = async (req, res) => {
   getuser_Selection,
   updateuser_Selection,
   deleteuser_Selection,
-  getUserRecommendationById,updateOnlyUserFianlAmount
+  getUserRecommendationById,updateOnlyUserFianlAmount,getSelectionbyuserid
 
    
   };
