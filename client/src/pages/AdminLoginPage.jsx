@@ -33,7 +33,7 @@ function AdminLoginPage() {
           console.log(res.data);
           
           cogoToast.success(res.data.message);
-          navigate("/admin-dashboard");
+          navigate("/categories");
         } else {
           cogoToast.error(res.data.message);
           console.log(res.data);

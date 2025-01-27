@@ -11,6 +11,7 @@ import Items from "../components/Admin/Items";
 import User_Selections from "../components/Admin/User_Selections";
 import UserManagement from "../components/Admin/UserManagement";
 import UserProfileEdit from "../components/Admin/UserProfileEdit";
+import DiscountBar from "../components/Admin/DiscountBar";
 
 
 
@@ -22,8 +23,8 @@ function AdminRoutes() {
    
       <Routes>
         {/* Admin routes */}
-        <Route path="/" element={<AdminDashboard />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/" element={<Categories />} />
+        {/* <Route path="/admin-dashboard" element={<AdminDashboard />} /> */}
         <Route path="/admin-profile" element={<AdminProfile />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/sub-categories" element={<Sub_Categories />} />
@@ -31,6 +32,7 @@ function AdminRoutes() {
         <Route path="/items" element={<Items />} />
         <Route path="/user-selections" element={<User_Selections />} />
         <Route path="/user-profile-data/:id" element={<UserProfileEdit />} />
+        <Route path="/discount-bar" element={<DiscountBar />} />
       </Routes>
     </>
   );

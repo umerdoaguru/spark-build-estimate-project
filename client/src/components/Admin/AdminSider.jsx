@@ -44,7 +44,7 @@ const AdminSider = () => {
 
         <div className="flex flex-col items-center max-h-screen overflow-auto	p-4 xl:w-[10rem]	">
           <ul className="flex flex-col items-center space-y-4 w-full pb-16">
-            <li
+            {/* <li
               className={`xl:w-full ${getSidebarClass("/admin-dashboard")}`}
             >
               <Link
@@ -56,10 +56,10 @@ const AdminSider = () => {
                   Dashboard
                 </h3>
               </Link>
-            </li>
+            </li> */}
 
        
-            <hr className="w-full border-gray-400" />
+            {/* <hr className="w-full border-gray-400" /> */}
             <li className={`xl:w-full ${getSidebarClass("/categories")}`}>
               <Link
                 to="/categories"
@@ -110,14 +110,14 @@ const AdminSider = () => {
               </Link>
             </li>
             <hr className="w-full border-gray-400" />
-            <li className={`xl:w-full ${getSidebarClass("/user-selections")}`}>
+            <li className={`xl:w-full ${getSidebarClass("/discount-bar")}`}>
               <Link
-                to="/user-selections"
+                to="/discount-bar"
                 className="flex flex-col items-center py-3"
               >
                 <FaUserCircle className="text-[#ffce08]  text-2xl md:text-3xl" />
                 <h3 className="text-xs text-center max-md:pt-3 lg:inline text-[#ffce08]  md:text-base">
-                 User Selections
+                 Discount Bar
                 </h3>
               </Link>
             </li>

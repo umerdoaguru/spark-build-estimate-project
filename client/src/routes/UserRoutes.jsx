@@ -10,6 +10,7 @@ import SelectedSub_Categories from "../components/User/SelectedSub_Categories";
 import Selecteditems from "../components/User/SeletedItems";
 import EstimateCalculator from "../components/User/EstimateCalculator";
 import Categories_Card from "../components/User/Categories_Card";
+import UserAllSelecteditems from "../components/User/UserAllSelecteditems";
 
 
 
@@ -33,6 +34,7 @@ function EmployeeRoutes() {
         <Route path="/user-select-items" element={<Selecteditems />} />
         <Route path="/categories/:id" element={<EstimateCalculator />} />
         <Route path="/user-categories-cards" element={<Categories_Card />} />
+        <Route path="/user-all-selection" element={<UserAllSelecteditems />} />
         </Routes>
       </div>
     </>

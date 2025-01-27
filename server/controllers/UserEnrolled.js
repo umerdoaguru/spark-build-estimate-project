@@ -365,11 +365,11 @@ const updateOnlyUserFianlAmount = async (req, res) => {
 };
 
 
+
   
   
 
   module.exports = {
-
   createUser,
   getuser_profilebyid,
   getuser_profile,
@@ -380,8 +380,8 @@ const updateOnlyUserFianlAmount = async (req, res) => {
   getuser_Selection,
   updateuser_Selection,
   deleteuser_Selection,
-  getUserRecommendationById,updateOnlyUserFianlAmount,getSelectionbyuserid
+  getUserRecommendationById,updateOnlyUserFianlAmount,
+  getSelectionbyuserid
 
-   
   };
   

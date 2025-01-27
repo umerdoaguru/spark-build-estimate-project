@@ -14,7 +14,12 @@ const { createcategories,getcategoriesbyid,
     getuserbyid,
     getuser,
     updateuser,
-    deleteuser} = require('../controllers/Admincontroller');
+    deleteuser,
+    createDiscount,
+    getDiscountbyid,
+    getDiscount,
+    updateDiscount,
+    deleteDiscount} = require('../controllers/Admincontroller');
 const upload = require('../config/multerConfig');
 const router = express.Router();
 
@@ -38,6 +43,11 @@ router.get("/user/:id", getuserbyid);
 router.get("/user", getuser);
 router.put("/user/:id", updateuser);
 router.delete("/user/:id", deleteuser);
+router.post('/discount',createDiscount);
+router.get("/discount/:id", getDiscountbyid);
+router.get("/discount",getDiscount);
+router.put("/discount/:id", updateDiscount);
+router.delete("/discount/:id", deleteDiscount);
 
 
 

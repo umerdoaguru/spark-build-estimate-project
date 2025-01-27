@@ -203,7 +203,7 @@ function UserProfileEdit(){
                <div className="flex flex-col  lg:flex-row ">
                       <div className="flex-grow md:p-4 mt-14 lg:mt-0 sm:ml-0">
                         <center className="text-2xl text-center mt-3 font-medium">
-                         Admin Profile
+                         User Profile Data
                         </center>
                         <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
                         <div className="  mb-4">
@@ -309,12 +309,12 @@ function UserProfileEdit(){
                 Edit Profile 
                 </button>
               </div>
-                        
+                         
                         </div>
                       </div>
                       
                     </div>
-            <div className="main 2xl:w-[89%] mt-[4rem]">
+            <div className="main 2xl:w-[89%] mt-[0rem]">
               <h1 className="text-2xl text-center font-medium">
                 User Selection Data  
               </h1>
@@ -326,7 +326,7 @@ function UserProfileEdit(){
 
          
   
-         <div className=" overflow-auto h-[100vh] w-[90%]  mt-10  ">
+         <div className=" overflow-auto h-[100vh] w-[90%]   ">
                      <table className="min-w-full bg-white border ">
                        <thead>
                          <tr>

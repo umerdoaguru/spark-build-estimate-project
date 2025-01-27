@@ -547,6 +547,131 @@ console.log(ItemImagePath);
       });
     });
   };
+
+  
+const createDiscount = (req, res) => {
+  const {
+    value,conditions,offer
+  } = req.body;
+  console.log(value,conditions,offer);
+    // Extract numeric value from `plot_area`
+  
+  const sql = `INSERT INTO discount (value,conditions,offer) VALUES (?,?,?)`;
+  db.query(
+    sql,
+    [
+      value,conditions,offer
+    ],
+    (err, results) => {
+      if (err) {
+        res.status(500).json({ error: "Error inserting data" });
+      } else {
+        res
+          .status(201)
+          .json({ success: true, message: "discount data successfully submitted" });
+      }
+    }
+  );
+};
+
+const getDiscountbyid = (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const getQuery = `SELECT * FROM discount WHERE id  = ?`;
+
+    db.query(getQuery, [id], (error, result) => {
+      if (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+const getDiscount = (req, res) => {
+  const sql = "SELECT * FROM discount"; 
+  db.query(sql, (err, results) => {
+    if (err) {
+      res.status(500).json({ error: "Error fetching data" });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+};
+
+
+const updateDiscount = async (req, res) => {
+  try {
+    const { id  } = req.params;
+    const {
+      value,conditions,offer
+    } = req.body;
+console.log( value,conditions,offer,id);
+
+  
+    // Construct SQL query to update the item
+    const sql = `UPDATE discount 
+                 SET    value = ? ,conditions = ?,offer = ?
+                 WHERE id  = ?`;
+
+    // Execute the update query asynchronously
+    await new Promise((resolve, reject) => {
+      db.query(
+        sql,
+        [
+          value,conditions,offer,id
+        ],
+        (err, results) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        }
+      );
+    });
+
+    res.status(200).json({ message: "discount updated successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const deleteDiscount = (req, res) => {
+  const { id  } = req.params;
+
+  // Validate the id 
+  if (!id ) {
+    return res.status(400).json({ error: " ID is required" });
+  }
+
+  // SQL query to delete the Discount 
+  const sqlDeleteCategory = `DELETE FROM discount WHERE id  = ?`;
+
+  db.query(sqlDeleteCategory, [id], (err, results) => {
+    if (err) {
+      console.error("Error deleting Discount:", err);
+      return res.status(500).json({ error: "Error deleting the Discount" });
+    }
+
+    if (results.affectedRows === 0) {
+      // No rows affected means the id  does not exist
+      return res.status(404).json({ error: "Discount not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Discount successfully deleted",
+    });
+  });
+};
+
+
   
   
   
@@ -572,6 +697,6 @@ console.log(ItemImagePath);
   getuser,
   updateuser,
   deleteuser,
-   
+  createDiscount,getDiscountbyid,getDiscount,updateDiscount,deleteDiscount
   };
   

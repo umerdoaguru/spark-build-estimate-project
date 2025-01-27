@@ -5,7 +5,7 @@ import { FaShoppingCart } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
-function Selected_Items_Cart() {
+function Selected_Items_Cart({refresh}) {
    
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [alluserselection, setAllUserSelection] = useState([]);
@@ -14,28 +14,26 @@ function Selected_Items_Cart() {
     const user = useSelector((state) => state.auth.user);
     const toggleCart = () => setIsCartOpen(!isCartOpen);
 
+    useEffect(() => {
 
+      fetchAllSelectedData();
+    }, []);
 
-
+    const fetchAllSelectedData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:9000/api/user-selection-by-userid/${user.id}`);
+        setAllUserSelection(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
     useEffect(() => {
-      const fetchAllSelectedData = async () => {
-        try {
-          const response = await axios.get(`http://localhost:9000/api/user-selection-by-userid/${user.id}`);
-          setAllUserSelection(response.data);
-          console.log(response.data);
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      };
-    
-    
-      fetchAllSelectedData();
-      const interval = setInterval(fetchAllSelectedData, 1000);
-    
-     
-      return () => clearInterval(interval);
-    }, []);
+      if (refresh) {
+        fetchAllSelectedData();
+      }
+    }, [refresh]);
     
     useEffect(() => {
       const fetchCategories = async () => {
@@ -119,7 +117,7 @@ function Selected_Items_Cart() {
     
     {/* Selected Items Box */}
     {isCartOpen && (
-      <div className="w-80 p-4 bg-white border border-gray-300 rounded-md shadow-lg fixed top-20 right-10 z-50">
+      <div className="w-100 p-4 bg-white border border-gray-300 rounded-md shadow-lg fixed top-20 right-10 z-50">
         {/* Close Button */}
         <button
           onClick={() => setIsCartOpen(false)}
@@ -141,6 +139,9 @@ function Selected_Items_Cart() {
                           </th>
                           <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                           Subcategory
+                          </th>
+                          <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                          Items Name
                           </th>
                           
                         </tr>
@@ -176,6 +177,10 @@ function Selected_Items_Cart() {
             </td>
                                 <td className="px-6 py-1 border-b border-gray-200 text-gray-800  text-wrap">
                                 {item.subcategory_name}
+                                
+                                </td>
+                                <td className="px-6 py-1 border-b border-gray-200 text-gray-800  text-wrap">
+                                {item.item_name}
                                 
                                 </td>
                              

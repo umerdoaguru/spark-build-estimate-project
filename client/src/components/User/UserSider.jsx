@@ -72,6 +72,18 @@ const UserSider = () => {
                          </h3>
                        </Link>
                      </li>
+          <hr className="w-full border-gray-400" />
+                     <li className={`xl:w-full ${getSidebarClass("/user-all-selection")}`}>
+                       <Link
+                         to="/user-all-selection"
+                         className="flex flex-col items-center py-3"
+                       >
+                         <FaUserCircle className="text-[#ffce08]  text-2xl md:text-3xl" />
+                         <h3 className="text-xs text-center max-md:pt-3 lg:inline text-[#ffce08]  md:text-base">
+                  User Selection 
+                                           </h3>
+                       </Link>
+                     </li>
                                    
             <hr className="w-full border-gray-400" />
             <li className={`xl:w-full ${getSidebarClass("/user-profile")}`}>

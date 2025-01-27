@@ -31,6 +31,7 @@ function EstimateCalculator() {
   const user = useSelector((state) => state.auth.user);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
 
 
@@ -148,6 +149,9 @@ function EstimateCalculator() {
         fetchSelecteddata();
         fetchAllSelectedData();
         setQuantity('');
+          // Trigger refresh
+          setRefresh((prev) => !prev);
+
       
        
       } else {
@@ -174,6 +178,7 @@ function EstimateCalculator() {
         await axios.delete(`http://localhost:9000/api/user-selection/${selection_id}`);
         fetchSelecteddata(); // Refresh the list after deletion
         fetchAllSelectedData(); 
+        setRefresh((prev) => !prev);
       } catch (error) {
         console.error("Error deleting item:", error);
       }
@@ -252,7 +257,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
         
           <div className="container  2xl:ml-40">
             <div className="main 2xl:w-[89%] mt-[6rem]">
-       <Selected_Items_Cart/>
+       <Selected_Items_Cart refresh={refresh}/>
 
 
               <h1 className="text-2xl text-center font-medium">
