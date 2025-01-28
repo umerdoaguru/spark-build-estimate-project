@@ -428,7 +428,6 @@ function UserProfileEdit(){
                          )}
                        </tbody>
                      </table>
-                   </div>
             <div className="2xl:w-[89%] mt-4 mb-3 flex justify-center">
   <ReactPaginate
     previousLabel={"Previous"}
@@ -451,6 +450,7 @@ function UserProfileEdit(){
     disabledClassName={"opacity-50 cursor-not-allowed"} /* Disabled Previous/Next */
   />  
 </div>
+                   </div>
 
   
 {showPopup && ( 

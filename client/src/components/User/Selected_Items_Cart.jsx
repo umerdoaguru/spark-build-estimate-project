@@ -10,6 +10,9 @@ function Selected_Items_Cart({refresh}) {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [alluserselection, setAllUserSelection] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [discount, setDiscount] = useState([]);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [eligibleDiscount, setEligibleDiscount] = useState(null); 
     const navigate = useNavigate();
     const user = useSelector((state) => state.auth.user);
     const toggleCart = () => setIsCartOpen(!isCartOpen);
@@ -17,6 +20,7 @@ function Selected_Items_Cart({refresh}) {
     useEffect(() => {
 
       fetchAllSelectedData();
+      fetchDiscount();
     }, []);
 
     const fetchAllSelectedData = async () => {
@@ -24,8 +28,30 @@ function Selected_Items_Cart({refresh}) {
         const response = await axios.get(`http://localhost:9000/api/user-selection-by-userid/${user.id}`);
         setAllUserSelection(response.data);
         console.log(response.data);
+        const finalAmount = alluserselection.reduce((sum, item) => sum + item.total_price, 0);
+  
+        // Check for eligible discount
+        const applicableDiscount = discount.find((d) => finalAmount >= d.value);
+        console.log(applicableDiscount);
+        
+    
+        if (applicableDiscount) {
+          setEligibleDiscount(applicableDiscount); // Store the eligible discount object
+          setIsPopupOpen(true); // Open the popup
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
+      }
+    };
+    const fetchDiscount = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:9000/api/discount"
+        );
+        setDiscount(response.data);
+        console.log(discount);
+      } catch (error) {
+        console.error("Error fetching discount:", error);
       }
     };
 
@@ -44,31 +70,27 @@ function Selected_Items_Cart({refresh}) {
       };
       fetchCategories();
     }, []);
-  const updateFinalAmount = async () => {
-    const finalAmount = alluserselection.reduce((sum, item) => sum + item.total_price, 0);
+    const updateFinalAmount = async () => {
+    
   
-    const isConfirmed = window.confirm(
-      "Are you sure you want to submit this data?"
-    );
+      const isConfirmed = window.confirm(
+        "Are you sure you want to submit this data?"
+      );
   
-    if (isConfirmed) {
-      try {
-        const response = await axios.put(`http://localhost:9000/api/user-final-amount/${user.id}`, {
-          after_selection_amount: finalAmount,
-        });
-        
-        // Success Toast Notification
-        cogoToast.success(response.data.message || 'User selection successfully submitted!');
+      if (isConfirmed) {
+        try {
+          const response = await axios.put(
+            `http://localhost:9000/api/user-final-amount/${user.id}`,
+            { after_selection_amount: finalAmount }
+          );
   
-        console.log('Final amount updated successfully:', finalAmount);
-      } catch (error) {
-        // Error Toast Notification
-        cogoToast.error('Failed to update final amount. Please try again later.');
-  
-        console.error('Error updating final amount:', error);
+          cogoToast.success(response.data.message || "Final amount updated!");
+        } catch (error) {
+          cogoToast.error("Failed to update final amount.");
+        }
       }
-    }
-  };
+    };
+  
 
   const handleCategoryClick = (categoryName) => {
     // Find the category by name
@@ -212,6 +234,49 @@ function Selected_Items_Cart({refresh}) {
       </div>
        
     )}
+
+
+{isPopupOpen && eligibleDiscount && (
+        <div className="fixed top-20 right-10 bg-white shadow-xl rounded-lg p-6 border border-gray-300 max-w-sm">
+          {/* Close Button */}
+          <button
+            className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+            onClick={() => setIsPopupOpen(false)}
+          >
+            ✖
+          </button>
+
+          <h2 className="text-lg font-bold text-center text-green-600 mb-4">
+            🎉 Congratulations! 🎉
+          </h2>
+
+          <p className="text-gray-700 text-center">
+            You are eligible for a special discount!
+          </p>
+
+          {/* Discount Value */}
+          <div className="mt-4 bg-green-100 text-green-700 font-semibold text-center py-2 rounded-lg">
+           Your Budgest Value: ₹{eligibleDiscount.value} Above
+          </div> 
+
+          {/* Offer */}
+          <p className="text-blue-600 font-bold text-lg text-center mt-4">
+            {eligibleDiscount.offer}
+          </p>
+
+          {/* Conditions */}
+          <p className="text-gray-600 text-sm mt-2 text-center">
+            <strong>Conditions:</strong> {eligibleDiscount.conditions}
+          </p>
+
+          <button
+            className="w-full bg-green-500 text-white font-bold py-2 rounded-lg mt-6 hover:bg-green-600"
+            onClick={() => setIsPopupOpen(false)}
+          >
+            Claim Offer
+          </button>
+        </div>
+      )}
     
     </>
   )
