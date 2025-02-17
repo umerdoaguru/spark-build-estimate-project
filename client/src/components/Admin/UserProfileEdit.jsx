@@ -6,6 +6,7 @@ import ReactPaginate from "react-paginate";
 import  axios  from 'axios';
 import moment from 'moment';
 import { BsPencilSquare, BsTrash } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
 
 function UserProfileEdit(){
     const navigate = useNavigate();
@@ -29,7 +30,10 @@ function UserProfileEdit(){
     const [customProjectType, setCustomProjectType] = useState("");
 
 
-  
+    const currentUser = useSelector(state => state.auth.user);
+   
+    const token = currentUser?.token;
+    
 
   
     const [showPopup, setShowPopup] = useState(false);
@@ -52,7 +56,12 @@ function UserProfileEdit(){
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/user-profile/${id}`
+          `https://estimate-project.vimubds5.a2hosted.com/api/user-profile-data/${id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
         );
         setUser(response.data[0]);
         console.log(user);
@@ -64,7 +73,12 @@ function UserProfileEdit(){
     const fetchUserSelection = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/user-selection-by-userid/${id}`
+          `https://estimate-project.vimubds5.a2hosted.com/api/user-selection-by-userid-data/${id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
         );
         setUserSelection(response.data);
         console.log(user);
@@ -135,14 +149,14 @@ function UserProfileEdit(){
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `http://localhost:9000/api/user-profile/${currentLead.user_id}`,
+              `https://estimate-project.vimubds5.a2hosted.com/api/user-profile/${currentLead.user_id}`,
               UserProfileData
             );
             fetchUser(); // Refresh the list
             closePopup();
           } else {
             // Create new lead
-            await axios.post("http://localhost:9000/api/user-register", UserProfileData);
+            await axios.post("https://estimate-project.vimubds5.a2hosted.com/api/user-register", UserProfileData);
     
             // Construct WhatsApp message link with encoded parameters
          
@@ -191,7 +205,7 @@ function UserProfileEdit(){
         <MainHeader />
         <AdminSider />
         <>
-          <div className="container  2xl:ml-40">
+          <div className="2xl:w-[89%]  2xl:ml-40 mx-4 ">
           <div className="mt-[5rem] ">
           <button
             onClick={() => navigate(-1)}
@@ -412,7 +426,7 @@ function UserProfileEdit(){
                                  <img
                  src={item.image_items}
                  alt="Preview"
-                 className="w-22 h-32 object-cover rounded"
+                 className=" w-22 3xl:h-[8rem] xl:h-[7rem] lg:h-[4rem]  object-cover rounded"
                />
                                  </td>
          
@@ -429,7 +443,7 @@ function UserProfileEdit(){
                        </tbody>
                      </table>
             <div className="2xl:w-[89%] mt-4 mb-3 flex justify-center">
-  <ReactPaginate
+   <ReactPaginate
     previousLabel={"Previous"}
     nextLabel={"Next"}
     breakLabel={"..."}
@@ -437,17 +451,22 @@ function UserProfileEdit(){
     marginPagesDisplayed={2}
     pageRangeDisplayed={3}
     onPageChange={handlePageClick}
-    containerClassName={"flex justify-center gap-2"} /* Main container for pagination */
-    pageClassName={"px-4 py-2 border rounded"} /* Individual page buttons */
-    pageLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Links inside buttons */
-    previousClassName={"px-4 py-2 border rounded"} /* Previous button */
-    previousLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Link inside Previous */
-    nextClassName={"px-4 py-2 border rounded"} /* Next button */
-    nextLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Link inside Next */
-    breakClassName={"px-4 py-2 border rounded"} /* Dots ("...") */
-    breakLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Link inside dots */
-    activeClassName={"bg-blue-500 text-white border-blue-500"} /* Active page */
-    disabledClassName={"opacity-50 cursor-not-allowed"} /* Disabled Previous/Next */
+    containerClassName="flex justify-center gap-2"
+    
+    pageClassName="border rounded cursor-pointer"
+    pageLinkClassName="w-full h-full flex items-center justify-center py-2 px-4"
+    
+    previousClassName="border rounded cursor-pointer"
+    previousLinkClassName="w-full h-full flex items-center justify-center py-2 px-3" 
+    
+    nextClassName="border rounded cursor-pointer"
+    nextLinkClassName="w-full h-full flex items-center justify-center py-2 px-3"
+    
+    breakClassName="border rounded cursor-pointer"
+    breakLinkClassName="w-full h-full flex items-center justify-center"
+    
+    activeClassName="bg-blue-500 text-white border-blue-500"
+    disabledClassName="opacity-50 cursor-not-allowed"
   />  
 </div>
                    </div>

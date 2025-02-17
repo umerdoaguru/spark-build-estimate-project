@@ -5,14 +5,22 @@ import axios from "axios"; // Make sure axios is imported
 import MainHeader from '../../pages/MainHeader';
 import UserSider from './UserSider';
 import Selected_Items_Cart from './Selected_Items_Cart';
+import { useSelector } from 'react-redux';
 
 function Categories_Card() {
   const [categories, setCategories] = useState([]);
+  const user = useSelector((state) => state.auth.user);
+  const token = user?.token;
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:9000/api/categories');
+        const response = await axios.get('https://estimate-project.vimubds5.a2hosted.com/api/categories-data',
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);

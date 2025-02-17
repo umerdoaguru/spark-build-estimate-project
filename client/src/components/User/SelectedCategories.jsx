@@ -7,12 +7,13 @@ import moment from 'moment';
 import { BsPencilSquare, BsTrash } from 'react-icons/bs';
 import UserSider from './UserSider';
 import MainHeader from '../../pages/MainHeader';
+import { useSelector } from 'react-redux';
 
 
 function SelectedCategories() {
     const navigate = useNavigate();
     const [categories, setCategories] = useState([]);
-   
+    const user = useSelector((state) => state.auth.user);
     const [currentLead, setCurrentLead] = useState({
      category_name: ""
     });
@@ -25,7 +26,7 @@ function SelectedCategories() {
     const [leadsPerPage, setLeadsPerPage] = useState(10);
  
     const [loading , setLoading] = useState(false)
-
+    const token = user?.token;
   
     // Fetch leads and employees from the API
     useEffect(() => {
@@ -36,7 +37,12 @@ function SelectedCategories() {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:9000/api/categories"
+          "https://estimate-project.vimubds5.a2hosted.com/api/categories",
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
         );
         setCategories(response.data);
         console.log(categories);
@@ -80,7 +86,12 @@ function SelectedCategories() {
       );
       if (isConfirmed) {
         try {
-          await axios.delete(`http://localhost:9000/api/categories/${id}`);
+          await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/categories/${id}`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }});
           fetchCategories(); // Refresh the list after deletion
         } catch (error) {
           console.error("Error deleting categories:", error);
@@ -99,14 +110,24 @@ function SelectedCategories() {
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `http://localhost:9000/api/categories/${currentLead.category_id}`,
-              leadData
+              `https://estimate-project.vimubds5.a2hosted.com/api/categories/${currentLead.category_id}`,
+              leadData,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+              }}
             );
             fetchCategories(); // Refresh the list
             closePopup();
           } else {
             // Create new lead
-            await axios.post("http://localhost:9000/api/categories", leadData);
+            await axios.post("https://estimate-project.vimubds5.a2hosted.com/api/categories", leadData,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+              }});
     
             // Construct WhatsApp message link with encoded parameters
          
@@ -211,7 +232,7 @@ function SelectedCategories() {
                         className={index % 2 === 0 ? "bg-gray-100" : ""}
                       >
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                        { index + 1 }
+                       {index + 1 + currentPage * leadsPerPage}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
                           {category.category_id}
@@ -248,7 +269,7 @@ function SelectedCategories() {
               </table>
             </div>
             <div className="2xl:w-[89%] mt-4 mb-3 flex justify-center">
-  <ReactPaginate
+   <ReactPaginate
     previousLabel={"Previous"}
     nextLabel={"Next"}
     breakLabel={"..."}
@@ -256,17 +277,22 @@ function SelectedCategories() {
     marginPagesDisplayed={2}
     pageRangeDisplayed={3}
     onPageChange={handlePageClick}
-    containerClassName={"flex justify-center gap-2"} /* Main container for pagination */
-    pageClassName={"px-4 py-2 border rounded"} /* Individual page buttons */
-    pageLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Links inside buttons */
-    previousClassName={"px-4 py-2 border rounded"} /* Previous button */
-    previousLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Link inside Previous */
-    nextClassName={"px-4 py-2 border rounded"} /* Next button */
-    nextLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Link inside Next */
-    breakClassName={"px-4 py-2 border rounded"} /* Dots ("...") */
-    breakLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Link inside dots */
-    activeClassName={"bg-blue-500 text-white border-blue-500"} /* Active page */
-    disabledClassName={"opacity-50 cursor-not-allowed"} /* Disabled Previous/Next */
+    containerClassName="flex justify-center gap-2"
+    
+    pageClassName="border rounded cursor-pointer"
+    pageLinkClassName="w-full h-full flex items-center justify-center py-2 px-4"
+    
+    previousClassName="border rounded cursor-pointer"
+    previousLinkClassName="w-full h-full flex items-center justify-center py-2 px-3" 
+    
+    nextClassName="border rounded cursor-pointer"
+    nextLinkClassName="w-full h-full flex items-center justify-center py-2 px-3"
+    
+    breakClassName="border rounded cursor-pointer"
+    breakLinkClassName="w-full h-full flex items-center justify-center"
+    
+    activeClassName="bg-blue-500 text-white border-blue-500"
+    disabledClassName="opacity-50 cursor-not-allowed"
   />
 </div>
 

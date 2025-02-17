@@ -7,6 +7,7 @@ import axios from "axios";
 import moment from "moment";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import cogoToast from "cogo-toast";
+import { useSelector } from "react-redux";
 
 function items() {
   const navigate = useNavigate();
@@ -28,12 +29,12 @@ function items() {
   const [showPopup, setShowPopup] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState({});
-
+  const user = useSelector((state) => state.auth.user);
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage, setLeadsPerPage] = useState(10);
 
   const [loading, setLoading] = useState(false);
-
+  const token = user?.token;
   // Fetch leads and employees from the API
   useEffect(() => {
     fetchSubCategories();
@@ -43,7 +44,12 @@ function items() {
   const fetchSubCategories = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:9000/api/subcategories"
+        "https://estimate-project.vimubds5.a2hosted.com/api/subcategories",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       setSubCategories(response.data);
       console.log(subcategories);
@@ -53,7 +59,12 @@ function items() {
   };
   const fetchItems = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/items");
+      const response = await axios.get("https://estimate-project.vimubds5.a2hosted.com/api/items",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setItems(response.data);
     } catch (error) {
       console.error("Error fetching categoriess:", error);
@@ -128,14 +139,64 @@ function items() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`http://localhost:9000/api/items/${item_id}`);
+        await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/items/${item_id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
         fetchItems(); // Refresh the list after deletion
       } catch (error) {
         console.error("Error deleting item:", error);
       }
     }
   };
+
+  const validateForm = () => {
+    let formErrors = {};
+    let isValid = true;
+
+    if (!currentLead.subcategory_name) {
+      formErrors.subcategory_name = "Subcategory Name is required";
+      isValid = false;
+    }
+
+    if (!currentLead.item_name) {
+      formErrors.item_name = "Item Name is required";
+      isValid = false;
+    }
+
+    if (!currentLead.description) {
+      formErrors.description = "Description is required";
+      isValid = false;
+    }
+
+    if (!currentLead.unit_price) {
+      formErrors.unit_price = "Unit Price is required";
+      isValid = false;
+    }
+
+   
+
+    if (!currentLead.unit_price_type) {
+      formErrors.unit_price_type = "Unit Price Type is required";
+      isValid = false;
+    }
+    if (!currentLead.recommendation_description) {
+      formErrors.recommendation_description = "Recommendation Description is required";
+      isValid = false;
+    }
+    if (!currentLead.sq_fit_range) {
+      formErrors.sq_fit_range = "sq_fit_range is required";
+      isValid = false;
+    }
+
+    setErrors(formErrors);
+    return isValid;
+  };
   const saveChanges = async () => {
+   
+    if (validateForm()) {
     const formData = new FormData();
     formData.append("subcategory_id", currentLead.subcategory_id);
     formData.append("subcategory_name", currentLead.subcategory_name);
@@ -156,17 +217,18 @@ function items() {
       if (isEditing) {
         // Update existing lead
         await axios.put(
-          `http://localhost:9000/api/items/${currentLead.item_id}`,
+          `https://estimate-project.vimubds5.a2hosted.com/api/items/${currentLead.item_id}`,
           formData,
           {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
+            headers: { "Content-Type": "multipart/form-data" ,'Authorization': `Bearer ${token}` },
+          },
+         
         );
         fetchItems(); // Refresh the list
       } else {
         // Create new lead
-        await axios.post("http://localhost:9000/api/items", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
+        await axios.post("https://estimate-project.vimubds5.a2hosted.com/api/items", formData, {
+          headers: { "Content-Type": "multipart/form-data"  ,'Authorization': `Bearer ${token}`},
         });
         fetchItems(); // Refresh the list
       }
@@ -177,6 +239,8 @@ function items() {
     } finally {
       setLoading(false);
     }
+  }
+
   };
   const closePopup = () => {
     setShowPopup(false);
@@ -200,8 +264,8 @@ function items() {
       <MainHeader />
       <AdminSider />
       <>
-        <div className="container  2xl:ml-40">
-          <div className="main 2xl:w-[89%] mt-[4rem]">
+        <div className="2xl:w-[89%]  2xl:ml-40 mx-4 ">
+          <div className="main  mt-[6rem]">
             <h1 className="text-2xl text-center font-medium">
               Items Management
             </h1>
@@ -218,19 +282,14 @@ function items() {
             </div>
           </div>
 
-          <div className=" overflow-x-auto mt-4  2xl:w-[89%]">
+          <div className=" overflow-x-auto mt-4  ">
             <table className="min-w-full bg-white border">
               <thead>
                 <tr>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     S.no
                   </th>
-                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Items Id
-                  </th>
-                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Sub Categories Id
-                  </th>
+                 
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Sub Categories Name
                   </th>
@@ -284,14 +343,9 @@ function items() {
                         className={index % 2 === 0 ? "bg-gray-100" : ""}
                       >
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                          {index + 1}
+                        {index + 1 + currentPage * leadsPerPage}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                          {item.item_id}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                          {item.subcategory_id}
-                        </td>
+                       
 
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                           {item.subcategory_name}
@@ -312,9 +366,9 @@ function items() {
                         <img
         src={item.image_items}
         alt="Preview"
-        className="w-22 h-32 object-cover rounded"
+        className=" w-22 3xl:h-[8rem] xl:h-[3rem] lg:h-[4rem] object-cover rounded"
       />
-      
+     
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                           {item.recommendation_description}
@@ -349,45 +403,32 @@ function items() {
               </tbody>
             </table>
           </div>
-          <div className="2xl:w-[89%] mt-4 mb-3 flex justify-center">
-            <ReactPaginate
-              previousLabel={"Previous"}
-              nextLabel={"Next"}
-              breakLabel={"..."}
-              pageCount={pageCount}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={3}
-              onPageChange={handlePageClick}
-              containerClassName={
-                "flex justify-center gap-2"
-              } /* Main container for pagination */
-              pageClassName={
-                "px-4 py-2 border rounded"
-              } /* Individual page buttons */
-              pageLinkClassName={
-                "hover:bg-gray-100 text-gray-700"
-              } /* Links inside buttons */
-              previousClassName={
-                "px-4 py-2 border rounded"
-              } /* Previous button */
-              previousLinkClassName={
-                "hover:bg-gray-100 text-gray-700"
-              } /* Link inside Previous */
-              nextClassName={"px-4 py-2 border rounded"} /* Next button */
-              nextLinkClassName={
-                "hover:bg-gray-100 text-gray-700"
-              } /* Link inside Next */
-              breakClassName={"px-4 py-2 border rounded"} /* Dots ("...") */
-              breakLinkClassName={
-                "hover:bg-gray-100 text-gray-700"
-              } /* Link inside dots */
-              activeClassName={
-                "bg-blue-500 text-white border-blue-500"
-              } /* Active page */
-              disabledClassName={
-                "opacity-50 cursor-not-allowed"
-              } /* Disabled Previous/Next */
-            />
+          <div className=" mt-4 mb-3 flex justify-center">
+ <ReactPaginate
+    previousLabel={"Previous"}
+    nextLabel={"Next"}
+    breakLabel={"..."}
+    pageCount={pageCount}
+    marginPagesDisplayed={2}
+    pageRangeDisplayed={3}
+    onPageChange={handlePageClick}
+    containerClassName="flex justify-center gap-2"
+    
+    pageClassName="border rounded cursor-pointer"
+    pageLinkClassName="w-full h-full flex items-center justify-center py-2 px-4"
+    
+    previousClassName="border rounded cursor-pointer"
+    previousLinkClassName="w-full h-full flex items-center justify-center py-2 px-3" 
+    
+    nextClassName="border rounded cursor-pointer"
+    nextLinkClassName="w-full h-full flex items-center justify-center py-2 px-3"
+    
+    breakClassName="border rounded cursor-pointer"
+    breakLinkClassName="w-full h-full flex items-center justify-center"
+    
+    activeClassName="bg-blue-500 text-white border-blue-500"
+    disabledClassName="opacity-50 cursor-not-allowed"
+  />
           </div>
 
           {showPopup && (
@@ -405,7 +446,9 @@ function items() {
                     name="subcategory_name"
                     value={currentLead.subcategory_name}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
+                    className={`w-full px-3 py-2 border ${
+                      errors.subcategory_name ? "border-red-500" : "border-gray-300"
+                    } rounded`}
                   >
                     <option value="">Select Sub Category</option>
                     {subcategories.map((subcategory) => (
@@ -417,6 +460,9 @@ function items() {
                       </option>
                     ))}
                   </select>
+                  {errors.subcategory_name && (
+                    <span className="text-red-500">{errors.subcategory_name}</span>
+                  )}
                 </div>
 
                 {/* Hidden category_id field */}
@@ -434,8 +480,14 @@ function items() {
                     name="item_name"
                     value={currentLead.item_name}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border rounded`}
+                    className={`w-full px-3 py-2 border ${
+                      errors.item_name ? "border-red-500" : "border-gray-300"
+                    } rounded`}
+                    
                   />
+                {errors.item_name && (
+                    <span className="text-red-500">{errors.item_name}</span>
+                  )}
                 </div>
                 <div className="mb-4">
                   <label className="block text-gray-700">Description</label>
@@ -444,8 +496,13 @@ function items() {
                     name="description"
                     value={currentLead.description}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border rounded`}
+                    className={`w-full px-3 py-2 border ${
+                      errors.description ? "border-red-500" : "border-gray-300"
+                    } rounded`}
                   />
+                     {errors.description && (
+                    <span className="text-red-500">{errors.description}</span>
+                  )}
                 </div>
                 <div className="mb-4">
                   <label className="block text-gray-700">Unit Price</label>
@@ -454,8 +511,13 @@ function items() {
                     name="unit_price"
                     value={currentLead.unit_price}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border rounded`}
+                    className={`w-full px-3 py-2 border ${
+                      errors.unit_price ? "border-red-500" : "border-gray-300"
+                    } rounded`}
                   />
+                     {errors.unit_price && (
+                    <span className="text-red-500">{errors.unit_price}</span>
+                  )}
                 </div>
                
                 <div className="mb-4">
@@ -464,7 +526,9 @@ function items() {
     name="unit_price_type"
     value={currentLead.unit_price_type}
     onChange={handleInputChange}
-    className="w-full px-3 py-2 border rounded"
+    className={`w-full px-3 py-2 border ${
+      errors.unit_price_type ? "border-red-500" : "border-gray-300"
+    } rounded`}
   >
     <option value="" disabled>Select Unit Type</option>
     <optgroup label="Volume">
@@ -496,6 +560,9 @@ function items() {
       <option value="per week">per week</option>
     </optgroup>
   </select>
+  {errors.unit_price_type && (
+                    <span className="text-red-500">{errors.unit_price_type}</span>
+                  )}
 </div>
 
                 <div className="mb-4">
@@ -513,8 +580,13 @@ function items() {
     type="file"
     name="image_items"
     onChange={handleInputChange}
-    className={`w-full px-3 py-2 border rounded`}
+    className={`w-full px-3 py-2 border ${
+      errors.image_items ? "border-red-500" : "border-gray-300"
+    } rounded`}
   />
+   {errors.image_items && (
+                    <span className="text-red-500">{errors.image_items}</span>
+                  )}
 </div>
 <div className="mb-4">
                   <label className="block text-gray-700">Recommendation</label>
@@ -523,8 +595,13 @@ function items() {
                     name="recommendation_description"
                     value={currentLead.recommendation_description}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border rounded`}
+   className={`w-full px-3 py-2 border ${
+                      errors.recommendation_description ? "border-red-500" : "border-gray-300"
+                    } rounded`}
                   />
+                     {errors.recommendation_description && (
+                    <span className="text-red-500">{errors.recommendation_description}</span>
+                  )}
                 </div>
                 <div className="mb-4">
                   <label className="block text-gray-700">Square Fit Range</label>
@@ -533,8 +610,13 @@ function items() {
                     name="sq_fit_range"
                     value={currentLead.sq_fit_range}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border rounded`}
+   className={`w-full px-3 py-2 border ${
+                      errors.sq_fit_range ? "border-red-500" : "border-gray-300"
+                    } rounded`}
                   />
+                     {errors.sq_fit_range && (
+                    <span className="text-red-500">{errors.sq_fit_range}</span>
+                  )}
                 </div>
 
 

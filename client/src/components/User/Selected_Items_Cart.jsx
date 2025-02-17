@@ -16,16 +16,26 @@ function Selected_Items_Cart({refresh}) {
     const navigate = useNavigate();
     const user = useSelector((state) => state.auth.user);
     const toggleCart = () => setIsCartOpen(!isCartOpen);
+    const token = user?.token;
+    const [userprofile, setUserProfile] = useState([]);
+
 
     useEffect(() => {
 
       fetchAllSelectedData();
+      fetchUserProfile();
       fetchDiscount();
+       fetchCategories();
     }, []);
 
     const fetchAllSelectedData = async () => {
       try {
-        const response = await axios.get(`http://localhost:9000/api/user-selection-by-userid/${user.id}`);
+        const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/user-selection-by-userid/${user.id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
         setAllUserSelection(response.data);
         console.log(response.data);
         const finalAmount = alluserselection.reduce((sum, item) => sum + item.total_price, 0);
@@ -43,10 +53,30 @@ function Selected_Items_Cart({refresh}) {
         console.error('Error fetching data:', error);
       }
     };
+    const fetchUserProfile = async () => {
+      try {
+        const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/user-profile/${user.id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
+        setUserProfile(response.data[0]);
+        console.log(categories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+  
     const fetchDiscount = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:9000/api/discount"
+          "https://estimate-project.vimubds5.a2hosted.com/api/discount-data",
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
         );
         setDiscount(response.data);
         console.log(discount);
@@ -55,41 +85,60 @@ function Selected_Items_Cart({refresh}) {
       }
     };
 
-    useEffect(() => {
-      if (refresh) {
-        fetchAllSelectedData();
-      }
-    }, [refresh]);
-    
-    useEffect(() => {
-      const fetchCategories = async () => {
-        const response = await axios.get(`http://localhost:9000/api/categories`);
-        setCategories(response.data);
-        console.log(categories);
-        
-      };
-      fetchCategories();
-    }, []);
-    const updateFinalAmount = async () => {
-    
   
+
+    useEffect(() => {
+   
+        fetchAllSelectedData();
+        fetchDiscount();
+        fetchCategories();
+
+    }, [refresh]); 
+
+ 
+    const fetchCategories = async () => {
+      const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/categories-data`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
+      setCategories(response.data);
+      console.log(categories);
+      
+    };
+    const updateFinalAmount = async () => {
+     
+  
+    
       const isConfirmed = window.confirm(
         "Are you sure you want to submit this data?"
       );
-  
+      const finalAmount = alluserselection.reduce((sum, item) => sum + item.total_price, 0);
+    
       if (isConfirmed) {
         try {
           const response = await axios.put(
-            `http://localhost:9000/api/user-final-amount/${user.id}`,
-            { after_selection_amount: finalAmount }
+            `https://estimate-project.vimubds5.a2hosted.com/api/user-final-amount/${user.id}`,
+            { after_selection_amount: finalAmount },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+              },
+            }
           );
-  
+    
           cogoToast.success(response.data.message || "Final amount updated!");
+          console.log("Response:", response.data);
+          fetchUserProfile()
         } catch (error) {
+          console.error("Error:", error.response?.data || error.message);
           cogoToast.error("Failed to update final amount.");
         }
       }
     };
+    
   
 
   const handleCategoryClick = (categoryName) => {
@@ -103,43 +152,38 @@ function Selected_Items_Cart({refresh}) {
     }
   };
 
+
+
  
 
   return (
     <>
-    <div className="">
-        <button
+{!userprofile?.after_selection_amount ? (
+  <>
+ <div className="">
+    <button
       onClick={toggleCart}
       className="fixed top-15 right-5 bg-gray-800 text-white p-3 rounded-full shadow-lg focus:outline-none"
       aria-label="Toggle Cart"
     >
-      <FaShoppingCart
-       className="text-2xl " />
+      <FaShoppingCart className="text-2xl" />
       {alluserselection.length > 0 && (
         <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
           {alluserselection.length}
         </span>
       )}
-      
     </button>
-    <div className="border-t  flex justify-start gap-3 mx-7 text-end items-center">
-          <span className="text-sm font-medium">Final Amount:</span>
-          <span className="text-lg font-bold text-green-600">
-            ₹{alluserselection.reduce((sum, item) => sum + item.total_price, 0)}
-          </span>
-          
-        {/* <button
-            onClick={updateFinalAmount}
-            className="bg-blue-500 text-white   py-2 rounded mt-4 hover:bg-blue-600"
-          >
-            Save Final Amount
-          </button> */}
-        </div>
-</div>
-    
-    {/* Selected Items Box */}
-    {isCartOpen && (
-      <div className="w-100 p-4 bg-white border border-gray-300 rounded-md shadow-lg fixed top-20 right-10 z-50">
+
+    <div className="border-t flex justify-start gap-3 mx-7 text-end items-center">
+      <span className="text-sm font-medium">Final Amount:</span>
+      <span className="text-lg font-bold text-green-600">
+        ₹{alluserselection.reduce((sum, item) => sum + item.total_price, 0)}
+      </span>
+    </div>
+  </div>
+
+  {isCartOpen && (
+      <div className="2xl:w-[30%]  2xl:ml-40 mx-4  p-4 bg-white border border-gray-300 rounded-md shadow-lg xl:fixed top-20 right-10 z-50">
         {/* Close Button */}
         <button
           onClick={() => setIsCartOpen(false)}
@@ -235,7 +279,6 @@ function Selected_Items_Cart({refresh}) {
        
     )}
 
-
 {isPopupOpen && eligibleDiscount && (
         <div className="fixed top-20 right-10 bg-white shadow-xl rounded-lg p-6 border border-gray-300 max-w-sm">
           {/* Close Button */}
@@ -269,14 +312,33 @@ function Selected_Items_Cart({refresh}) {
             <strong>Conditions:</strong> {eligibleDiscount.conditions}
           </p>
 
-          <button
+          {/* <button
             className="w-full bg-green-500 text-white font-bold py-2 rounded-lg mt-6 hover:bg-green-600"
             onClick={() => setIsPopupOpen(false)}
           >
             Claim Offer
-          </button>
+          </button> */}
         </div>
       )}
+
+  </>
+ 
+    
+    
+) : (
+  <div className="border-t flex justify-start gap-3 mx-7 text-end items-center">
+    <span className="text-sm font-medium">Final Amount:</span>
+    <span className="text-lg font-bold text-green-600">
+      ₹{alluserselection.reduce((sum, item) => sum + item.total_price, 0)} (Submitted)
+    </span>
+  </div>
+)}
+
+      
+  
+
+
+
     
     </>
   )

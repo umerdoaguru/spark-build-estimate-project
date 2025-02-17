@@ -14,10 +14,10 @@ function AdminProfile() {
       
         <MainHeader/>
         <AdminSider />
-        <div className="container 2xl:w-[100%] 2xl:ml-36 ">
+        <div className="2xl:w-[89%]  2xl:ml-40 mx-4">
         <div className="flex flex-col  lg:flex-row ">
           <div className="flex-grow md:p-4 mt-14 lg:mt-0 sm:ml-0">
-            <center className="text-2xl text-center mt-16 font-medium">
+            <center className="text-2xl text-center mt-[5rem] font-medium">
              Admin Profile
             </center>
             <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>

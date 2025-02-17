@@ -41,6 +41,11 @@ function UserAccount() {
   const [leadsPerPage, setLeadsPerPage] = useState(10);
 
   const [loading, setLoading] = useState(false);
+  const [refresh, setRefresh] = useState(false);
+
+
+   
+  const token = user?.token;
 
   // Fetch leads and employees from the API
   useEffect(() => {
@@ -49,7 +54,12 @@ function UserAccount() {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/user-profile/${user.id}`);
+      const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/user-profile/${user.id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setUserProfile(response.data[0]);
       console.log(categories);
     } catch (error) {
@@ -126,17 +136,76 @@ function UserAccount() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`http://localhost:9000/api/user-profile/${id}`);
+        await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/user-profile/${id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
         fetchUserProfile(); // Refresh the list after deletion
+        setRefresh(prev => !prev);
       } catch (error) {
         console.error("Error deleting categories:", error);
       }
     }
   };
 
+  const validateForm = () => {
+    let formErrors = {};
+    let isValid = true;
+
+    if (!currentLead.plot_area) {
+      formErrors.plot_area = "Plot Area is required";
+      isValid = false;
+    }
+
+    if (!currentLead.project_type) {
+      formErrors.project_type = "Project Type is required";
+      isValid = false;
+    }
+
+    if (!currentLead.construction_area) {
+      formErrors.construction_area = "Construction Area is required";
+      isValid = false;
+    }
+    
+    if (!currentLead.no_floor) {
+      formErrors.no_floor = "Number of Floor is required";
+      isValid = false;
+    }
+    
+    if (!currentLead.tower) {
+      formErrors.tower = "Tower is required";
+      isValid = false;
+    }
+    
+    if (!currentLead.balcony) {
+      formErrors.balcony = "Balcony is required";
+      isValid = false;
+    }
+    
+    if (!currentLead.total_construction_area) {
+      formErrors.total_construction_area = "Total Construction Area is required";
+      isValid = false;
+    }
+    if (!currentLead.budgest) {
+      formErrors.budgest = "Budgest Area is required";
+      isValid = false;
+    }
+    
+    if (!currentLead.tower) {
+      formErrors.tower = "Tower is required";
+      isValid = false;
+    }
+    
+    setErrors(formErrors);
+    return isValid;
+  };
 
 
   const saveChanges = async () => {
+
+    if (validateForm()) {
     console.log(currentLead);
    const UserProfileData = {
         ...currentLead,
@@ -157,14 +226,25 @@ function UserAccount() {
       if (isEditing) {
         // Update existing lead
         await axios.put(
-          `http://localhost:9000/api/user-profile/${currentLead.user_id}`,
-          UserProfileData
+          `https://estimate-project.vimubds5.a2hosted.com/api/user-profile/${currentLead.user_id}`,UserProfileData,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
         );
         fetchUserProfile(); // Refresh the list
+     
         closePopup();
       } else {
         // Create new lead
-        await axios.post("http://localhost:9000/api/user-profile", UserProfileData);
+        await axios.post("https://estimate-project.vimubds5.a2hosted.com/api/user-profile", UserProfileData,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
+          setRefresh(prev => !prev);
   
         fetchUserProfile(); // Refresh the list
         closePopup();
@@ -175,6 +255,9 @@ function UserAccount() {
       console.error("Error saving lead:", error);
       
     }
+
+  }
+
   };
   
 
@@ -201,10 +284,10 @@ function UserAccount() {
   return (
     <>
       <MainHeader />
-      <UserSider />
+      <UserSider refresh={refresh} />
       <>
-        <div className="container  2xl:ml-40 ">
-          <div className="main 2xl:w-[89%] mt-[6rem]">
+        <div className="2xl:w-[89%]  2xl:ml-40 mx-4  ">
+          <div className="main  mt-[6rem]">
             <Selected_Items_Cart/>
             <h1 className="text-2xl text-center font-medium">User Account</h1>
             <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
@@ -223,7 +306,7 @@ function UserAccount() {
 
           </div>
 
-          <div className=" overflow-x-auto mt-4  2xl:w-[89%] mx-1">
+          <div className=" overflow-x-auto mt-4   mx-1">
           {userprofile? ( 
           <div className="max-w-md mx-auto mt-10 bg-white shadow-lg rounded-lg border border-gray-200">
       <div className="p-6">
@@ -308,8 +391,10 @@ function UserAccount() {
                     name="name"
                     value={user.name}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
+                    className={`w-full px-3 py-2 border border-gray-300
+                     rounded`}
                   />
+                  
                 </div>
 
                 <div className="mb-4">
@@ -319,8 +404,9 @@ function UserAccount() {
                     name="email"
                     value={user.email}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded`}
                   />
+                   
                 </div>
 
                 <div className="mb-4">
@@ -330,9 +416,14 @@ function UserAccount() {
                     name="plot_area"
                     value={currentLead.plot_area}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
+                    className={`w-full px-3 py-2 border ${
+                      errors.plot_area ? "border-red-500" : "border-gray-300"
+                    } rounded`}
                     required
                   />
+                   {errors.plot_area && (
+                    <span className="text-red-500">{errors.plot_area}</span>
+                  )}
                 </div>
                 <div className="mb-4">
                   <label className="block text-gray-700">Construction Area</label>
@@ -341,9 +432,14 @@ function UserAccount() {
                     name="construction_area"
                     value={currentLead.construction_area}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
+                    className={`w-full px-3 py-2 border ${
+                      errors.construction_area ? "border-red-500" : "border-gray-300"
+                    } rounded`}
                     required
                   />
+                   {errors.construction_area && (
+                    <span className="text-red-500">{errors.construction_area}</span>
+                  )}
                 </div>
                 <div className="mb-4">
                   <label className="block text-gray-700">Number of Floor</label>
@@ -352,9 +448,14 @@ function UserAccount() {
                     name="no_floor"
                     value={currentLead.no_floor}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
+                    className={`w-full px-3 py-2 border ${
+                      errors.no_floor ? "border-red-500" : "border-gray-300"
+                    } rounded`}
                     required
                   />
+                   {errors.no_floor && (
+                    <span className="text-red-500">{errors.no_floor}</span>
+                  )}
                 </div>
                 <div className="mb-4">
                   <label className="block text-gray-700">Tower</label>
@@ -363,9 +464,14 @@ function UserAccount() {
                     name="tower"
                     value={currentLead.tower}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
+                    className={`w-full px-3 py-2 border ${
+                      errors.tower ? "border-red-500" : "border-gray-300"
+                    } rounded`}
                     required
                   />
+                   {errors.tower && (
+                    <span className="text-red-500">{errors.tower}</span>
+                  )}
                 </div>
                 <div className="mb-4">
                   <label className="block text-gray-700">balcony</label>
@@ -374,9 +480,14 @@ function UserAccount() {
                     name="balcony"
                     value={currentLead.balcony}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
+                    className={`w-full px-3 py-2 border ${
+                      errors.balcony ? "border-red-500" : "border-gray-300"
+                    } rounded`}
                     required
                   />
+                   {errors.balcony && (
+                    <span className="text-red-500">{errors.balcony}</span>
+                  )}
                 </div>
                 <div className="mb-4">
                   <label className="block text-gray-700">Total Construction Area</label>
@@ -385,9 +496,14 @@ function UserAccount() {
                     name="total_construction_area"
                     value={currentLead.total_construction_area}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
+                    className={`w-full px-3 py-2 border ${
+                      errors.total_construction_area ? "border-red-500" : "border-gray-300"
+                    } rounded`}
                     required
                   />
+                   {errors.total_construction_area && (
+                    <span className="text-red-500">{errors.total_construction_area}</span>
+                  )}
                 </div>
 
                 <div className="mb-4">
@@ -417,6 +533,9 @@ function UserAccount() {
                       className="mt-2 w-full px-3 py-2 border border-gray-300 rounded"
                     />
                   )}
+                  {errors.project_type && (
+                 <span className="text-red-500">{errors.project_type}</span>
+               )}
                 </div>
 
                 <div className="mb-4">
@@ -426,8 +545,13 @@ function UserAccount() {
                     name="budgest"
                     value={currentLead.budgest}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
+                    className={`w-full px-3 py-2 border ${
+                      errors.budgest ? "border-red-500" : "border-gray-300"
+                    } rounded`}
                   />
+                   {errors.budgest && (
+                    <span className="text-red-500">{errors.budgest}</span>
+                  )}
                 </div>
 
                 <div className="flex justify-end">

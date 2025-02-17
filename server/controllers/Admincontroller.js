@@ -247,7 +247,7 @@ const createitems = (req, res) => {
     
     const { filename } = req.file; // Extract file details from multer
     console.log(subcategory_id , subcategory_name,item_name,	description,	unit_price,unit_price_type,filename,recommendation_description,sq_fit_range);
-    const ItemImagePath = "http://localhost:9000/uploads/" + filename;
+    const ItemImagePath = "https://estimate-project.vimubds5.a2hosted.com/uploads/" + filename;
     console.log(ItemImagePath);
     
     const sql = `
@@ -331,7 +331,7 @@ console.log(ItemImagePath);
 
       if (req.file) {
         const { filename } = req.file; // Get new file details if provided
-        ItemImagePath = `http://localhost:9000/uploads/${filename}`;
+        ItemImagePath = `https://estimate-project.vimubds5.a2hosted.com/uploads/${filename}`;
       }
       console.log(ItemImagePath);
       

@@ -39,3 +39,85 @@
   //     });
   //   });
   // };
+
+//   try {
+            
+//     const transporter = nodemailer.createTransport({
+//      host: 'mail.vimubds5.a2hosted.com',
+//      port: 465,
+//      secure: true, // Use SSL
+//      auth: {
+//        user: 'infocrmdemo@vimubds5.a2hosted.com',
+//        pass: 'crmdemo@123',
+//      },
+//    });
+      
+
+//       const mailOptions = {
+//         from: 'infocrmdemo@vimubds5.a2hosted.com',
+//         to: email,
+//         subject: "Employee Password Reset OTP",
+//         text: `Your OTP for password reset is: ${OTP}`,
+//       };
+
+//       transporter.sendMail(mailOptions, (error, info) => {
+//         if (error) {
+//           console.error(error);
+//           return res.status(500).json("An error occurred while sending the email.");
+//         } else {
+//           console.log("OTP sent:", info.response);
+
+//           const updateQuery = "INSERT INTO otpcollections (email, code) VALUES (?, ?) ON DUPLICATE KEY UPDATE code = VALUES(code)";
+//           db.query(updateQuery, [email, OTP], (upErr, upResult) => {
+//             if (upErr) {
+//               return res.status(400).json({ success: false, message: upErr.message });
+//             }
+//             return res.status(200).json({ message: "OTP sent successfully" });
+//           });
+//         }
+//       });
+//     } catch (error) {
+//       console.log(error);
+//       return res.status(500).json("An error occurred.");
+//     }
+  try {
+            
+    const transporter = nodemailer.createTransport({
+     host: 'mail.vimubds5.a2hosted.com',
+     port: 465,
+     secure: true, // Use SSL
+     auth: {
+       user: 'estimateproject@vimubds5.a2hosted.com',
+       pass: 'estimateproject@123',
+     },
+   });
+      
+
+      const mailOptions = {
+        from: 'estimateproject@vimubds5.a2hosted.com',
+        to: email,
+        subject: "User Password Reset OTP",
+        text: `Your OTP for password reset is: ${OTP}`,
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).json("An error occurred while sending the email.");
+        } else {
+          console.log("OTP sent:", info.response);
+
+          const updateQuery = "INSERT INTO otpcollections (email, code) VALUES (?, ?) ON DUPLICATE KEY UPDATE code = VALUES(code)";
+          db.query(updateQuery, [email, OTP], (upErr, upResult) => {
+            if (upErr) {
+              return res.status(400).json({ success: false, message: upErr.message });
+            }
+            return res.status(200).json({ message: "OTP sent successfully" });
+          });
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json("An error occurred.");
+    }
+

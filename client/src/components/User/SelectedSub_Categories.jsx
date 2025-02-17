@@ -7,6 +7,7 @@ import moment from 'moment';
 import { BsPencilSquare, BsTrash } from 'react-icons/bs';
 import MainHeader from '../../pages/MainHeader';
 import UserSider from './UserSider';
+import { useSelector } from 'react-redux';
 
 
 function SelectedSub_Categories() {
@@ -24,12 +25,12 @@ function SelectedSub_Categories() {
     const [showPopup, setShowPopup] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [errors, setErrors] = useState({});
-
+    const user = useSelector((state) => state.auth.user);
     const [currentPage, setCurrentPage] = useState(0);
     const [leadsPerPage, setLeadsPerPage] = useState(10);
  
     const [loading , setLoading] = useState(false)
-
+    const token = user?.token;
   
     // Fetch leads and employees from the API
     useEffect(() => {
@@ -41,7 +42,12 @@ function SelectedSub_Categories() {
     const fetchSubCategories = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:9000/api/subcategories"
+          "https://estimate-project.vimubds5.a2hosted.com/api/subcategories",
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
         );
         setSubCategories(response.data);
         console.log(subcategories);
@@ -51,7 +57,12 @@ function SelectedSub_Categories() {
     };
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:9000/api/categories");
+        const response = await axios.get("https://estimate-project.vimubds5.a2hosted.com/api/categories",
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categoriess:", error);
@@ -109,7 +120,12 @@ function SelectedSub_Categories() {
       );
       if (isConfirmed) {
         try {
-          await axios.delete(`http://localhost:9000/api/subcategories/${id}`);
+          await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/subcategories/${id}`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }});
           fetchSubCategories(); // Refresh the list after deletion
         } catch (error) {
           console.error("Error deleting Subcategories:", error);
@@ -127,14 +143,24 @@ function SelectedSub_Categories() {
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `http://localhost:9000/api/subcategories/${currentLead.subcategory_id}`,
-              leadData
+              `https://estimate-project.vimubds5.a2hosted.com/api/subcategories/${currentLead.subcategory_id}`,
+              leadData,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+              }}
             );
             fetchSubCategories(); // Refresh the list
             closePopup();
           } else {
             // Create new lead
-            await axios.post("http://localhost:9000/api/subcategories", leadData);
+            await axios.post("https://estimate-project.vimubds5.a2hosted.com/api/subcategories", leadData,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+              }});
     
             // Construct WhatsApp message link with encoded parameters
          
@@ -203,12 +229,7 @@ function SelectedSub_Categories() {
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                       S.no
                     </th>
-                    <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Sub Categories Id
-                    </th>
-                    <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Categories Id
-                    </th>
+                  
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                      Categories Name
                     </th>
@@ -246,15 +267,9 @@ function SelectedSub_Categories() {
                         className={index % 2 === 0 ? "bg-gray-100" : ""}
                       >
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                        { index + 1 }
+                       {index + 1 + currentPage * leadsPerPage}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                          {subcategory.subcategory_id}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                          {subcategory.category_id}
-                        </td>
-                        
+                       
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                           {subcategory.category_name}
                         </td>
@@ -289,7 +304,7 @@ function SelectedSub_Categories() {
               </table>
             </div>
             <div className="2xl:w-[89%] mt-4 mb-3 flex justify-center">
-  <ReactPaginate
+   <ReactPaginate
     previousLabel={"Previous"}
     nextLabel={"Next"}
     breakLabel={"..."}
@@ -297,17 +312,22 @@ function SelectedSub_Categories() {
     marginPagesDisplayed={2}
     pageRangeDisplayed={3}
     onPageChange={handlePageClick}
-    containerClassName={"flex justify-center gap-2"} /* Main container for pagination */
-    pageClassName={"px-4 py-2 border rounded"} /* Individual page buttons */
-    pageLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Links inside buttons */
-    previousClassName={"px-4 py-2 border rounded"} /* Previous button */
-    previousLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Link inside Previous */
-    nextClassName={"px-4 py-2 border rounded"} /* Next button */
-    nextLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Link inside Next */
-    breakClassName={"px-4 py-2 border rounded"} /* Dots ("...") */
-    breakLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Link inside dots */
-    activeClassName={"bg-blue-500 text-white border-blue-500"} /* Active page */
-    disabledClassName={"opacity-50 cursor-not-allowed"} /* Disabled Previous/Next */
+    containerClassName="flex justify-center gap-2"
+    
+    pageClassName="border rounded cursor-pointer"
+    pageLinkClassName="w-full h-full flex items-center justify-center py-2 px-4"
+    
+    previousClassName="border rounded cursor-pointer"
+    previousLinkClassName="w-full h-full flex items-center justify-center py-2 px-3" 
+    
+    nextClassName="border rounded cursor-pointer"
+    nextLinkClassName="w-full h-full flex items-center justify-center py-2 px-3"
+    
+    breakClassName="border rounded cursor-pointer"
+    breakLinkClassName="w-full h-full flex items-center justify-center"
+    
+    activeClassName="bg-blue-500 text-white border-blue-500"
+    disabledClassName="opacity-50 cursor-not-allowed"
   />
 </div>
 

@@ -38,7 +38,7 @@ function Selecteditems() {
   const fetchSubCategories = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:9000/api/subcategories"
+        "https://estimate-project.vimubds5.a2hosted.com/api/subcategories"
       );
       setSubCategories(response.data);
       console.log(subcategories);
@@ -48,7 +48,7 @@ function Selecteditems() {
   };
   const fetchItems = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/items");
+      const response = await axios.get("https://estimate-project.vimubds5.a2hosted.com/api/items");
       setItems(response.data);
     } catch (error) {
       console.error("Error fetching categoriess:", error);
@@ -100,7 +100,7 @@ function Selecteditems() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`http://localhost:9000/api/items/${item_id}`);
+        await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/items/${item_id}`);
         fetchItems(); // Refresh the list after deletion
       } catch (error) {
         console.error("Error deleting item:", error);
@@ -117,14 +117,24 @@ function Selecteditems() {
       if (isEditing) {
         // Update existing lead
         await axios.put(
-          `http://localhost:9000/api/items/${currentLead.item_id}`,
-          leadData
+          `https://estimate-project.vimubds5.a2hosted.com/api/items/${currentLead.item_id}`,
+          leadData,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
         );
         fetchItems(); // Refresh the list
         closePopup();
       } else {
         // Create new lead
-        await axios.post("http://localhost:9000/api/items", leadData);
+        await axios.post("https://estimate-project.vimubds5.a2hosted.com/api/items", leadData,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
 
         // Construct WhatsApp message link with encoded parameters
 
@@ -278,44 +288,31 @@ function Selecteditems() {
             </table>
           </div>
           <div className="2xl:w-[89%] mt-4 mb-3 flex justify-center">
-            <ReactPaginate
-              previousLabel={"Previous"}
-              nextLabel={"Next"}
-              breakLabel={"..."}
-              pageCount={pageCount}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={3}
-              onPageChange={handlePageClick}
-              containerClassName={
-                "flex justify-center gap-2"
-              } /* Main container for pagination */
-              pageClassName={
-                "px-4 py-2 border rounded"
-              } /* Individual page buttons */
-              pageLinkClassName={
-                "hover:bg-gray-100 text-gray-700"
-              } /* Links inside buttons */
-              previousClassName={
-                "px-4 py-2 border rounded"
-              } /* Previous button */
-              previousLinkClassName={
-                "hover:bg-gray-100 text-gray-700"
-              } /* Link inside Previous */
-              nextClassName={"px-4 py-2 border rounded"} /* Next button */
-              nextLinkClassName={
-                "hover:bg-gray-100 text-gray-700"
-              } /* Link inside Next */
-              breakClassName={"px-4 py-2 border rounded"} /* Dots ("...") */
-              breakLinkClassName={
-                "hover:bg-gray-100 text-gray-700"
-              } /* Link inside dots */
-              activeClassName={
-                "bg-blue-500 text-white border-blue-500"
-              } /* Active page */
-              disabledClassName={
-                "opacity-50 cursor-not-allowed"
-              } /* Disabled Previous/Next */
-            />
+ <ReactPaginate
+    previousLabel={"Previous"}
+    nextLabel={"Next"}
+    breakLabel={"..."}
+    pageCount={pageCount}
+    marginPagesDisplayed={2}
+    pageRangeDisplayed={3}
+    onPageChange={handlePageClick}
+    containerClassName="flex justify-center gap-2"
+    
+    pageClassName="border rounded cursor-pointer"
+    pageLinkClassName="w-full h-full flex items-center justify-center py-2 px-4"
+    
+    previousClassName="border rounded cursor-pointer"
+    previousLinkClassName="w-full h-full flex items-center justify-center py-2 px-3" 
+    
+    nextClassName="border rounded cursor-pointer"
+    nextLinkClassName="w-full h-full flex items-center justify-center py-2 px-3"
+    
+    breakClassName="border rounded cursor-pointer"
+    breakLinkClassName="w-full h-full flex items-center justify-center"
+    
+    activeClassName="bg-blue-500 text-white border-blue-500"
+    disabledClassName="opacity-50 cursor-not-allowed"
+  />
           </div>
 
           {showPopup && (

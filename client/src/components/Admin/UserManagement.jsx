@@ -6,6 +6,8 @@ import ReactPaginate from "react-paginate";
 import  axios  from 'axios';
 import moment from 'moment';
 import { BsPencilSquare, BsTrash } from 'react-icons/bs';
+import cogoToast from 'cogo-toast';
+import { useSelector } from 'react-redux';
 
 
 function UserManagement() {
@@ -13,10 +15,12 @@ function UserManagement() {
     const [user, setUser] = useState([]);
 
     const [currentLead, setCurrentLead] = useState({
-      name : "", email : "", phone_no : ""
+      user_name : "", email : "", phone_no : ""
     
     });
 
+    const usertoken = useSelector((state) => state.auth.user);
+    const token = usertoken?.token;
   
     const [showPopup, setShowPopup] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -38,7 +42,12 @@ function UserManagement() {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:9000/api/user"
+          "https://estimate-project.vimubds5.a2hosted.com/api/user",
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
         );
         setUser(response.data);
         console.log(user);
@@ -61,7 +70,7 @@ function UserManagement() {
     const handleCreateClick = () => {
       setIsEditing(false);
       setCurrentLead({
-         name : "", email : "", phone_no : ""
+        user_name : "", email : "", phone_no : ""
        
       });
       setShowPopup(true);
@@ -85,14 +94,52 @@ function UserManagement() {
       );
       if (isConfirmed) {
         try {
-          await axios.delete(`http://localhost:9000/api/user/${id}`);
+          await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/user/${id}`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }});
           fetchUser(); // Refresh the list after deletion
         } catch (error) {
           console.error("Error deleting user:", error);
         }
       }
     };
+    const validateForm = () => {
+      let formErrors = {};
+      let isValid = true;
+  
+      if (!currentLead.user_name) {
+        formErrors.user_name = "Name is required";
+        isValid = false;
+      }
+  
+      if (!currentLead.email) {
+        formErrors.email = "Email is required";
+        isValid = false;
+      } else if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(currentLead.email)) {
+        formErrors.email = "Email must be a valid '@gmail.com' address";
+        isValid = false;
+      }
+      
+  
+      if (!currentLead.phone_no) {
+        formErrors.phone_no = "Phone No is required";
+        isValid = false;
+      }
+     
+  
+      setErrors(formErrors);
+      return isValid;
+    };
+
+
+
+
     const saveChanges = async () => {
+
+      if (validateForm()) {
       const leadData = {
         ...currentLead,
       
@@ -103,14 +150,24 @@ function UserManagement() {
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `http://localhost:9000/api/user/${currentLead.id}`,
-              leadData
+              `https://estimate-project.vimubds5.a2hosted.com/api/user/${currentLead.id}`,
+              leadData,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+              }}
             );
             fetchUser(); // Refresh the list
             closePopup();
           } else {
             // Create new lead
-            await axios.post("http://localhost:9000/api/user-register", leadData);
+            await axios.post("https://estimate-project.vimubds5.a2hosted.com/api/user-register", leadData,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+              }});
     
             // Construct WhatsApp message link with encoded parameters
          
@@ -121,9 +178,11 @@ function UserManagement() {
         } 
         catch (error) {
           setLoading(false)
+          cogoToast.error(error?.response?.data?.message || "An error occurred");
+          
           console.error("Error saving lead:", error);
         }
-      
+      }
     };
   
     
@@ -155,8 +214,8 @@ function UserManagement() {
         <MainHeader />
         <AdminSider />
         <>
-          <div className="container  2xl:ml-40">
-            <div className="main 2xl:w-[89%] mt-[4rem]">
+          <div className="2xl:w-[89%]  2xl:ml-40 mx-4 ">
+            <div className="main  mt-[6rem]">
               <h1 className="text-2xl text-center font-medium">
                 User Management
               </h1>
@@ -176,7 +235,7 @@ function UserManagement() {
 
          
   
-            <div className=" overflow-x-auto mt-4  2xl:w-[89%]">
+            <div className=" overflow-x-auto mt-4  ">
            
   
               <table className="min-w-full bg-white border">
@@ -229,7 +288,7 @@ function UserManagement() {
                         className={index % 2 === 0 ? "bg-gray-100" : ""}
                       >
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                        { index + 1 }
+                       {index + 1 + currentPage * leadsPerPage}
                         </td>
                         <Link to={`/user-profile-data/${user.id}`} className=''>
                         <td className="px-6 py-4 border-b border-gray-200 font-semibold underline text-[blue]">
@@ -272,8 +331,8 @@ function UserManagement() {
                 </tbody>
               </table>
             </div>
-            <div className="2xl:w-[89%] mt-4 mb-3 flex justify-center">
-  <ReactPaginate
+            <div className=" mt-4 mb-3 flex justify-center">
+   <ReactPaginate
     previousLabel={"Previous"}
     nextLabel={"Next"}
     breakLabel={"..."}
@@ -281,17 +340,22 @@ function UserManagement() {
     marginPagesDisplayed={2}
     pageRangeDisplayed={3}
     onPageChange={handlePageClick}
-    containerClassName={"flex justify-center gap-2"} /* Main container for pagination */
-    pageClassName={"px-4 py-2 border rounded"} /* Individual page buttons */
-    pageLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Links inside buttons */
-    previousClassName={"px-4 py-2 border rounded"} /* Previous button */
-    previousLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Link inside Previous */
-    nextClassName={"px-4 py-2 border rounded"} /* Next button */
-    nextLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Link inside Next */
-    breakClassName={"px-4 py-2 border rounded"} /* Dots ("...") */
-    breakLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Link inside dots */
-    activeClassName={"bg-blue-500 text-white border-blue-500"} /* Active page */
-    disabledClassName={"opacity-50 cursor-not-allowed"} /* Disabled Previous/Next */
+    containerClassName="flex justify-center gap-2"
+    
+    pageClassName="border rounded cursor-pointer"
+    pageLinkClassName="w-full h-full flex items-center justify-center py-2 px-4"
+    
+    previousClassName="border rounded cursor-pointer"
+    previousLinkClassName="w-full h-full flex items-center justify-center py-2 px-3" 
+    
+    nextClassName="border rounded cursor-pointer"
+    nextLinkClassName="w-full h-full flex items-center justify-center py-2 px-3"
+    
+    breakClassName="border rounded cursor-pointer"
+    breakLinkClassName="w-full h-full flex items-center justify-center"
+    
+    activeClassName="bg-blue-500 text-white border-blue-500"
+    disabledClassName="opacity-50 cursor-not-allowed"
   />  
 </div>
 
@@ -310,9 +374,13 @@ function UserManagement() {
                       name="user_name"
                       value={currentLead.user_name}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border rounded`}
+                      className={`w-full px-3 py-2 border ${
+                        errors.user_name ? "border-red-500" : "border-gray-300"
+                      } rounded`}
                     />
-                    
+                       {errors.user_name && (
+                    <span className="text-red-500">{errors.user_name}</span>
+                  )}
                   </div>
                 
                 <div className="mb-4">
@@ -322,9 +390,13 @@ function UserManagement() {
                       name="email"
                       value={currentLead.email}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border rounded`}
+                      className={`w-full px-3 py-2 border ${
+                        errors.email ? "border-red-500" : "border-gray-300"
+                      } rounded`}
                     />
-                    
+                     {errors.email && (
+                    <span className="text-red-500">{errors.email}</span>
+                  )}
                   </div>
                 
                 
@@ -335,9 +407,13 @@ function UserManagement() {
                       name="phone_no"
                       value={currentLead.phone_no}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border rounded`}
+                      className={`w-full px-3 py-2 border ${
+                        errors.phone_no ? "border-red-500" : "border-gray-300"
+                      } rounded`}
                     />
-                    
+                     {errors.phone_no && (
+                    <span className="text-red-500">{errors.phone_no}</span>
+                  )}
                   </div>
                 
             

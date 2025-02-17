@@ -6,15 +6,18 @@ import ReactPaginate from "react-paginate";
 import  axios  from 'axios';
 import moment from 'moment';
 import { BsPencilSquare, BsTrash } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
 
 
 function Categories() {
     const navigate = useNavigate();
     const [categories, setCategories] = useState([]);
+    const user = useSelector((state) => state.auth.user);
     const [employees, setEmployees] = useState([]);
     const [currentLead, setCurrentLead] = useState({
      category_name: ""
     });
+    const token = user?.token;
 
   
     const [showPopup, setShowPopup] = useState(false);
@@ -36,7 +39,12 @@ function Categories() {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:9000/api/categories"
+          "https://estimate-project.vimubds5.a2hosted.com/api/categories",
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
         );
         setCategories(response.data);
         console.log(categories);
@@ -80,33 +88,67 @@ function Categories() {
       );
       if (isConfirmed) {
         try {
-          await axios.delete(`http://localhost:9000/api/categories/${id}`);
+          await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/categories/${id}`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }});
           fetchCategories(); // Refresh the list after deletion
         } catch (error) {
           console.error("Error deleting categories:", error);
         }
       }
     };
+
+    const validateForm = () => {
+      let formErrors = {};
+      let isValid = true;
+  
+   
+  
+     
+      if (!currentLead.category_name) {
+        formErrors.category_name = "Category Name is required";
+        isValid = false;
+      }
+ 
+      setErrors(formErrors);
+      return isValid;
+    };
     
     const saveChanges = async () => {
+      if (validateForm()) {
+
       const leadData = {
         ...currentLead,
       
       };
+    
    
         try {
           setLoading(true)
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `http://localhost:9000/api/categories/${currentLead.category_id}`,
-              leadData
+              `https://estimate-project.vimubds5.a2hosted.com/api/categories/${currentLead.category_id}`,
+              leadData,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+              }}
             );
             fetchCategories(); // Refresh the list
             closePopup();
           } else {
             // Create new lead
-            await axios.post("http://localhost:9000/api/categories", leadData);
+            await axios.post("https://estimate-project.vimubds5.a2hosted.com/api/categories", leadData,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+              }});
     
             // Construct WhatsApp message link with encoded parameters
          
@@ -119,6 +161,7 @@ function Categories() {
           setLoading(false)
           console.error("Error saving lead:", error);
         }
+      }
       
     };
   
@@ -151,8 +194,8 @@ function Categories() {
         <MainHeader />
         <AdminSider />
         <>
-          <div className="container  2xl:ml-40">
-            <div className="main 2xl:w-[89%] mt-[4rem]">
+          <div className="2xl:w-[89%]  2xl:ml-40 mx-4 ">
+            <div className="main  mt-[6rem]">
               <h1 className="text-2xl text-center font-medium">
                 Categories Management
               </h1>
@@ -172,7 +215,7 @@ function Categories() {
 
          
   
-            <div className=" overflow-x-auto mt-4  2xl:w-[89%]">
+            <div className=" overflow-x-auto mt-4 ">
            
   
               <table className="min-w-full bg-white border">
@@ -182,9 +225,7 @@ function Categories() {
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                       S.no
                     </th>
-                    <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Categories Id
-                    </th>
+                   
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Categories Name
                     </th>
@@ -219,11 +260,9 @@ function Categories() {
                         className={index % 2 === 0 ? "bg-gray-100" : ""}
                       >
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                        { index + 1 }
+                        {index + 1 + currentPage * leadsPerPage} 
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                          {category.category_id}
-                        </td>
+                      
                         
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                           {category.category_name}
@@ -255,8 +294,8 @@ function Categories() {
                 </tbody>
               </table>
             </div>
-            <div className="2xl:w-[89%] mt-4 mb-3 flex justify-center">
-  <ReactPaginate
+            <div className=" mt-4 mb-3 flex justify-center">
+ <ReactPaginate
     previousLabel={"Previous"}
     nextLabel={"Next"}
     breakLabel={"..."}
@@ -264,17 +303,22 @@ function Categories() {
     marginPagesDisplayed={2}
     pageRangeDisplayed={3}
     onPageChange={handlePageClick}
-    containerClassName={"flex justify-center gap-2"} /* Main container for pagination */
-    pageClassName={"px-4 py-2 border rounded"} /* Individual page buttons */
-    pageLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Links inside buttons */
-    previousClassName={"px-4 py-2 border rounded"} /* Previous button */
-    previousLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Link inside Previous */
-    nextClassName={"px-4 py-2 border rounded"} /* Next button */
-    nextLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Link inside Next */
-    breakClassName={"px-4 py-2 border rounded"} /* Dots ("...") */
-    breakLinkClassName={"hover:bg-gray-100 text-gray-700"} /* Link inside dots */
-    activeClassName={"bg-blue-500 text-white border-blue-500"} /* Active page */
-    disabledClassName={"opacity-50 cursor-not-allowed"} /* Disabled Previous/Next */
+    containerClassName="flex justify-center gap-2"
+    
+    pageClassName="border rounded cursor-pointer"
+    pageLinkClassName="w-full h-full flex items-center justify-center py-2 px-4"
+    
+    previousClassName="border rounded cursor-pointer"
+    previousLinkClassName="w-full h-full flex items-center justify-center py-2 px-3" 
+    
+    nextClassName="border rounded cursor-pointer"
+    nextLinkClassName="w-full h-full flex items-center justify-center py-2 px-3"
+    
+    breakClassName="border rounded cursor-pointer"
+    breakLinkClassName="w-full h-full flex items-center justify-center"
+    
+    activeClassName="bg-blue-500 text-white border-blue-500"
+    disabledClassName="opacity-50 cursor-not-allowed"
   />
 </div>
 
@@ -292,16 +336,20 @@ function Categories() {
                       name="category_name"
                       value={currentLead.category_name}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border  rounded`}
+                      className={`w-full px-3 py-2 border ${
+                        errors.category_name ? "border-red-500" : "border-gray-300"
+                      } rounded`}
                     />
-                    
-                  </div>
+                       {errors.category_name && (
+                    <span className="text-red-500">{errors.category_name}</span>
+                  )}
+              </div>
                  
                 
                 
   
                   <div className="flex justify-end">
-                    <button
+                        <button
                       className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
                       onClick={saveChanges}  disabled = {loading}
                     >

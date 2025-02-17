@@ -18,7 +18,7 @@ function UserAllSelecteditems() {
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage, setLeadsPerPage] = useState(10);
  const [refresh, setRefresh] = useState(false);
- 
+ const token = user?.token;
 
   useEffect(() => {
 
@@ -27,7 +27,12 @@ function UserAllSelecteditems() {
 
   const fetchAllSelectedData = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/user-selection-by-userid/${user.id}`);
+      const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/user-selection-by-userid/${user.id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setAllUserSelection(response.data);
       console.log(response.data);
     } catch (error) {
@@ -46,7 +51,12 @@ function UserAllSelecteditems() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`http://localhost:9000/api/user-selection/${selection_id}`);
+        await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/user-selection/${selection_id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
         fetchAllSelectedData(); // Refresh the list after deletion
         setRefresh((prev) => !prev);
       } catch (error) {
@@ -73,8 +83,8 @@ function UserAllSelecteditems() {
       <MainHeader />
       <UserSider />
       <>
-        <div className="container  2xl:ml-40">
-          <div className="main 2xl:w-[89%] mt-[4rem]">
+        <div className="2xl:w-[89%]  2xl:ml-40 mx-4 ">
+          <div className="main mt-[6rem]">
       <Selected_Items_Cart refresh={refresh}/>
             <h1 className="text-2xl text-center font-medium">
             All Selected Items 
@@ -84,7 +94,7 @@ function UserAllSelecteditems() {
           
           </div>
 
-          <div className=" overflow-x-auto mt-4  2xl:w-[89%]">
+          <div className=" overflow-x-auto mt-4 ">
             <table className="min-w-full bg-white border">
               <thead>
                 <tr>
@@ -94,9 +104,7 @@ function UserAllSelecteditems() {
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Items Id
                   </th>
-                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Sub Categories Id
-                  </th>
+                
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Sub Categories Name
                   </th>
@@ -140,15 +148,12 @@ function UserAllSelecteditems() {
                         className={index % 2 === 0 ? "bg-gray-100" : ""}
                       >
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                          {index + 1}
+                      {index + 1 + currentPage * leadsPerPage}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
                           {item.item_id}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                          {item.subcategory_id}
-                        </td>
-
+                 
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                           {item.subcategory_name}
                         </td>
@@ -163,7 +168,7 @@ function UserAllSelecteditems() {
                         <img
         src={item.image_items}
         alt="Preview"
-        className="w-22 h-32 object-cover rounded"
+        className=" w-22 3xl:h-[8rem] xl:h-[3rem] lg:h-[4rem]  object-cover rounded"
       />
       
                         </td>
@@ -191,44 +196,31 @@ function UserAllSelecteditems() {
             </table>
           </div>
           <div className="2xl:w-[89%] mt-4 mb-3 flex justify-center">
-            <ReactPaginate
-              previousLabel={"Previous"}
-              nextLabel={"Next"}
-              breakLabel={"..."}
-              pageCount={pageCount}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={3}
-              onPageChange={handlePageClick}
-              containerClassName={
-                "flex justify-center gap-2"
-              } /* Main container for pagination */
-              pageClassName={
-                "px-4 py-2 border rounded"
-              } /* Individual page buttons */
-              pageLinkClassName={
-                "hover:bg-gray-100 text-gray-700"
-              } /* Links inside buttons */
-              previousClassName={
-                "px-4 py-2 border rounded"
-              } /* Previous button */
-              previousLinkClassName={
-                "hover:bg-gray-100 text-gray-700"
-              } /* Link inside Previous */
-              nextClassName={"px-4 py-2 border rounded"} /* Next button */
-              nextLinkClassName={
-                "hover:bg-gray-100 text-gray-700"
-              } /* Link inside Next */
-              breakClassName={"px-4 py-2 border rounded"} /* Dots ("...") */
-              breakLinkClassName={
-                "hover:bg-gray-100 text-gray-700"
-              } /* Link inside dots */
-              activeClassName={
-                "bg-blue-500 text-white border-blue-500"
-              } /* Active page */
-              disabledClassName={
-                "opacity-50 cursor-not-allowed"
-              } /* Disabled Previous/Next */
-            />
+ <ReactPaginate
+    previousLabel={"Previous"}
+    nextLabel={"Next"}
+    breakLabel={"..."}
+    pageCount={pageCount}
+    marginPagesDisplayed={2}
+    pageRangeDisplayed={3}
+    onPageChange={handlePageClick}
+    containerClassName="flex justify-center gap-2"
+    
+    pageClassName="border rounded cursor-pointer"
+    pageLinkClassName="w-full h-full flex items-center justify-center py-2 px-4"
+    
+    previousClassName="border rounded cursor-pointer"
+    previousLinkClassName="w-full h-full flex items-center justify-center py-2 px-3" 
+    
+    nextClassName="border rounded cursor-pointer"
+    nextLinkClassName="w-full h-full flex items-center justify-center py-2 px-3"
+    
+    breakClassName="border rounded cursor-pointer"
+    breakLinkClassName="w-full h-full flex items-center justify-center"
+    
+    activeClassName="bg-blue-500 text-white border-blue-500"
+    disabledClassName="opacity-50 cursor-not-allowed"
+  />
           </div>
 
          

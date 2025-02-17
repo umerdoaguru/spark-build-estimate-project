@@ -152,11 +152,11 @@ const login = async (req, res) => {
         return res.status(404).send({
           success: false,
           message: "Invaild password ",
-        });
+        });    
       }
 
       //generate  token
-      const token = await JWT.sign({ id: user.id }, process.env.JWT_SECRET, {
+      const token = await JWT.sign({ id: user.user_id }, process.env.JWT_SECRET, {
         expiresIn: "7d",
       });
 
@@ -168,8 +168,9 @@ const login = async (req, res) => {
           name: user.user_name,
           email: user.email,
           roles: user.roles,
+          token: token,
         },
-        token,
+
       });
     });
   } catch (error) {
@@ -225,8 +226,8 @@ const userlogin = async (req, res) => {
           name: user.user_name,
           email: user.email,
           roles: user.roles,
+          token: token,
         },
-        token,
       });
     });
   } catch (error) {

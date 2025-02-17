@@ -14,6 +14,7 @@ import Selected_Items_Cart from './Selected_Items_Cart';
 function EstimateCalculator() {
   const [categories, setCategories] = useState([]);
   const [userprofile, setUseProfile] = useState([]);
+  
   const [subcategories, setSubcategories] = useState([]);
   const [items, setItems] = useState([]);
   const [userselection, setUserSelection] = useState([]);
@@ -25,7 +26,7 @@ function EstimateCalculator() {
   const [quantity, setQuantity] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
-    const [leadsPerPage, setLeadsPerPage] = useState(10);
+    const [leadsPerPage, setLeadsPerPage] = useState(5);
   const [isOpen, setIsOpen] = useState(false);
   const {id} = useParams();
   const user = useSelector((state) => state.auth.user);
@@ -34,7 +35,7 @@ function EstimateCalculator() {
   const [refresh, setRefresh] = useState(false);
 
 
-
+  const token = user?.token;
   const toggleDropdown = () => setIsOpen(!isOpen);
   const toggleDropdownclose = () => {
     setIsOpen(false); 
@@ -56,7 +57,12 @@ function EstimateCalculator() {
   // Fetch categories on initial render
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await axios.get(`http://localhost:9000/api/categories/${id}`);
+      const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/categories-data/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setCategories(response.data);
       console.log(categories);
       
@@ -65,7 +71,12 @@ function EstimateCalculator() {
   }, [id]);
   useEffect(() => {
     const fetchUserProfile = async () => {
-      const response = await axios.get(`http://localhost:9000/api/user-profile/${user.id}`);
+      const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/user-profile/${user.id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setUseProfile(response.data[0]);
       console.log(userprofile);
       
@@ -79,7 +90,12 @@ function EstimateCalculator() {
       console.log(id);
       
       if (id) {
-        const response = await axios.get(`http://localhost:9000/api/subcategories/${id}`);
+        const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/subcategories-data/${id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
         setSubcategories(response.data);
         console.log(subcategories);
         
@@ -92,7 +108,12 @@ function EstimateCalculator() {
   useEffect(() => {
     const fetchItems = async () => {
       if (selectedSubcategory) {
-        const response = await axios.get(`http://localhost:9000/api/items/${selectedSubcategory}`);
+        const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/items-data/${selectedSubcategory}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
         openPopup();
         setItems(response.data);
         console.log(items);
@@ -139,8 +160,13 @@ function EstimateCalculator() {
     
   
     try {
-      const response = await axios.post('http://localhost:9000/api/user-selection', data);
-  
+      const response = await axios.post('https://estimate-project.vimubds5.a2hosted.com/api/user-selection', data,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
+        setRefresh(prev => !prev);
       // Check response for success or error
       if (response.data.success) {
         cogoToast.success(response.data.message || 'User selection successfully submitted!');
@@ -150,7 +176,7 @@ function EstimateCalculator() {
         fetchAllSelectedData();
         setQuantity('');
           // Trigger refresh
-          setRefresh((prev) => !prev);
+
 
       
        
@@ -175,10 +201,15 @@ function EstimateCalculator() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`http://localhost:9000/api/user-selection/${selection_id}`);
+        await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/user-selection/${selection_id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
+        setRefresh(prev => !prev);
         fetchSelecteddata(); // Refresh the list after deletion
         fetchAllSelectedData(); 
-        setRefresh((prev) => !prev);
       } catch (error) {
         console.error("Error deleting item:", error);
       }
@@ -196,10 +227,14 @@ function EstimateCalculator() {
         return;
       }
   
-      // Fetch data
-      const response = await axios.get(`http://localhost:9000/api/user-selection/${user.id}`, {
+      const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/user-selection/${user.id}`, {
         params: { category_name },
-      });
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    
   
       setUserSelection(response.data);
       console.log(response.data); // Log the fetched data for debugging
@@ -227,7 +262,12 @@ function EstimateCalculator() {
   }, []);
   
   const fetchAllSelectedData = async () => {
-        const response = await axios.get(`http://localhost:9000/api/user-selection`);
+        const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/user-selection`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
         setAllUserSelection(response.data);
         console.log(alluserselection);
         
@@ -241,9 +281,13 @@ function EstimateCalculator() {
   const fetchUserRecommendationData = async () => {
     const subcategory_name = subcategories.find((c) => c.subcategory_id === Number(selectedSubcategory))?.subcategory_name;
     console.log(subcategory_name);
-        const response = await axios.get(`http://localhost:9000/api/user-recommendation/${user.id}`, {
-          params: { subcategory_name },
-        });
+        const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/user-recommendation/${user.id}`, 
+        { params: { subcategory_name } ,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+      } },
+          );
         setAllUserCommendation(response.data.recommendations);
         console.log(alluserrecommendation);
         
@@ -255,12 +299,12 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
      <MainHeader />
         <UserSider />
         
-          <div className="container  2xl:ml-40">
-            <div className="main 2xl:w-[89%] mt-[6rem]">
+          <div className="2xl:w-[89%]  2xl:ml-40 mx-4 ">
+            <div className="main mt-[6rem]">
        <Selected_Items_Cart refresh={refresh}/>
 
 
-              <h1 className="text-2xl text-center font-medium">
+              <h1 className="text-2xl mt-5 text-center font-medium">
              User Selection Mangement 
               </h1>
               
@@ -474,7 +518,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
                         className={index % 2 === 0 ? "bg-gray-100" : ""}
                       >
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
-                          {index + 1}
+                        {index + 1 + currentPage * leadsPerPage}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
                           {item.item_id}
@@ -503,7 +547,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
                         <img
         src={item.image_items}
         alt="Preview"
-        className="w-22 h-32 object-cover rounded"
+        className=" w-22 3xl:h-[8rem] xl:h-[7rem] lg:h-[4rem]  object-cover rounded"
       />
                         </td>
 
@@ -532,44 +576,31 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
 
 
           <div className="2xl:w-[89%] mt-4 mb-3 flex justify-center">
-            <ReactPaginate
-              previousLabel={"Previous"}
-              nextLabel={"Next"}
-              breakLabel={"..."}
-              pageCount={pageCount}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={3}
-              onPageChange={handlePageClick}
-              containerClassName={
-                "flex justify-center gap-2"
-              } /* Main container for pagination */
-              pageClassName={
-                "px-4 py-2 border rounded"
-              } /* Individual page buttons */
-              pageLinkClassName={
-                "hover:bg-gray-100 text-gray-700"
-              } /* Links inside buttons */
-              previousClassName={
-                "px-4 py-2 border rounded"
-              } /* Previous button */
-              previousLinkClassName={
-                "hover:bg-gray-100 text-gray-700"
-              } /* Link inside Previous */
-              nextClassName={"px-4 py-2 border rounded"} /* Next button */
-              nextLinkClassName={
-                "hover:bg-gray-100 text-gray-700"
-              } /* Link inside Next */
-              breakClassName={"px-4 py-2 border rounded"} /* Dots ("...") */
-              breakLinkClassName={
-                "hover:bg-gray-100 text-gray-700"
-              } /* Link inside dots */
-              activeClassName={
-                "bg-blue-500 text-white border-blue-500"
-              } /* Active page */
-              disabledClassName={
-                "opacity-50 cursor-not-allowed"
-              } /* Disabled Previous/Next */
-            />
+ <ReactPaginate
+    previousLabel={"Previous"}
+    nextLabel={"Next"}
+    breakLabel={"..."}
+    pageCount={pageCount}
+    marginPagesDisplayed={2}
+    pageRangeDisplayed={3}
+    onPageChange={handlePageClick}
+    containerClassName="flex justify-center gap-2"
+    
+    pageClassName="border rounded cursor-pointer"
+    pageLinkClassName="w-full h-full flex items-center justify-center py-2 px-4"
+    
+    previousClassName="border rounded cursor-pointer"
+    previousLinkClassName="w-full h-full flex items-center justify-center py-2 px-3" 
+    
+    nextClassName="border rounded cursor-pointer"
+    nextLinkClassName="w-full h-full flex items-center justify-center py-2 px-3"
+    
+    breakClassName="border rounded cursor-pointer"
+    breakLinkClassName="w-full h-full flex items-center justify-center"
+    
+    activeClassName="bg-blue-500 text-white border-blue-500"
+    disabledClassName="opacity-50 cursor-not-allowed"
+  />
           </div>
 </>
 
