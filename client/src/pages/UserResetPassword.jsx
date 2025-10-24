@@ -24,7 +24,7 @@ const UserResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.post(
-        "https://estimate-project.vimubds5.a2hosted.com/api/sendOtp-user",
+        "http://localhost:9000/api/sendOtp-user",
         {
           email,
         }
@@ -47,7 +47,7 @@ const UserResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.post(
-        "https://estimate-project.vimubds5.a2hosted.com/api/verifyOtp-user",
+        "http://localhost:9000/api/verifyOtp-user",
         {
           email,
           otp,
@@ -70,7 +70,7 @@ const UserResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.put(
-        "https://estimate-project.vimubds5.a2hosted.com/api/resetPassword-user",
+        "http://localhost:9000/api/resetPassword-user",
         {
           email,
           password: newPassword,

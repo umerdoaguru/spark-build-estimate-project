@@ -39,7 +39,7 @@ function Categories() {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "https://estimate-project.vimubds5.a2hosted.com/api/categories",
+          "http://localhost:9000/api/categories",
           {
             headers: {
               'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ function Categories() {
       );
       if (isConfirmed) {
         try {
-          await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/categories/${id}`,
+          await axios.delete(`http://localhost:9000/api/categories/${id}`,
             {
               headers: {
                 'Content-Type': 'application/json',
@@ -131,7 +131,7 @@ function Categories() {
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `https://estimate-project.vimubds5.a2hosted.com/api/categories/${currentLead.category_id}`,
+              `http://localhost:9000/api/categories/${currentLead.category_id}`,
               leadData,
               {
                 headers: {
@@ -143,7 +143,7 @@ function Categories() {
             closePopup();
           } else {
             // Create new lead
-            await axios.post("https://estimate-project.vimubds5.a2hosted.com/api/categories", leadData,
+            await axios.post("http://localhost:9000/api/categories", leadData,
               {
                 headers: {
                   'Content-Type': 'application/json',

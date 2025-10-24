@@ -27,7 +27,7 @@ function UserAllSelecteditems() {
 
   const fetchAllSelectedData = async () => {
     try {
-      const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/user-selection-by-userid/${user.id}`,
+      const response = await axios.get(`http://localhost:9000/api/user-selection-by-userid/${user.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ function UserAllSelecteditems() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/user-selection/${selection_id}`,
+        await axios.delete(`http://localhost:9000/api/user-selection/${selection_id}`,
           {
             headers: {
               'Content-Type': 'application/json',

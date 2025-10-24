@@ -38,7 +38,7 @@ function Selecteditems() {
   const fetchSubCategories = async () => {
     try {
       const response = await axios.get(
-        "https://estimate-project.vimubds5.a2hosted.com/api/subcategories"
+        "http://localhost:9000/api/subcategories"
       );
       setSubCategories(response.data);
       console.log(subcategories);
@@ -48,7 +48,7 @@ function Selecteditems() {
   };
   const fetchItems = async () => {
     try {
-      const response = await axios.get("https://estimate-project.vimubds5.a2hosted.com/api/items");
+      const response = await axios.get("http://localhost:9000/api/items");
       setItems(response.data);
     } catch (error) {
       console.error("Error fetching categoriess:", error);
@@ -100,7 +100,7 @@ function Selecteditems() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/items/${item_id}`);
+        await axios.delete(`http://localhost:9000/api/items/${item_id}`);
         fetchItems(); // Refresh the list after deletion
       } catch (error) {
         console.error("Error deleting item:", error);
@@ -117,7 +117,7 @@ function Selecteditems() {
       if (isEditing) {
         // Update existing lead
         await axios.put(
-          `https://estimate-project.vimubds5.a2hosted.com/api/items/${currentLead.item_id}`,
+          `http://localhost:9000/api/items/${currentLead.item_id}`,
           leadData,
           {
             headers: {
@@ -129,7 +129,7 @@ function Selecteditems() {
         closePopup();
       } else {
         // Create new lead
-        await axios.post("https://estimate-project.vimubds5.a2hosted.com/api/items", leadData,
+        await axios.post("http://localhost:9000/api/items", leadData,
           {
             headers: {
               'Content-Type': 'application/json',

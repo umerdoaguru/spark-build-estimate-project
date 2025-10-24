@@ -30,7 +30,7 @@ function RegisteredUser() {
       try {
         setLoading(true)
         const res = await axios.post(
-          "https://estimate-project.vimubds5.a2hosted.com/api/register",
+          "http://localhost:9000/api/register",
           formData
         );
         if (res.data.success) {

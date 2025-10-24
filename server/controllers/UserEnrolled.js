@@ -8,21 +8,21 @@ const { db } = require("../db");
 
 const createUser = (req, res) => {
     const {
-        user_id,name,email,plot_area,project_type,construction_area,no_floor,tower,balcony,total_construction_area,budgest
+        user_id,name,email,plot_area,project_type,construction_area,no_floor,total_construction_area,budgest
     } = req.body;
-    console.log(user_id,name,email,plot_area,project_type,construction_area,no_floor,tower,balcony,total_construction_area,budgest);
+    console.log(user_id,name,email,plot_area,project_type,construction_area,no_floor,total_construction_area,budgest);
       // Extract numeric value from `plot_area`
   
       // Calculate per square foot budget
-      const per_sq_fit = Math.floor(budgest / total_construction_area); 
+      const per_sq_fit = total_construction_area ? Math.floor(budgest / total_construction_area) : 0; 
       console.log(`Per square foot budget: ${per_sq_fit}`);
   
     
-    const sql = `INSERT INTO user_profile (user_id,name,email,plot_area,project_type,construction_area,no_floor,tower,balcony,total_construction_area,per_sq_fit,budgest) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
+    const sql = `INSERT INTO user_profile (user_id,name,email,plot_area,project_type,construction_area,no_floor,total_construction_area,per_sq_fit,budgest) VALUES (?,?,?,?,?,?,?,?,?,?)`;
     db.query(
       sql,
       [
-        user_id,name,email,plot_area,project_type,construction_area,no_floor,tower,balcony,total_construction_area,per_sq_fit,budgest
+        user_id,name,email,plot_area,project_type,construction_area,no_floor,total_construction_area,per_sq_fit,budgest
       ],
       (err, results) => {
         if (err) {
@@ -71,16 +71,16 @@ const createUser = (req, res) => {
     try {
       const { id  } = req.params;
       const {
-        name,email,plot_area,project_type,construction_area,no_floor,tower,balcony,total_construction_area,budgest
+        name,email,plot_area,project_type,construction_area,no_floor,total_construction_area,budgest
       } = req.body;
-console.log( name,email,plot_area,project_type,construction_area,no_floor,tower,balcony,total_construction_area,budgest,id);
+console.log( name,email,plot_area,project_type,construction_area,no_floor,total_construction_area,budgest,id);
 
       const per_sq_fit = Math.floor(budgest / total_construction_area); 
       console.log(`Per square foot budget: ${per_sq_fit}`);
   
       // Construct SQL query to update the item
       const sql = `UPDATE user_profile 
-                   SET     name = ?,email = ?,plot_area = ?,project_type = ?,construction_area = ?,no_floor = ?,tower = ?,balcony = ?,total_construction_area = ?, budgest = ?,per_sq_fit=?
+                   SET     name = ?,email = ?,plot_area = ?,project_type = ?,construction_area = ?,no_floor = ?,total_construction_area = ?, budgest = ?,per_sq_fit=?
                    WHERE user_id  = ?`;
   
       // Execute the update query asynchronously
@@ -88,11 +88,11 @@ console.log( name,email,plot_area,project_type,construction_area,no_floor,tower,
         db.query(
           sql,
           [
-           name,email,plot_area,project_type,construction_area,no_floor,tower,balcony,total_construction_area,budgest,per_sq_fit,id
+           name,email,plot_area,project_type,construction_area,no_floor,total_construction_area,budgest,per_sq_fit,id
           ],
           (err, results) => {
             if (err) {
-              reject(err);
+              reject(err);     
             } else {
               resolve(results);
             }
@@ -139,20 +139,20 @@ console.log( name,email,plot_area,project_type,construction_area,no_floor,tower,
 
 const createUserSelection = (req, res) => {
     const {
-       user_id, item_id, category_name, subcategory_name, item_name,description,image_items, quantity, total_price
+       user_id, item_id, category_name, subcategory_name, item_name,description,image_items, total_price
     } = req.body;
-    console.log(user_id, item_id, category_name, subcategory_name, item_name,description, image_items, quantity, total_price);
+    console.log(user_id, item_id, category_name, subcategory_name, item_name,description, image_items, total_price);
 
    
     const sql = `
     INSERT INTO user_selections 
-    (user_id, item_id, category_name, subcategory_name, item_name,description, image_items, quantity, total_price) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)
+    (user_id, item_id, category_name, subcategory_name, item_name,description, image_items, total_price) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `;
     db.query(
       sql,
       [
-       user_id, item_id, category_name, subcategory_name, item_name,description,image_items, quantity, total_price
+       user_id, item_id, category_name, subcategory_name, item_name,description,image_items, total_price
       ],
       (err, results) => {
         if (err) {

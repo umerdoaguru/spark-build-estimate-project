@@ -23,12 +23,7 @@ function UserAccount() {
     name: "",
     email: "",
     plot_area: "",
-    project_type: "",
-    construction_area: "",
     no_floor: "",
-    tower: "",
-    balcony: "",
-    total_construction_area: "",
     budgest: "",
     
   });
@@ -54,7 +49,7 @@ function UserAccount() {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/user-profile/${user.id}`,
+      const response = await axios.get(`http://localhost:9000/api/user-profile/${user.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -77,22 +72,7 @@ function UserAccount() {
     setCurrentLead((prevLead) => {
       const updatedLead = { ...prevLead, [name]: value };
 
-      // Automatically calculate total construction area
-      if (
-        name === "construction_area" ||
-        name === "no_floor" ||
-        name === "tower" ||
-        name === "balcony"
-      ) {
-        const constructionArea = parseFloat(updatedLead.construction_area) || 0;
-        const noFloor = parseInt(updatedLead.no_floor, 10) || 0;
-        const tower = parseFloat(updatedLead.tower) || 0;
-        const balcony = parseFloat(updatedLead.balcony) || 0;
-
-        updatedLead.total_construction_area =
-          constructionArea * noFloor + tower + balcony;
-      }
-
+      
       return updatedLead;
     });
   };
@@ -108,14 +88,13 @@ function UserAccount() {
     setCurrentLead({
      
      
-      plot_area: "",
-      project_type: "",
-      construction_area: "",
-      no_floor: "",
-      tower: "",
-      balcony: "",
-      total_construction_area: "",
-      budgest: "",
+      user_id: "",
+    name: "",
+    email: "",
+    plot_area: "",
+    no_floor: "",
+
+    budgest: "",
       
     });
     setCustomProjectType('');
@@ -136,7 +115,7 @@ function UserAccount() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/user-profile/${id}`,
+        await axios.delete(`http://localhost:9000/api/user-profile/${id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -164,39 +143,21 @@ function UserAccount() {
       isValid = false;
     }
 
-    if (!currentLead.construction_area) {
-      formErrors.construction_area = "Construction Area is required";
-      isValid = false;
-    }
+    
     
     if (!currentLead.no_floor) {
       formErrors.no_floor = "Number of Floor is required";
       isValid = false;
     }
     
-    if (!currentLead.tower) {
-      formErrors.tower = "Tower is required";
-      isValid = false;
-    }
     
-    if (!currentLead.balcony) {
-      formErrors.balcony = "Balcony is required";
-      isValid = false;
-    }
     
-    if (!currentLead.total_construction_area) {
-      formErrors.total_construction_area = "Total Construction Area is required";
-      isValid = false;
-    }
     if (!currentLead.budgest) {
       formErrors.budgest = "Budgest Area is required";
       isValid = false;
     }
     
-    if (!currentLead.tower) {
-      formErrors.tower = "Tower is required";
-      isValid = false;
-    }
+
     
     setErrors(formErrors);
     return isValid;
@@ -226,7 +187,7 @@ function UserAccount() {
       if (isEditing) {
         // Update existing lead
         await axios.put(
-          `https://estimate-project.vimubds5.a2hosted.com/api/user-profile/${currentLead.user_id}`,UserProfileData,
+          `http://localhost:9000/api/user-profile/${currentLead.user_id}`,UserProfileData,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -238,7 +199,7 @@ function UserAccount() {
         closePopup();
       } else {
         // Create new lead
-        await axios.post("https://estimate-project.vimubds5.a2hosted.com/api/user-profile", UserProfileData,
+        await axios.post("http://localhost:9000/api/user-profile", UserProfileData,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -324,21 +285,12 @@ function UserAccount() {
         <p className="text-gray-600 mb-2">
           <span className="font-semibold">Project Type:</span> {userprofile?.project_type}
         </p>
-        <p className="text-gray-600 mb-2">
-          <span className="font-semibold">Construction Area:</span> {userprofile?.construction_area}
-        </p>
+      
         <p className="text-gray-600 mb-2">
           <span className="font-semibold">Number of Floor :</span> {userprofile?.no_floor}
         </p>
-        <p className="text-gray-600 mb-2">
-          <span className="font-semibold">Tower Area:</span> {userprofile?.tower}
-        </p>
-        <p className="text-gray-600 mb-2">
-          <span className="font-semibold">Balcony Area:</span> {userprofile?.balcony}
-        </p>
-        <p className="text-gray-600 mb-2">
-          <span className="font-semibold">Total Contruction Area:</span> {userprofile?.total_construction_area}
-        </p>
+      
+      
       
         <p className="text-gray-600 mb-2">
           <span className="font-semibold">Budget:</span> ₹{userprofile?.budgest}
@@ -390,7 +342,7 @@ function UserAccount() {
                     type="text"
                     name="name"
                     value={user.name}
-                    onChange={handleInputChange}
+                    onChange={handleInputChange} 
                     className={`w-full px-3 py-2 border border-gray-300
                      rounded`}
                   />
@@ -425,22 +377,7 @@ function UserAccount() {
                     <span className="text-red-500">{errors.plot_area}</span>
                   )}
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Construction Area</label>
-                  <input
-                    type="number"
-                    name="construction_area"
-                    value={currentLead.construction_area}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border ${
-                      errors.construction_area ? "border-red-500" : "border-gray-300"
-                    } rounded`}
-                    required
-                  />
-                   {errors.construction_area && (
-                    <span className="text-red-500">{errors.construction_area}</span>
-                  )}
-                </div>
+              
                 <div className="mb-4">
                   <label className="block text-gray-700">Number of Floor</label>
                   <input
@@ -457,54 +394,8 @@ function UserAccount() {
                     <span className="text-red-500">{errors.no_floor}</span>
                   )}
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Tower</label>
-                  <input
-                    type="number"
-                    name="tower"
-                    value={currentLead.tower}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border ${
-                      errors.tower ? "border-red-500" : "border-gray-300"
-                    } rounded`}
-                    required
-                  />
-                   {errors.tower && (
-                    <span className="text-red-500">{errors.tower}</span>
-                  )}
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">balcony</label>
-                  <input
-                    type="number"
-                    name="balcony"
-                    value={currentLead.balcony}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border ${
-                      errors.balcony ? "border-red-500" : "border-gray-300"
-                    } rounded`}
-                    required
-                  />
-                   {errors.balcony && (
-                    <span className="text-red-500">{errors.balcony}</span>
-                  )}
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Total Construction Area</label>
-                  <input
-                    type="number"
-                    name="total_construction_area"
-                    value={currentLead.total_construction_area}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border ${
-                      errors.total_construction_area ? "border-red-500" : "border-gray-300"
-                    } rounded`}
-                    required
-                  />
-                   {errors.total_construction_area && (
-                    <span className="text-red-500">{errors.total_construction_area}</span>
-                  )}
-                </div>
+             
+                
 
                 <div className="mb-4">
                   <label className="block text-gray-700">Project Type</label>

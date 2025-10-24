@@ -21,8 +21,7 @@ function UserProfileEdit(){
     project_type: "",
     construction_area: "",
     no_floor: "",
-    tower: "",
-    balcony: "",
+    
     total_construction_area: "",
     budgest: "",
     
@@ -56,7 +55,7 @@ function UserProfileEdit(){
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          `https://estimate-project.vimubds5.a2hosted.com/api/user-profile-data/${id}`,
+          `http://localhost:9000/api/user-profile-data/${id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -73,7 +72,7 @@ function UserProfileEdit(){
     const fetchUserSelection = async () => {
       try {
         const response = await axios.get(
-          `https://estimate-project.vimubds5.a2hosted.com/api/user-selection-by-userid-data/${id}`,
+          `http://localhost:9000/api/user-selection-by-userid-data/${id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -101,17 +100,15 @@ function UserProfileEdit(){
         // Automatically calculate total construction area
         if (
           name === "construction_area" ||
-          name === "no_floor" ||
-          name === "tower" ||
-          name === "balcony"
+          name === "no_floor"
+          
         ) {
           const constructionArea = parseFloat(updatedLead.construction_area) || 0;
           const noFloor = parseInt(updatedLead.no_floor, 10) || 0;
-          const tower = parseFloat(updatedLead.tower) || 0;
-          const balcony = parseFloat(updatedLead.balcony) || 0;
+          
   
           updatedLead.total_construction_area =
-            constructionArea * noFloor + tower + balcony;
+            constructionArea * noFloor;
         }
   
         return updatedLead;
@@ -149,14 +146,18 @@ function UserProfileEdit(){
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `https://estimate-project.vimubds5.a2hosted.com/api/user-profile/${currentLead.user_id}`,
-              UserProfileData
+              `http://localhost:9000/api/user-profile/${currentLead.user_id}`,
+              UserProfileData , {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
             );
             fetchUser(); // Refresh the list
             closePopup();
           } else {
             // Create new lead
-            await axios.post("https://estimate-project.vimubds5.a2hosted.com/api/user-register", UserProfileData);
+            await axios.post("http://localhost:9000/api/user-register", UserProfileData);
     
             // Construct WhatsApp message link with encoded parameters
          
@@ -262,24 +263,8 @@ function UserProfileEdit(){
                                   <p className="m-0">{user?.construction_area}</p>
                                 </div>
                               </div>
-                              <div>
-                                <label className="text-info">no_floor</label>
-                                <div className="p-2 bg-gray-100 rounded">
-                                  <p className="m-0">{user?.no_floor}</p>
-                                </div>
-                              </div>
-                              <div>
-                                <label className="text-info">tower</label>
-                                <div className="p-2 bg-gray-100 rounded">
-                                  <p className="m-0">{user?.tower}</p>
-                                </div>
-                              </div>
-                              <div>
-                                <label className="text-info">balcony</label>
-                                <div className="p-2 bg-gray-100 rounded">
-                                  <p className="m-0">{user?.balcony}</p>
-                                </div>
-                              </div>
+                             
+                             
                               <div>
                                 <label className="text-info">total_construction_area</label>
                                 <div className="p-2 bg-gray-100 rounded">
@@ -533,28 +518,7 @@ function UserProfileEdit(){
                     required
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Tower</label>
-                  <input
-                    type="number"
-                    name="tower"
-                    value={currentLead.tower}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">balcony</label>
-                  <input
-                    type="number"
-                    name="balcony"
-                    value={currentLead.balcony}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
-                    required
-                  />
-                </div>
+   
                 <div className="mb-4">
                   <label className="block text-gray-700">Total Construction Area</label>
                   <input

@@ -23,7 +23,7 @@ function EstimateCalculator() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSubcategory, setSelectedSubcategory] = useState('');
   const [selectedItem, setSelectedItem] = useState('');
-  const [quantity, setQuantity] = useState(1);
+
   const [totalPrice, setTotalPrice] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
     const [leadsPerPage, setLeadsPerPage] = useState(5);
@@ -38,10 +38,10 @@ function EstimateCalculator() {
   const token = user?.token;
   const toggleDropdown = () => setIsOpen(!isOpen);
   const toggleDropdownclose = () => {
-    setIsOpen(false); 
+    setIsOpen(false);
     setSelectedSubcategory(''); 
     setSelectedItem('');
-    setQuantity('');
+
   };
   
   const toggleCart = () => setIsCartOpen(!isCartOpen);
@@ -57,7 +57,7 @@ function EstimateCalculator() {
   // Fetch categories on initial render
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/categories-data/${id}`,
+      const response = await axios.get(`http://localhost:9000/api/categories-data/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ function EstimateCalculator() {
   }, [id]);
   useEffect(() => {
     const fetchUserProfile = async () => {
-      const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/user-profile/${user.id}`,
+      const response = await axios.get(`http://localhost:9000/api/user-profile/${user.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ function EstimateCalculator() {
       console.log(id);
       
       if (id) {
-        const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/subcategories-data/${id}`,
+        const response = await axios.get(`http://localhost:9000/api/subcategories-data/${id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ function EstimateCalculator() {
   useEffect(() => {
     const fetchItems = async () => {
       if (selectedSubcategory) {
-        const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/items-data/${selectedSubcategory}`,
+        const response = await axios.get(`http://localhost:9000/api/items-data/${selectedSubcategory}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -128,17 +128,10 @@ function EstimateCalculator() {
     console.log(item);
     
     setSelectedItem(item);
-    setTotalPrice(item.unit_price * quantity);
+    setTotalPrice(item.unit_price * userprofile.per_sq_fit);
     setIsOpen(false);
   };
 
-  const handleQuantityChange = (e) => {
-    const qty = parseInt(e.target.value);
-    setQuantity(qty);
-    if (selectedItem) {
-      setTotalPrice(selectedItem.unit_price * qty);
-    }
-  };
 
   const handleSubmit = async () => {
    
@@ -153,14 +146,14 @@ function EstimateCalculator() {
       item_name: selectedItem.item_name,
       description: selectedItem.description,
       image_items:selectedItem.image_items,
-      quantity: quantity,
+     
       total_price: totalPrice,
     };
     console.log(data);
     
   
     try {
-      const response = await axios.post('https://estimate-project.vimubds5.a2hosted.com/api/user-selection', data,
+      const response = await axios.post('http://localhost:9000/api/user-selection', data,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -174,7 +167,7 @@ function EstimateCalculator() {
         setSelectedItem('');
         fetchSelecteddata();
         fetchAllSelectedData();
-        setQuantity('');
+    
           // Trigger refresh
 
 
@@ -201,7 +194,7 @@ function EstimateCalculator() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/user-selection/${selection_id}`,
+        await axios.delete(`http://localhost:9000/api/user-selection/${selection_id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -227,7 +220,7 @@ function EstimateCalculator() {
         return;
       }
   
-      const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/user-selection/${user.id}`, {
+      const response = await axios.get(`http://localhost:9000/api/user-selection/${user.id}`, {
         params: { category_name },
         headers: {
             'Content-Type': 'application/json',
@@ -262,7 +255,7 @@ function EstimateCalculator() {
   }, []);
   
   const fetchAllSelectedData = async () => {
-        const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/user-selection`,
+        const response = await axios.get(`http://localhost:9000/api/user-selection`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -281,7 +274,7 @@ function EstimateCalculator() {
   const fetchUserRecommendationData = async () => {
     const subcategory_name = subcategories.find((c) => c.subcategory_id === Number(selectedSubcategory))?.subcategory_name;
     console.log(subcategory_name);
-        const response = await axios.get(`https://estimate-project.vimubds5.a2hosted.com/api/user-recommendation/${user.id}`, 
+        const response = await axios.get(`http://localhost:9000/api/user-recommendation/${user.id}`, 
         { params: { subcategory_name } ,
         headers: {
           'Content-Type': 'application/json',
@@ -423,25 +416,12 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
 
   )}
 
-  {/* Quantity Input */}
-  {selectedItem && (
-    <div className="mb-4">
-      <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
-      <input
-        id="quantity"
-        type="number"
-        value={quantity}
-        onChange={handleQuantityChange}
-        min="1"
-        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
-  )}
+  
 
   {/* Total Price */}
   {selectedItem && (
     <div className="mt-4 text-center ">
-      <h3 className="text-xl font-semibold text-gray-800">Total Price: ₹{totalPrice}</h3>
+      {/* <h3 className="text-xl font-semibold text-gray-800">Total Price: ₹{totalPrice}</h3> */}
       <button
             type="submit"
             className="w-full px-4 py-2 mt-4  font-semibold bg-[black] text-[#ffce08] rounded-md shadow-sm hover:bg-yellow-500 hover:text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
@@ -478,9 +458,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
                         <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                   Description
                   </th>
-                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                  Quantity
-                  </th>
+                 
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Total  Price
                   </th>
@@ -537,9 +515,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
                           {item.description}
                         </td>
                        
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
-                          {item.quantity}
-                        </td>
+                        
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                           {item.total_price}
                         </td>

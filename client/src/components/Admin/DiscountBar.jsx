@@ -43,7 +43,7 @@ function DiscountBar() {
     const fetchDiscount = async () => {
       try {
         const response = await axios.get(
-          "https://estimate-project.vimubds5.a2hosted.com/api/discount",
+          "http://localhost:9000/api/discount",
           {
             headers: {
               'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ function DiscountBar() {
       );
       if (isConfirmed) {
         try {
-          await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/discount/${id}`,
+          await axios.delete(`http://localhost:9000/api/discount/${id}`,
             {
               headers: {
                 'Content-Type': 'application/json',
@@ -145,7 +145,7 @@ function DiscountBar() {
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `https://estimate-project.vimubds5.a2hosted.com/api/discount/${currentdiscount.id}`,
+              `http://localhost:9000/api/discount/${currentdiscount.id}`,
               DiscountData,
               {
                 headers: {
@@ -157,7 +157,7 @@ function DiscountBar() {
             closePopup();
           } else {
             // Create new lead
-            await axios.post("https://estimate-project.vimubds5.a2hosted.com/api/discount", DiscountData,
+            await axios.post("http://localhost:9000/api/discount", DiscountData,
               {
                 headers: {
                   'Content-Type': 'application/json',

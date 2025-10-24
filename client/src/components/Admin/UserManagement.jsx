@@ -10,9 +10,9 @@ import cogoToast from 'cogo-toast';
 import { useSelector } from 'react-redux';
 
 
-function UserManagement() {
+function TaskMangement() {
     const navigate = useNavigate();
-    const [user, setUser] = useState([]);
+    const [user, setTask] = useState([]);
 
     const [currentLead, setCurrentLead] = useState({
       user_name : "", email : "", phone_no : ""
@@ -42,14 +42,14 @@ function UserManagement() {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          "https://estimate-project.vimubds5.a2hosted.com/api/user",
+          "http://localhost:9000/api/user",
           {
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`
           }}
         );
-        setUser(response.data);
+        setTask(response.data);
         console.log(user);
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -94,7 +94,7 @@ function UserManagement() {
       );
       if (isConfirmed) {
         try {
-          await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/user/${id}`,
+          await axios.delete(`http://localhost:9000/api/user/${id}`,
             {
               headers: {
                 'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ function UserManagement() {
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `https://estimate-project.vimubds5.a2hosted.com/api/user/${currentLead.id}`,
+              `http://localhost:9000/api/user/${currentLead.id}`,
               leadData,
               {
                 headers: {
@@ -162,7 +162,7 @@ function UserManagement() {
             closePopup();
           } else {
             // Create new lead
-            await axios.post("https://estimate-project.vimubds5.a2hosted.com/api/user-register", leadData,
+            await axios.post("http://localhost:9000/api/user-register", leadData,
               {
                 headers: {
                   'Content-Type': 'application/json',
@@ -445,5 +445,5 @@ function UserManagement() {
     );
   }
 
-export default UserManagement
+export default TaskMangement
 

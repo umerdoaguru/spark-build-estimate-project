@@ -25,7 +25,7 @@ function UserLogin() {
       try {
         setLoading(true)
         const res = await axios.post(
-          "https://estimate-project.vimubds5.a2hosted.com/api/user-login",
+          "http://localhost:9000/api/user-login",
           formData
         );
         if (res.data.success) {
@@ -118,7 +118,7 @@ function UserLogin() {
                 )}
               </button>
             </div>
-             <Link to="/user-reset-password" className="text-blue-500 hover:text-green-600 text-sm "><p className='text-end'>Forgot Password?</p> </Link>
+             <Link to="/user-reset-password" className="text-blue-500 hover:text-green-600 text-sm"><p className='text-end'>Forgot Password?</p> </Link>
           </div>
           
           

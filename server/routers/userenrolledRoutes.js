@@ -20,10 +20,10 @@ const { getcategories, getcategoriesbyid, getsubcategoriesbyid, getitemsbyid, ge
 const router = express.Router();
 
 
-router.post('/user-profile',authenticateUser,createUser); 
+router.post('/user-profile',createUser); 
 router.get("/user-profile/:id",authenticateUser,getuser_profilebyid,);
 router.get("/user-profile",authenticateUser, getuser_profile);
-router.put("/user-profile/:id",authenticateUser, updateuser_profile);
+router.put("/user-profile/:id", updateuser_profile);
 router.delete("/user-profile/:id",authenticateUser, deleteuser_profile);
 router.post('/user-selection',authenticateUser,createUserSelection); 
 router.get("/user-selection/:id",authenticateUser, getSelectionbyid);    

@@ -44,7 +44,7 @@ function items() {
   const fetchSubCategories = async () => {
     try {
       const response = await axios.get(
-        "https://estimate-project.vimubds5.a2hosted.com/api/subcategories",
+        "http://localhost:9000/api/subcategories",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ function items() {
   };
   const fetchItems = async () => {
     try {
-      const response = await axios.get("https://estimate-project.vimubds5.a2hosted.com/api/items",
+      const response = await axios.get("http://localhost:9000/api/items",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ function items() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`https://estimate-project.vimubds5.a2hosted.com/api/items/${item_id}`,
+        await axios.delete(`http://localhost:9000/api/items/${item_id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -217,7 +217,7 @@ function items() {
       if (isEditing) {
         // Update existing lead
         await axios.put(
-          `https://estimate-project.vimubds5.a2hosted.com/api/items/${currentLead.item_id}`,
+          `http://localhost:9000/api/items/${currentLead.item_id}`,
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" ,'Authorization': `Bearer ${token}` },
@@ -227,7 +227,7 @@ function items() {
         fetchItems(); // Refresh the list
       } else {
         // Create new lead
-        await axios.post("https://estimate-project.vimubds5.a2hosted.com/api/items", formData, {
+        await axios.post("http://localhost:9000/api/items", formData, {
           headers: { "Content-Type": "multipart/form-data"  ,'Authorization': `Bearer ${token}`},
         });
         fetchItems(); // Refresh the list
@@ -558,6 +558,19 @@ function items() {
       <option value="per hour">per hour</option>
       <option value="per day">per day</option>
       <option value="per week">per week</option>
+    </optgroup>
+    <optgroup label="M SAND">
+      <option value="Tipper 500cft">TIPPER 500CFT</option>
+      
+    </optgroup>
+    <optgroup label="PLINTH FILLING MATERIAL">
+      <option value="Tipper">TIPPER</option>
+      
+    </optgroup>
+    <optgroup label="Brick">
+      <option value="cbm">CBM</option>
+      <option value="nos">NOS</option>
+      
     </optgroup>
   </select>
   {errors.unit_price_type && (
