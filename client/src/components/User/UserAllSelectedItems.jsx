@@ -27,7 +27,7 @@ function UserAllSelecteditems() {
 
   const fetchAllSelectedData = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/user-selection-by-userid/${user.id}`,
+      const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-selection-by-userid/${user.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -51,13 +51,27 @@ function UserAllSelecteditems() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`http://localhost:9000/api/user-selection/${selection_id}`,
+        await axios.delete(`https://estimate-project.dentalguru.software/api/user-selection/${selection_id}`,
           {
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`
           }});
+
+
         fetchAllSelectedData(); // Refresh the list after deletion
+
+         const response = await axios.put(
+            `https://estimate-project.dentalguru.software/api/user-final-amount/${user.id}`,
+            { after_selection_amount: "pending" },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+              },
+            }
+          );
+        console.log("Response:", response.data);
         setRefresh((prev) => !prev);
       } catch (error) {
         console.error("Error deleting item:", error);
@@ -112,6 +126,9 @@ function UserAllSelecteditems() {
                     Items Name
                   </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Total Price
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Description
                   </th>
                  
@@ -159,6 +176,9 @@ function UserAllSelecteditems() {
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                           {item.item_name}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          {item.total_price}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                           {item.description}

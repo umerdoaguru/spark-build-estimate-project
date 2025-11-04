@@ -247,7 +247,7 @@ const createitems = (req, res) => {
     
     const { filename } = req.file; // Extract file details from multer
     console.log(subcategory_id , subcategory_name,item_name,	description,	unit_price,unit_price_type,filename,recommendation_description,sq_fit_range);
-    const ItemImagePath = "http://localhost:9000/uploads/" + filename;
+    const ItemImagePath = "https://estimate-project.dentalguru.software/uploads/" + filename;
     console.log(ItemImagePath);
     
     const sql = `
@@ -259,7 +259,7 @@ const createitems = (req, res) => {
       unit_price, 
       image_items, 
       unit_price_type,qty,amount_for_1000_sqft, rate_per_sqft,recommendation_description,sq_fit_range
-    ) VALUES (?, ?, ?, ?, ?, ?, ? , ? , ?,?,?,?,?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ? , ? , ?,?,?,?)
   `;
 
   // Execute the query
@@ -322,7 +322,7 @@ const createitems = (req, res) => {
     try {
       const { item_id  } = req.params;
       const {
-        subcategory_id , subcategory_name,item_name,	description,	unit_price,unit_price_type,recommendation_description,sq_fit_range
+        subcategory_id , subcategory_name,item_name,	description,	unit_price,unit_price_type,qty,amount_for_1000_sqft, rate_per_sqft,recommendation_description,sq_fit_range
       } = req.body;
 
       let ItemImagePath = req.body.image_items; // Retain existing image if no new image uploaded
@@ -331,7 +331,7 @@ console.log(ItemImagePath);
 
       if (req.file) {
         const { filename } = req.file; // Get new file details if provided
-        ItemImagePath = `http://localhost:9000/uploads/${filename}`;
+        ItemImagePath = `https://estimate-project.dentalguru.software/uploads/${filename}`;
       }
       console.log(ItemImagePath);
       
@@ -339,7 +339,7 @@ console.log(ItemImagePath);
   
       // Construct SQL query to update the item
       const sql = `UPDATE items 
-                   SET  subcategory_id = ?  , subcategory_name = ? ,item_name = ? ,	description = ? ,	unit_price = ?, image_items = ?, unit_price_type = ?,recommendation_description = ? ,sq_fit_range = ?
+                   SET  subcategory_id = ?  , subcategory_name = ? ,item_name = ? ,	description = ? ,	unit_price = ?, image_items = ?, unit_price_type = ?,qty = ?,amount_for_1000_sqft = ?, rate_per_sqft = ?,recommendation_description = ? ,sq_fit_range = ?
                    WHERE item_id  = ?`;
   
       // Execute the update query asynchronously
@@ -347,7 +347,7 @@ console.log(ItemImagePath);
         db.query(
           sql,
           [
-            subcategory_id, subcategory_name, item_name,	description,	unit_price,ItemImagePath,unit_price_type,recommendation_description,sq_fit_range, item_id
+            subcategory_id, subcategory_name, item_name,	description,	unit_price,ItemImagePath,unit_price_type,qty,amount_for_1000_sqft, rate_per_sqft,recommendation_description,sq_fit_range, item_id
           ],
           (err, results) => {
             if (err) {

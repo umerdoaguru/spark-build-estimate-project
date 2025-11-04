@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MainHeader from '../../pages/MainHeader';
 import UserSider from './UserSider';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import cogoToast from 'cogo-toast';
 import { useSelector } from 'react-redux';
 import ReactPaginate from 'react-paginate';
@@ -11,7 +11,7 @@ import { BsPencilSquare, BsTrash } from 'react-icons/bs';
 import { FaShoppingCart } from 'react-icons/fa';
 import Selected_Items_Cart from './Selected_Items_Cart';
 
-function EstimateCalculator() {
+function  EstimateCalculator() {
   const [categories, setCategories] = useState([]);
   const [userprofile, setUseProfile] = useState([]);
   
@@ -33,6 +33,7 @@ function EstimateCalculator() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [refresh, setRefresh] = useState(false);
+    const navigate = useNavigate();
 
 
   const token = user?.token;
@@ -57,7 +58,7 @@ function EstimateCalculator() {
   // Fetch categories on initial render
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await axios.get(`http://localhost:9000/api/categories-data/${id}`,
+      const response = await axios.get(`https://estimate-project.dentalguru.software/api/categories-data/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -71,7 +72,7 @@ function EstimateCalculator() {
   }, [id]);
   useEffect(() => {
     const fetchUserProfile = async () => {
-      const response = await axios.get(`http://localhost:9000/api/user-profile/${user.id}`,
+      const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-profile/${user.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -90,7 +91,7 @@ function EstimateCalculator() {
       console.log(id);
       
       if (id) {
-        const response = await axios.get(`http://localhost:9000/api/subcategories-data/${id}`,
+        const response = await axios.get(`https://estimate-project.dentalguru.software/api/subcategories-data/${id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -108,7 +109,7 @@ function EstimateCalculator() {
   useEffect(() => {
     const fetchItems = async () => {
       if (selectedSubcategory) {
-        const response = await axios.get(`http://localhost:9000/api/items-data/${selectedSubcategory}`,
+        const response = await axios.get(`https://estimate-project.dentalguru.software/api/items-data/${selectedSubcategory}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -128,7 +129,7 @@ function EstimateCalculator() {
     console.log(item);
     
     setSelectedItem(item);
-    setTotalPrice(item.unit_price * userprofile.per_sq_fit);
+    setTotalPrice(item.rate_per_sqft * userprofile.per_sq_fit);
     setIsOpen(false);
   };
 
@@ -153,7 +154,7 @@ function EstimateCalculator() {
     
   
     try {
-      const response = await axios.post('http://localhost:9000/api/user-selection', data,
+      const response = await axios.post('https://estimate-project.dentalguru.software/api/user-selection', data,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -194,12 +195,22 @@ function EstimateCalculator() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`http://localhost:9000/api/user-selection/${selection_id}`,
+        await axios.delete(`https://estimate-project.dentalguru.software/api/user-selection/${selection_id}`,
         {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         }});
+         const response = await axios.put(
+            `https://estimate-project.dentalguru.software/api/user-final-amount/${user.id}`,
+            { after_selection_amount: "pending" },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+              },
+            }
+          );
         setRefresh(prev => !prev);
         fetchSelecteddata(); // Refresh the list after deletion
         fetchAllSelectedData(); 
@@ -220,7 +231,7 @@ function EstimateCalculator() {
         return;
       }
   
-      const response = await axios.get(`http://localhost:9000/api/user-selection/${user.id}`, {
+      const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-selection/${user.id}`, {
         params: { category_name },
         headers: {
             'Content-Type': 'application/json',
@@ -255,7 +266,7 @@ function EstimateCalculator() {
   }, []);
   
   const fetchAllSelectedData = async () => {
-        const response = await axios.get(`http://localhost:9000/api/user-selection`,
+        const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-selection`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -274,7 +285,7 @@ function EstimateCalculator() {
   const fetchUserRecommendationData = async () => {
     const subcategory_name = subcategories.find((c) => c.subcategory_id === Number(selectedSubcategory))?.subcategory_name;
     console.log(subcategory_name);
-        const response = await axios.get(`http://localhost:9000/api/user-recommendation/${user.id}`, 
+        const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-recommendation/${user.id}`, 
         { params: { subcategory_name } ,
         headers: {
           'Content-Type': 'application/json',
@@ -293,10 +304,17 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
         <UserSider />
         
           <div className="2xl:w-[89%]  2xl:ml-40 mx-4 ">
-            <div className="main mt-[6rem]">
+            <div className="main mt-[4rem]">
+              
+             
        <Selected_Items_Cart refresh={refresh}/>
 
-
+<button
+            onClick={() => navigate(-1)}
+            className="bg-blue-500 mt-2 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Back
+          </button>
               <h1 className="text-2xl mt-5 text-center font-medium">
              User Selection Mangement 
               </h1>
@@ -585,7 +603,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
  </div>
  {isPopupOpen && (
             <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+              <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full max-h-full overflow-auto">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-lg font-bold">
                     
@@ -614,9 +632,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
                       <h3 className="text-md font-semibold">
                         {recommendation.item_name}
                       </h3>
-                      <p className="text-sm text-gray-600">
-                        ₹{recommendation.unit_price} per unit
-                      </p>
+                    
                       <p className="text-sm text-gray-600 mt-2">
                         {recommendation.description}
                       </p>

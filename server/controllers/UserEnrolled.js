@@ -14,7 +14,7 @@ const createUser = (req, res) => {
       // Extract numeric value from `plot_area`
   
       // Calculate per square foot budget
-      const per_sq_fit = total_construction_area ? Math.floor(budgest / total_construction_area) : 0; 
+      const per_sq_fit = Math.floor(budgest || 0  / total_construction_area || 0); 
       console.log(`Per square foot budget: ${per_sq_fit}`);
   
     
@@ -22,7 +22,7 @@ const createUser = (req, res) => {
     db.query(
       sql,
       [
-        user_id,name,email,plot_area,project_type,construction_area,no_floor,total_construction_area,per_sq_fit,budgest
+        user_id,name,email,plot_area,project_type,construction_area || 0,no_floor,total_construction_area || 0,per_sq_fit,budgest
       ],
       (err, results) => {
         if (err) {
@@ -73,7 +73,8 @@ const createUser = (req, res) => {
       const {
         name,email,plot_area,project_type,construction_area,no_floor,total_construction_area,budgest
       } = req.body;
-console.log( name,email,plot_area,project_type,construction_area,no_floor,total_construction_area,budgest,id);
+// console.log( name,email,plot_area,project_type,construction_area,no_floor,total_construction_area,budgest,id);
+console.log( Math.floor(budgest / total_construction_area));
 
       const per_sq_fit = Math.floor(budgest / total_construction_area); 
       console.log(`Per square foot budget: ${per_sq_fit}`);
@@ -89,6 +90,40 @@ console.log( name,email,plot_area,project_type,construction_area,no_floor,total_
           sql,
           [
            name,email,plot_area,project_type,construction_area,no_floor,total_construction_area,budgest,per_sq_fit,id
+          ],
+          (err, results) => {
+            if (err) {
+              reject(err);     
+            } else {
+              resolve(results);
+            }
+          }
+        );
+      });
+  
+      res.status(200).json({ message: "user_profile updated successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
+  const updateuser_profileId = async (req, res) => {
+   try {
+      const { id  } = req.params;
+      const {
+        name,email,plot_area,project_type,construction_area,no_floor,total_construction_area,budgest
+      } = req.body;
+  
+      // Construct SQL query to update the item
+      const sql = `UPDATE user_profile 
+                   SET     name = ?,email = ?,plot_area = ?,project_type = ?,no_floor = ?, budgest = ?
+                   WHERE user_id  = ?`;
+  
+      // Execute the update query asynchronously
+      await new Promise((resolve, reject) => {
+        db.query(
+          sql,
+          [
+           name,email,plot_area,project_type,no_floor,budgest,id
           ],
           (err, results) => {
             if (err) {
@@ -374,6 +409,7 @@ const updateOnlyUserFianlAmount = async (req, res) => {
   getuser_profilebyid,
   getuser_profile,
   updateuser_profile,
+  updateuser_profileId,
   deleteuser_profile,
   createUserSelection,
   getSelectionbyid,

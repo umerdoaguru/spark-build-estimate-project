@@ -12,7 +12,8 @@ const {   createUser,
     deleteuser_Selection,
     getUserRecommendationById,
     updateOnlyUserFianlAmount,
-    getSelectionbyuserid,} = require('../controllers/UserEnrolled');
+    getSelectionbyuserid,
+    updateuser_profileId,} = require('../controllers/UserEnrolled');
 const upload = require('../config/multerConfig');
 const authenticateUser = require('../Middleware/authenticateUser');
 const { getcategories, getcategoriesbyid, getsubcategoriesbyid, getitemsbyid, getDiscount } = require('../controllers/Admincontroller');
@@ -24,6 +25,7 @@ router.post('/user-profile',createUser);
 router.get("/user-profile/:id",authenticateUser,getuser_profilebyid,);
 router.get("/user-profile",authenticateUser, getuser_profile);
 router.put("/user-profile/:id", updateuser_profile);
+router.put("/user-profilebyid/:id", updateuser_profileId);
 router.delete("/user-profile/:id",authenticateUser, deleteuser_profile);
 router.post('/user-selection',authenticateUser,createUserSelection); 
 router.get("/user-selection/:id",authenticateUser, getSelectionbyid);    

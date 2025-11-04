@@ -30,7 +30,7 @@ function RegisteredUser() {
       try {
         setLoading(true)
         const res = await axios.post(
-          "http://localhost:9000/api/register",
+          "https://estimate-project.dentalguru.software/api/register",
           formData
         );
         if (res.data.success) {

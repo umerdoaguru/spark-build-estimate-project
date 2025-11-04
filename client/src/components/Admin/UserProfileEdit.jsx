@@ -40,7 +40,7 @@ function UserProfileEdit(){
     const [errors, setErrors] = useState({});
 
     const [currentPage, setCurrentPage] = useState(0);
-    const [leadsPerPage, setLeadsPerPage] = useState(10);
+    const [leadsPerPage, setLeadsPerPage] = useState(5);
  
     const [loading , setLoading] = useState(false)
 
@@ -55,7 +55,7 @@ function UserProfileEdit(){
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/user-profile-data/${id}`,
+          `https://estimate-project.dentalguru.software/api/user-profile-data/${id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ function UserProfileEdit(){
     const fetchUserSelection = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/user-selection-by-userid-data/${id}`,
+          `https://estimate-project.dentalguru.software/api/user-selection-by-userid-data/${id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ function UserProfileEdit(){
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `http://localhost:9000/api/user-profile/${currentLead.user_id}`,
+              `https://estimate-project.dentalguru.software/api/user-profile/${id}`,
               UserProfileData , {
             headers: {
               'Content-Type': 'application/json',
@@ -157,7 +157,7 @@ function UserProfileEdit(){
             closePopup();
           } else {
             // Create new lead
-            await axios.post("http://localhost:9000/api/user-register", UserProfileData);
+            await axios.post("https://estimate-project.dentalguru.software/api/user-register", UserProfileData);
     
             // Construct WhatsApp message link with encoded parameters
          
@@ -219,9 +219,10 @@ function UserProfileEdit(){
                       <div className="flex-grow md:p-4 mt-14 lg:mt-0 sm:ml-0">
                         <center className="text-2xl text-center mt-3 font-medium">
                          User Profile Data
-                        </center>
-                        <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
-                        <div className="  mb-4">
+                        </center> 
+                         <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
+                    {user ? 
+                    <div className="  mb-4">
                           <div className="w-[90%] ">
                             <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
                               <div>
@@ -246,21 +247,27 @@ function UserProfileEdit(){
                               </div>
               
                               <div>
-                                <label className="text-info">plot_area</label>
+                                <label className="text-info">Plot Area</label>
                                 <div className="p-2 bg-gray-100 rounded">
                                   <p className="m-0">{user?.plot_area}</p>
                                 </div>
                               </div>
                               <div>
-                                <label className="text-info">project_type</label>
+                                <label className="text-info">Project Type</label>
                                 <div className="p-2 bg-gray-100 rounded">
                                   <p className="m-0">{user?.project_type}</p>
                                 </div>
                               </div>
                               <div>
-                                <label className="text-info">construction_area</label>
+                                <label className="text-info">Construction Area</label>
                                 <div className="p-2 bg-gray-100 rounded">
                                   <p className="m-0">{user?.construction_area}</p>
+                                </div>
+                              </div>
+                              <div>
+                                <label className="text-info">No Of Floor</label>
+                                <div className="p-2 bg-gray-100 rounded">
+                                  <p className="m-0">{user?.no_floor}</p>
                                 </div>
                               </div>
                              
@@ -310,6 +317,15 @@ function UserProfileEdit(){
               </div>
                          
                         </div>
+                        : <div className="max-w-2xl mx-auto mt-10 mb-4 bg-white shadow-lg rounded-lg border border-gray-200">
+      <div className="p-6">
+       <h1 className="text-center font-bold text-2xl ">Not Created User Profile By User</h1>
+      </div>
+     
+    </div>
+                    }    
+                      
+                        
                       </div>
                       
                     </div>
@@ -345,10 +361,7 @@ function UserProfileEdit(){
                            <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                              Items Name
                            </th>
-                               
-                           <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                           Quantity
-                           </th>
+                          
                            <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                              Total  Price
                            </th>
@@ -384,7 +397,7 @@ function UserProfileEdit(){
                                  className={index % 2 === 0 ? "bg-gray-100" : "" }
                                >
                                  <td className="px-6 py-2 border-b border-gray-200 text-gray-800 font-semibold">
-                                   {index + 1}
+                                       {index + 1 + currentPage * leadsPerPage}
                                  </td>
                                  <td className="px-6 py-2 border-b border-gray-200 text-gray-800 font-semibold">
                                    {item.item_id}
@@ -401,9 +414,7 @@ function UserProfileEdit(){
                                  </td>
                               
                                 
-                                 <td className="px-6 py-2 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
-                                   {item.quantity}
-                                 </td>
+                                 
                                  <td className="px-6 py-2 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                                    {item.total_price}
                                  </td>

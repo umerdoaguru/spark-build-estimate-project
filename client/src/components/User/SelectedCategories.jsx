@@ -37,7 +37,7 @@ function SelectedCategories() {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:9000/api/categories",
+          "https://estimate-project.dentalguru.software/api/categories",
           {
             headers: {
               'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ function SelectedCategories() {
       );
       if (isConfirmed) {
         try {
-          await axios.delete(`http://localhost:9000/api/categories/${id}`,
+          await axios.delete(`https://estimate-project.dentalguru.software/api/categories/${id}`,
             {
               headers: {
                 'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ function SelectedCategories() {
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `http://localhost:9000/api/categories/${currentLead.category_id}`,
+              `https://estimate-project.dentalguru.software/api/categories/${currentLead.category_id}`,
               leadData,
               {
                 headers: {
@@ -122,7 +122,7 @@ function SelectedCategories() {
             closePopup();
           } else {
             // Create new lead
-            await axios.post("http://localhost:9000/api/categories", leadData,
+            await axios.post("https://estimate-project.dentalguru.software/api/categories", leadData,
               {
                 headers: {
                   'Content-Type': 'application/json',

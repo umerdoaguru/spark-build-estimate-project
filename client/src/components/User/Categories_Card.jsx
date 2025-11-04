@@ -15,7 +15,7 @@ function Categories_Card() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:9000/api/categories-data',
+        const response = await axios.get('https://estimate-project.dentalguru.software/api/categories-data',
           {
             headers: {
               'Content-Type': 'application/json',

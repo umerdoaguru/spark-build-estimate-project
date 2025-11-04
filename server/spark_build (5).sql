@@ -73,19 +73,19 @@ CREATE TABLE `items` (
 --
 
 INSERT INTO `items` (`item_id`, `subcategory_id`, `subcategory_name`, `item_name`, `description`, `unit_price`, `image_items`, `unit_price_type`, `recommendation_description`, `sq_fit_range`, `created_at`) VALUES
-(15, 43, 'Cement', 'Portland Cement', 'High-strength cement', 350.00, 'http://localhost:9000/uploads/image_items-1736496379323portland-cement.jpg', 'per piece', 'Best for foundations', '1200-1500', '2025-01-08 08:14:57'),
-(16, 45, 'Sand', 'River Sand', 'Fine-grade sand', 8000.00, 'http://localhost:9000/uploads/image_items-1736496763462river-sand.jpeg', 'per ton', 'Best for foundations', '1200-1500', '2025-01-08 08:15:57'),
-(17, 46, 'Aggregates', 'Crushed Stone', 'Aggregates for concrete preparation', 750.00, 'http://localhost:9000/uploads/image_items-173649683420415mm-crushed-stone.jpeg', 'per ton', 'Best for foundations', '1200-1500', '2025-01-08 08:16:15'),
-(18, 47, 'Bricks', 'Red Bricks', 'Standard-sized bricks for masonry', 10.00, 'http://localhost:9000/uploads/image_items-1736496883012logo-printed-building-brick.jpg', 'per piece', 'Best for foundations', '1200-1500', '2025-01-08 08:16:33'),
-(19, 48, 'Blocks', 'Concrete Blocks\r\n', 'Solid or hollow blocks for walls', 25.00, 'http://localhost:9000/uploads/image_items-1736497580820main_1_2048x.jpg', 'per piece', '', '', '2025-01-08 08:21:08'),
-(20, 49, 'Concrete', 'RCC Mix', 'Ready-mix concrete for roofing', 5000.00, 'http://localhost:9000/uploads/image_items-1736497651100reinforced-ready-mix-concrete-500x500.webp', 'per m³', '', '', '2025-01-08 08:17:21'),
-(21, 50, 'Tiles', 'Ceramic Tiles', 'Cost-effective tiles for flooring', 40.00, 'http://localhost:9000/uploads/image_items-1736497784370Ceramic-tiles-Properties-types-advantages-disadvantages-and-uses-f.jpg', 'per m²', '', '', '2025-01-08 08:17:51'),
-(22, 51, 'Pipes', 'PVC Pipes', 'Lightweight pipes for water supply', 680.00, 'http://localhost:9000/uploads/image_items-1736497828161product-jpeg-500x500.webp', 'per piece', '', '', '2025-01-08 08:18:18'),
-(23, 52, 'Wiring', 'Copper Wires', 'Electrical wiring for circuits', 835.00, 'http://localhost:9000/uploads/image_items-1736497899513copper-wires-500x500.webp', 'per kg', '', '', '2025-01-08 08:19:11'),
-(24, 53, 'Wood', 'Wooden Planks', 'Hardwood planks for furniture or flooring', 300.00, 'http://localhost:9000/uploads/image_items-1736497958128timber-wooden-plank.jpg', 'per ft³', '', '', '2025-01-08 08:19:39'),
-(25, 55, 'Interior Paint', 'Emulsion Paint', 'Matte finish paints for interiors', 500.00, 'http://localhost:9000/uploads/image_items-1736498092519shutterstock_151976957-900x600-1-1-1.webp', 'per L', '', '', '2025-01-08 08:20:16'),
-(26, 56, 'Doors', 'Wooden Doors', 'High-quality wooden doors', 5000.00, 'http://localhost:9000/uploads/image_items-173649814981471D0WzlLzQL.jpg', 'per piece', '', '', '2025-01-08 08:21:08'),
-(29, 43, 'Cement', 'Birla Cement ', 'Medium-quality cement', 300.00, 'http://localhost:9000/uploads/image_items-1736508275191birla002.png', 'per piece', 'Best cement  for foundations', '800-10000', '2025-01-10 11:24:35');
+(15, 43, 'Cement', 'Portland Cement', 'High-strength cement', 350.00, 'https://estimate-project.dentalguru.software/uploads/image_items-1736496379323portland-cement.jpg', 'per piece', 'Best for foundations', '1200-1500', '2025-01-08 08:14:57'),
+(16, 45, 'Sand', 'River Sand', 'Fine-grade sand', 8000.00, 'https://estimate-project.dentalguru.software/uploads/image_items-1736496763462river-sand.jpeg', 'per ton', 'Best for foundations', '1200-1500', '2025-01-08 08:15:57'),
+(17, 46, 'Aggregates', 'Crushed Stone', 'Aggregates for concrete preparation', 750.00, 'https://estimate-project.dentalguru.software/uploads/image_items-173649683420415mm-crushed-stone.jpeg', 'per ton', 'Best for foundations', '1200-1500', '2025-01-08 08:16:15'),
+(18, 47, 'Bricks', 'Red Bricks', 'Standard-sized bricks for masonry', 10.00, 'https://estimate-project.dentalguru.software/uploads/image_items-1736496883012logo-printed-building-brick.jpg', 'per piece', 'Best for foundations', '1200-1500', '2025-01-08 08:16:33'),
+(19, 48, 'Blocks', 'Concrete Blocks\r\n', 'Solid or hollow blocks for walls', 25.00, 'https://estimate-project.dentalguru.software/uploads/image_items-1736497580820main_1_2048x.jpg', 'per piece', '', '', '2025-01-08 08:21:08'),
+(20, 49, 'Concrete', 'RCC Mix', 'Ready-mix concrete for roofing', 5000.00, 'https://estimate-project.dentalguru.software/uploads/image_items-1736497651100reinforced-ready-mix-concrete-500x500.webp', 'per m³', '', '', '2025-01-08 08:17:21'),
+(21, 50, 'Tiles', 'Ceramic Tiles', 'Cost-effective tiles for flooring', 40.00, 'https://estimate-project.dentalguru.software/uploads/image_items-1736497784370Ceramic-tiles-Properties-types-advantages-disadvantages-and-uses-f.jpg', 'per m²', '', '', '2025-01-08 08:17:51'),
+(22, 51, 'Pipes', 'PVC Pipes', 'Lightweight pipes for water supply', 680.00, 'https://estimate-project.dentalguru.software/uploads/image_items-1736497828161product-jpeg-500x500.webp', 'per piece', '', '', '2025-01-08 08:18:18'),
+(23, 52, 'Wiring', 'Copper Wires', 'Electrical wiring for circuits', 835.00, 'https://estimate-project.dentalguru.software/uploads/image_items-1736497899513copper-wires-500x500.webp', 'per kg', '', '', '2025-01-08 08:19:11'),
+(24, 53, 'Wood', 'Wooden Planks', 'Hardwood planks for furniture or flooring', 300.00, 'https://estimate-project.dentalguru.software/uploads/image_items-1736497958128timber-wooden-plank.jpg', 'per ft³', '', '', '2025-01-08 08:19:39'),
+(25, 55, 'Interior Paint', 'Emulsion Paint', 'Matte finish paints for interiors', 500.00, 'https://estimate-project.dentalguru.software/uploads/image_items-1736498092519shutterstock_151976957-900x600-1-1-1.webp', 'per L', '', '', '2025-01-08 08:20:16'),
+(26, 56, 'Doors', 'Wooden Doors', 'High-quality wooden doors', 5000.00, 'https://estimate-project.dentalguru.software/uploads/image_items-173649814981471D0WzlLzQL.jpg', 'per piece', '', '', '2025-01-08 08:21:08'),
+(29, 43, 'Cement', 'Birla Cement ', 'Medium-quality cement', 300.00, 'https://estimate-project.dentalguru.software/uploads/image_items-1736508275191birla002.png', 'per piece', 'Best cement  for foundations', '800-10000', '2025-01-10 11:24:35');
 
 -- --------------------------------------------------------
 
@@ -269,13 +269,13 @@ CREATE TABLE `user_selections` (
 --
 
 INSERT INTO `user_selections` (`selection_id`, `user_id`, `item_id`, `category_name`, `subcategory_name`, `item_name`, `description`, `image_items`, `quantity`, `total_price`, `created_at`) VALUES
-(35, 1, 18, 'Walls and Masonry', 'Bricks', 'Red Bricks', '', 'http://localhost:9000/uploads/image_items-1736496883012logo-printed-building-brick.jpg', 1, 10, '2025-01-13 12:08:05'),
-(38, 1, 21, 'Flooring', 'Tiles', 'Ceramic Tiles', '', 'http://localhost:9000/uploads/image_items-1736497784370Ceramic-tiles-Properties-types-advantages-disadvantages-and-uses-f.jpg', 3, 120, '2025-01-13 12:58:17'),
-(39, 1, 20, 'Roofing', 'Concrete', 'RCC Mix', '', 'http://localhost:9000/uploads/image_items-1736497651100reinforced-ready-mix-concrete-500x500.webp', 3, 15000, '2025-01-13 13:25:41'),
-(41, 1, 25, 'Paint and Finishes', 'Interior Paint', 'Emulsion Paint', '', 'http://localhost:9000/uploads/image_items-1736498092519shutterstock_151976957-900x600-1-1-1.webp', 1, 500, '2025-01-13 13:37:59'),
-(42, 1, 24, 'Carpentry', 'Wood', 'Wooden Planks', '', 'http://localhost:9000/uploads/image_items-1736497958128timber-wooden-plank.jpg', 1, 300, '2025-01-13 13:38:11'),
-(45, 1, 26, 'Doors and Windows', 'Doors', 'Wooden Doors', '', 'http://localhost:9000/uploads/image_items-173649814981471D0WzlLzQL.jpg', 1, 5000, '2025-01-14 08:19:26'),
-(49, 1, 15, 'Foundation', 'Cement', 'Portland Cement', 'High-strength cement', 'http://localhost:9000/uploads/image_items-1736496379323portland-cement.jpg', 1, 350, '2025-01-16 11:47:47');
+(35, 1, 18, 'Walls and Masonry', 'Bricks', 'Red Bricks', '', 'https://estimate-project.dentalguru.software/uploads/image_items-1736496883012logo-printed-building-brick.jpg', 1, 10, '2025-01-13 12:08:05'),
+(38, 1, 21, 'Flooring', 'Tiles', 'Ceramic Tiles', '', 'https://estimate-project.dentalguru.software/uploads/image_items-1736497784370Ceramic-tiles-Properties-types-advantages-disadvantages-and-uses-f.jpg', 3, 120, '2025-01-13 12:58:17'),
+(39, 1, 20, 'Roofing', 'Concrete', 'RCC Mix', '', 'https://estimate-project.dentalguru.software/uploads/image_items-1736497651100reinforced-ready-mix-concrete-500x500.webp', 3, 15000, '2025-01-13 13:25:41'),
+(41, 1, 25, 'Paint and Finishes', 'Interior Paint', 'Emulsion Paint', '', 'https://estimate-project.dentalguru.software/uploads/image_items-1736498092519shutterstock_151976957-900x600-1-1-1.webp', 1, 500, '2025-01-13 13:37:59'),
+(42, 1, 24, 'Carpentry', 'Wood', 'Wooden Planks', '', 'https://estimate-project.dentalguru.software/uploads/image_items-1736497958128timber-wooden-plank.jpg', 1, 300, '2025-01-13 13:38:11'),
+(45, 1, 26, 'Doors and Windows', 'Doors', 'Wooden Doors', '', 'https://estimate-project.dentalguru.software/uploads/image_items-173649814981471D0WzlLzQL.jpg', 1, 5000, '2025-01-14 08:19:26'),
+(49, 1, 15, 'Foundation', 'Cement', 'Portland Cement', 'High-strength cement', 'https://estimate-project.dentalguru.software/uploads/image_items-1736496379323portland-cement.jpg', 1, 350, '2025-01-16 11:47:47');
 
 --
 -- Indexes for dumped tables

@@ -13,14 +13,17 @@ function items() {
   const navigate = useNavigate();
   const [subcategories, setSubCategories] = useState([]);
   const [items, setItems] = useState([]);
-  const [currentLead, setCurrentLead] = useState({
+  const [currentLead, setCurrentLead] = useState({      
     subcategory_id: "",
     subcategory_name: "",
     item_name: "",
     description: "",
+    qty:"",
+    amount_for_1000_sqft:"",
     unit_price: "",
     image_items: null,
     unit_price_type: "",
+    rate_per_sqft:"",
     image_preview: "",
     recommendation_description:"",
     sq_fit_range:""
@@ -44,7 +47,7 @@ function items() {
   const fetchSubCategories = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:9000/api/subcategories",
+        "https://estimate-project.dentalguru.software/api/subcategories",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -59,7 +62,7 @@ function items() {
   };
   const fetchItems = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/items",
+      const response = await axios.get("https://estimate-project.dentalguru.software/api/items",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -93,8 +96,26 @@ function items() {
           updatedLead.subcategory_id = ""; // Reset if no match
         }
       }
+      if (
+          name === "unit_price" || name === "qty"
+          
+        ) {
+          const rate = parseFloat(updatedLead.unit_price) || 0;
+         
+        const qtysumunitptice = rate * updatedLead.qty || 0;
+        console.log(qtysumunitptice);
+        
+  
+          updatedLead.amount_for_1000_sqft =
+            qtysumunitptice;
+
+          updatedLead.rate_per_sqft =
+           updatedLead.amount_for_1000_sqft / 1000;
+        }
   
       return updatedLead;
+      console.log(updatedLead);
+      
     });
   };
   
@@ -106,9 +127,12 @@ function items() {
       subcategory_name: "",
       item_name: "",
       description: "",
+      qty:"",
+      amount_for_1000_sqft:"",
       unit_price: "",
       image_items: "",
       unit_price_type: "",
+      rate_per_sqft:"",
       recommendation_description:"",
       sq_fit_range:""
     });
@@ -116,6 +140,8 @@ function items() {
   };
 
   const handleEditClick = (item) => {
+    console.log(item);
+    
     setIsEditing(true);
     setCurrentLead({
       item_id: item.item_id,
@@ -123,8 +149,11 @@ function items() {
       subcategory_name: item.subcategory_name,
       item_name: item.item_name,
       description: item.description,
+      qty: item.qty,
+      amount_for_1000_sqft: item.amount_for_1000_sqft,
       unit_price: item.unit_price,
       unit_price_type: item.unit_price_type,
+      rate_per_sqft: item.rate_per_sqft,
       image_items: null, 
       image_preview: item.image_items, 
       recommendation_description:item.recommendation_description,
@@ -139,7 +168,7 @@ function items() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`http://localhost:9000/api/items/${item_id}`,
+        await axios.delete(`https://estimate-project.dentalguru.software/api/items/${item_id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -170,6 +199,14 @@ function items() {
       formErrors.description = "Description is required";
       isValid = false;
     }
+    if (!currentLead.qty) {
+      formErrors.qty = "Qty is required";
+      isValid = false;
+    }
+    if (!currentLead.amount_for_1000_sqft) {
+      formErrors.amount_for_1000_sqft = "Amount For 1000 Sqft is required";
+      isValid = false;
+    }
 
     if (!currentLead.unit_price) {
       formErrors.unit_price = "Unit Price is required";
@@ -180,6 +217,10 @@ function items() {
 
     if (!currentLead.unit_price_type) {
       formErrors.unit_price_type = "Unit Price Type is required";
+      isValid = false;
+    }
+    if (!currentLead.rate_per_sqft) {
+      formErrors.rate_per_sqft = "Rate Per Sqft Type is required";
       isValid = false;
     }
     if (!currentLead.recommendation_description) {
@@ -195,6 +236,7 @@ function items() {
     return isValid;
   };
   const saveChanges = async () => {
+   console.log(currentLead);
    
     if (validateForm()) {
     const formData = new FormData();
@@ -202,8 +244,11 @@ function items() {
     formData.append("subcategory_name", currentLead.subcategory_name);
     formData.append("item_name", currentLead.item_name);
     formData.append("description", currentLead.description);
+    formData.append("qty", currentLead.qty);
+    formData.append("amount_for_1000_sqft", currentLead.amount_for_1000_sqft);
     formData.append("unit_price", currentLead.unit_price);
     formData.append("unit_price_type", currentLead.unit_price_type);
+    formData.append("rate_per_sqft", currentLead.rate_per_sqft);
     formData.append("recommendation_description", currentLead.recommendation_description);
     formData.append("sq_fit_range", currentLead.sq_fit_range);
     if (currentLead.image_items) {
@@ -217,7 +262,7 @@ function items() {
       if (isEditing) {
         // Update existing lead
         await axios.put(
-          `http://localhost:9000/api/items/${currentLead.item_id}`,
+          `https://estimate-project.dentalguru.software/api/items/${currentLead.item_id}`,
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" ,'Authorization': `Bearer ${token}` },
@@ -227,7 +272,7 @@ function items() {
         fetchItems(); // Refresh the list
       } else {
         // Create new lead
-        await axios.post("http://localhost:9000/api/items", formData, {
+        await axios.post("https://estimate-project.dentalguru.software/api/items", formData, {
           headers: { "Content-Type": "multipart/form-data"  ,'Authorization': `Bearer ${token}`},
         });
         fetchItems(); // Refresh the list
@@ -300,10 +345,19 @@ function items() {
                     Description
                   </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Qty
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Amount For 1000 Sqft
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Unit Price
                   </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Unit Type
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                  Rate Per Sqft
                   </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                   Image
@@ -335,7 +389,7 @@ function items() {
                   </tr>
                 ) : (
                   currentLeads.map((item, index) => {
-                    console.log(item, "fdfsdfsdfsdfds");
+
 
                     return (
                       <tr
@@ -357,10 +411,19 @@ function items() {
                           {item.description}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          {item.qty}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          {item.amount_for_1000_sqft}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                           {item.unit_price}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                           {item.unit_price_type}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          {item.rate_per_sqft}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                         <img
@@ -504,6 +567,22 @@ function items() {
                     <span className="text-red-500">{errors.description}</span>
                   )}
                 </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Qty</label>
+                  <input
+                    type="text"
+                    name="qty"
+                    value={currentLead.qty}
+                    onChange={handleInputChange}
+                    className={`w-full px-3 py-2 border ${
+                      errors.qty ? "border-red-500" : "border-gray-300"
+                    } rounded`}
+                  />
+                     {errors.qty && (
+                    <span className="text-red-500">{errors.qty}</span>
+                  )}
+                </div>
+       
                 <div className="mb-4">
                   <label className="block text-gray-700">Unit Price</label>
                   <input

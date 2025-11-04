@@ -26,11 +26,11 @@ function Selected_Items_Cart({refresh}) {
       fetchUserProfile();
       fetchDiscount();
        fetchCategories();
-    }, []);
+    }, [refresh]);
 
     const fetchAllSelectedData = async () => {
       try {
-        const response = await axios.get(`http://localhost:9000/api/user-selection-by-userid/${user.id}`,
+        const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-selection-by-userid/${user.id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ function Selected_Items_Cart({refresh}) {
     };
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get(`http://localhost:9000/api/user-profile/${user.id}`,
+        const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-profile/${user.id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ function Selected_Items_Cart({refresh}) {
     const fetchDiscount = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:9000/api/discount-data",
+          "https://estimate-project.dentalguru.software/api/discount-data",
           {
             headers: {
               'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ function Selected_Items_Cart({refresh}) {
 
  
     const fetchCategories = async () => {
-      const response = await axios.get(`http://localhost:9000/api/categories-data`,
+      const response = await axios.get(`https://estimate-project.dentalguru.software/api/categories-data`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ function Selected_Items_Cart({refresh}) {
       if (isConfirmed) {
         try {
           const response = await axios.put(
-            `http://localhost:9000/api/user-final-amount/${user.id}`,
+            `https://estimate-project.dentalguru.software/api/user-final-amount/${user.id}`,
             { after_selection_amount: finalAmount },
             {
               headers: {
