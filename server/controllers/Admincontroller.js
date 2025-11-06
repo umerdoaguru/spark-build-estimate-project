@@ -6,11 +6,19 @@ const createcategories = (req, res) => {
     const {
         category_name
     } = req.body;
-    const sql = `INSERT INTO categories (category_name) VALUES (?)`;
+
+      if (!req.file) {
+      return res.status(400).json({ error: "logo file is required" });
+    }
+    
+    const { filename } = req.file; // Extract file details from multer
+ 
+    const iconPath = "http://localhost:9000/uploads/" + filename;
+    const sql = `INSERT INTO categories (category_name,icon) VALUES (?,?)`;
     db.query(
       sql,
       [
-        category_name
+        category_name,iconPath
       ],
       (err, results) => {
         if (err) {
@@ -61,10 +69,19 @@ const createcategories = (req, res) => {
       const {
         category_name
       } = req.body;
+
+       let iconPath = req.body.icon; // Retain existing image if no new image uploaded
+
+
+
+      if (req.file) {
+        const { filename } = req.file; // Get new file details if provided
+        iconPath = `http://localhost:9000/uploads/${filename}`;
+      }
   
       // Construct SQL query to update the lead
       const sql = `UPDATE categories 
-                   SET category_name = ? 
+                   SET category_name = ? ,icon = ?
                    WHERE category_id = ?`;
   
       // Execute the update query asynchronously
@@ -72,7 +89,7 @@ const createcategories = (req, res) => {
         db.query(
           sql,
           [
-           category_name,
+           category_name,iconPath,
            category_id
           ],
           (err, results) => {
@@ -247,7 +264,7 @@ const createitems = (req, res) => {
     
     const { filename } = req.file; // Extract file details from multer
     console.log(subcategory_id , subcategory_name,item_name,	description,	unit_price,unit_price_type,filename,recommendation_description,sq_fit_range);
-    const ItemImagePath = "https://estimate-project.dentalguru.software/uploads/" + filename;
+    const ItemImagePath = "http://localhost:9000/uploads/" + filename;
     console.log(ItemImagePath);
     
     const sql = `
@@ -331,7 +348,7 @@ console.log(ItemImagePath);
 
       if (req.file) {
         const { filename } = req.file; // Get new file details if provided
-        ItemImagePath = `https://estimate-project.dentalguru.software/uploads/${filename}`;
+        ItemImagePath = `http://localhost:9000/uploads/${filename}`;
       }
       console.log(ItemImagePath);
       

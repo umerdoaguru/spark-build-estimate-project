@@ -24,7 +24,7 @@ const AdminResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.post(
-        "https://estimate-project.dentalguru.software/api/sendOtp-superadmin",
+        "http://localhost:9000/api/sendOtp-superadmin",
         {
           email,
         }
@@ -47,7 +47,7 @@ const AdminResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.post(
-        "https://estimate-project.dentalguru.software/api/verifyOtp-superadmin",
+        "http://localhost:9000/api/verifyOtp-superadmin",
         {
           email,
           otp,
@@ -70,7 +70,7 @@ const AdminResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.put(
-        "https://estimate-project.dentalguru.software/api/resetPassword-superadmin",
+        "http://localhost:9000/api/resetPassword-superadmin",
         {
           email,
           password: newPassword,

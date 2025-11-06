@@ -15,7 +15,7 @@ function UserProfile() {
         <UserSider />
         <div className="2xl:w-[89%]  2xl:ml-40 mx-4  ">
           <Selected_Items_Cart/>
-        <div className="flex flex-col  lg:flex-row mt-14">
+        <div className="flex flex-col  lg:flex-row mt-1">
           <div className="flex-grow md:p-4 mt-14 lg:mt-0 sm:ml-0">
 
 

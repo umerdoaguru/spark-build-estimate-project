@@ -16,11 +16,12 @@ import DiscountBar from "../components/Admin/DiscountBar";
 
 
 
+
 function AdminRoutes() {
 
   return (
     <>
-   
+ 
       <Routes>
         {/* Admin routes */}
         <Route path="/" element={<Categories />} />

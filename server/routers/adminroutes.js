@@ -27,10 +27,10 @@ const authenticateAdmin = require('../Middleware/authenticateAdmin');
 const router = express.Router();
 
 // Routes for form operations
-router.post('/categories',authenticateAdmin,createcategories);
+router.post('/categories',authenticateAdmin,upload.single('icon'),createcategories);
 router.get("/categories/:id",authenticateAdmin, getcategoriesbyid);
 router.get("/categories",authenticateAdmin, getcategories);
-router.put("/categories/:category_id",authenticateAdmin, updatecategories);
+router.put("/categories/:category_id",authenticateAdmin,upload.single('icon'), updatecategories);
 router.delete("/categories/:category_id",authenticateAdmin, deletecategories);
 router.post('/subcategories',authenticateAdmin,createsubcategories);
 router.get("/subcategories/:id",authenticateAdmin, getsubcategoriesbyid);

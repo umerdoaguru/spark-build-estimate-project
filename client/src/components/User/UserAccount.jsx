@@ -49,7 +49,7 @@ function UserAccount() {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-profile/${user.id}`,
+      const response = await axios.get(`http://localhost:9000/api/user-profile/${user.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -115,7 +115,7 @@ function UserAccount() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`https://estimate-project.dentalguru.software/api/user-profile/${id}`,
+        await axios.delete(`http://localhost:9000/api/user-profile/${id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -187,7 +187,7 @@ function UserAccount() {
       if (isEditing) {
         // Update existing lead
         await axios.put(
-          `https://estimate-project.dentalguru.software/api/user-profilebyid/${currentLead.user_id}`,UserProfileData,
+          `http://localhost:9000/api/user-profilebyid/${currentLead.user_id}`,UserProfileData,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -199,7 +199,7 @@ function UserAccount() {
         closePopup();
       } else {
         // Create new lead
-        await axios.post("https://estimate-project.dentalguru.software/api/user-profile", UserProfileData,
+        await axios.post("http://localhost:9000/api/user-profile", UserProfileData,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -248,13 +248,13 @@ function UserAccount() {
       <UserSider refresh={refresh} />
       <>
         <div className="2xl:w-[89%]  2xl:ml-40 mx-4  ">
-          <div className="main  mt-[6rem]">
+          <div className="main  mt-[1rem]">
             <Selected_Items_Cart/>
             <h1 className="text-2xl text-center font-medium">User Account</h1>
             <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
 
             {/* Button to create a new lead */}
-            <div className="mb-4">
+            {/* <div className="mb-4">
   {!userprofile && ( // Only render if userprofile has no data
     <button
       className="bg-blue-500 text-white px-4 py-2 mt-5 mx-1 rounded hover:bg-blue-700 font-medium"
@@ -263,66 +263,88 @@ function UserAccount() {
       Add User Profile
     </button>
   )}
-</div>
+</div> */}
 
           </div>
 
           <div className=" overflow-x-auto mt-4   mx-1">
           {userprofile? ( 
-          <div className="max-w-md mx-auto mt-10 bg-white shadow-lg rounded-lg border border-gray-200">
-      <div className="p-6">
-        
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">{userprofile?.name}</h2>
-        <p className="text-gray-600 mb-2">
-          <span className="font-semibold">User ID:</span> {userprofile?.user_id}
-        </p>
-        <p className="text-gray-600 mb-2">
-          <span className="font-semibold">Email:</span> {userprofile?.email}
-        </p>
-        <p className="text-gray-600 mb-2">
-          <span className="font-semibold">Plot Size:</span> {userprofile?.plot_area}
-        </p>
-        <p className="text-gray-600 mb-2">
-          <span className="font-semibold">Project Type:</span> {userprofile?.project_type}
-        </p>
-      
-        <p className="text-gray-600 mb-2">
-          <span className="font-semibold">Number of Floor :</span> {userprofile?.no_floor}
-        </p>
-      
-      
-      
-        <p className="text-gray-600 mb-2">
-          <span className="font-semibold">Budget:</span> ₹{userprofile?.budgest}
-        </p>
- 
-        <p className="text-gray-600 mb-2">
-          <span className="font-semibold">After Selection Amount : -</span> {userprofile?.after_selection_amount == 0 ? "pending":userprofile.after_selection_amount}
-        </p>
-        <p className="text-gray-600 mb-2">
-          <span className="font-semibold">Created Date:</span>{" "}
-          {new Date(userprofile?.created_date).toLocaleString()}
-        </p>
-      </div>
-      <div className="text-end">
-      <button
-                          className="text-blue-500 hover:text-blue-700"
-                          onClick={() => handleEditClick(userprofile)}
-                        >
-                          <BsPencilSquare size={20} />
-                        </button>
-                        <button
-                          className="text-red-500 hover:text-red-700 mx-2"
-                          onClick={() => handleDeleteClick(userprofile.user_id)}
-                        >
-                          <BsTrash size={20} />
-                        </button>
- </div>
-                        </div>
+        <div className="max-w-md mx-auto bg-gradient-to-br from-yellow-400 via-orange-400 to-red-400 shadow-xl rounded-2xl overflow-hidden transform transition duration-500 ">
+  <div className="bg-white/90 backdrop-blur-md p-6">
+    <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-yellow-600 text-center mb-4">
+      {userprofile?.name}
+    </h2>
+
+    <div className="space-y-3 text-gray-700">
+      <p>
+        <span className="font-semibold text-orange-700">User ID:</span>{" "}
+        {userprofile?.user_id}
+      </p>
+      <p>
+        <span className="font-semibold text-orange-700">Email:</span>{" "}
+        {userprofile?.email}
+      </p>
+      <p>
+        <span className="font-semibold text-orange-700">Plot Size:</span>{" "}
+        {userprofile?.plot_area}
+      </p>
+      <p>
+        <span className="font-semibold text-orange-700">Project Type:</span>{" "}
+        {userprofile?.project_type}
+      </p>
+      <p>
+        <span className="font-semibold text-orange-700">Number of Floors:</span>{" "}
+        {userprofile?.no_floor}
+      </p>
+      <p>
+        <span className="font-semibold text-orange-700">Budget:</span>{" "}
+        <span className="font-bold text-orange-800">₹{userprofile?.budgest}</span>
+      </p>
+      <p>
+        <span className="font-semibold text-orange-700">Estimated Cost:</span>{" "}
+        {userprofile?.after_selection_amount === 0 ? (
+          <span className="italic text-gray-500">Pending</span>
+        ) : (
+          <span className="font-bold text-orange-800">
+            ₹{userprofile?.after_selection_amount}
+          </span>
+        )}
+      </p>
+      <p>
+        <span className="font-semibold text-orange-700">Created Date:</span>{" "}
+        {new Date(userprofile?.created_date).toLocaleString()}
+      </p>
+    </div>
+  </div>
+
+  <div className="flex justify-end gap-4 p-4 bg-gradient-to-r from-orange-500 to-yellow-400 border-t border-orange-200">
+    <button
+      className="bg-white/80 p-2 rounded-full hover:bg-white text-orange-600 hover:text-orange-700 transition duration-300"
+      onClick={() => handleEditClick(userprofile)}
+      title="Edit"
+    >
+      <BsPencilSquare size={20} />
+    </button>
+    <button
+      className="bg-white/80 p-2 rounded-full hover:bg-white text-red-600 hover:text-red-700 transition duration-300"
+      onClick={() => handleDeleteClick(userprofile.user_id)}
+      title="Delete"
+    >
+      <BsTrash size={20} />
+    </button>
+  </div>
+</div>
+
           ):(
             <div className="max-w-2xl mx-auto mt-10 bg-white shadow-lg rounded-lg border border-gray-200">
-      <div className="p-6">
-       <h1 className="text-center font-bold text-2xl ">PleaseCreate User Profile By User Profile Button</h1>
+      <div className="p-6 text-center">
+       <h1 className="text-center font-bold text-2xl ">Please Create User Profile</h1>
+        <button
+      className="bg-blue-500 text-white px-4 py-2 mt-5 mx-1 rounded hover:bg-blue-700 font-medium"
+      onClick={handleCreateClick}
+    >
+      Add User Profile
+    </button>
       </div>
      
     </div>

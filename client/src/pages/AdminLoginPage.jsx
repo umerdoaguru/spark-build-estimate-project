@@ -25,7 +25,7 @@ function AdminLoginPage() {
       try {
         setLoading(true)
         const res = await axios.post(
-          "https://estimate-project.dentalguru.software/api/login",
+          "http://localhost:9000/api/login",
           formData
         );
         if (res.data.success) {

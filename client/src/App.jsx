@@ -10,6 +10,8 @@ import EmployeeRoutes from './routes/UserRoutes';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminResetPassword from './pages/AdminResetPassword';
 import UserResetPassword from './pages/UserResetPassword';
+import SparkCursor from './components/SparkCursor';
+
 
 function App() {
   const user = useSelector((state) => state.auth.user);
@@ -18,7 +20,10 @@ function App() {
     
     <>
     <div className=" overflow-hidden">
-    
+   
+   
+      <SparkCursor />
+      
     <Routes>
         <Route path="/register-doaguru-spark-build" element={<RegisteredAdmin />} />
         <Route path="/register-user" element={<RegisteredUser />} />

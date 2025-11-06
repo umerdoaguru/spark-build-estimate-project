@@ -27,7 +27,7 @@ function UserAllSelecteditems() {
 
   const fetchAllSelectedData = async () => {
     try {
-      const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-selection-by-userid/${user.id}`,
+      const response = await axios.get(`http://localhost:9000/api/user-selection-by-userid/${user.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ function UserAllSelecteditems() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`https://estimate-project.dentalguru.software/api/user-selection/${selection_id}`,
+        await axios.delete(`http://localhost:9000/api/user-selection/${selection_id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ function UserAllSelecteditems() {
         fetchAllSelectedData(); // Refresh the list after deletion
 
          const response = await axios.put(
-            `https://estimate-project.dentalguru.software/api/user-final-amount/${user.id}`,
+            `http://localhost:9000/api/user-final-amount/${user.id}`,
             { after_selection_amount: "pending" },
             {
               headers: {
@@ -98,7 +98,7 @@ function UserAllSelecteditems() {
       <UserSider />
       <>
         <div className="2xl:w-[89%]  2xl:ml-40 mx-4 ">
-          <div className="main mt-[6rem]">
+          <div className="main mt-[1rem]">
       <Selected_Items_Cart refresh={refresh}/>
             <h1 className="text-2xl text-center font-medium">
             All Selected Items 

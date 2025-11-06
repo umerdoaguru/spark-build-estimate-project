@@ -15,7 +15,7 @@ function Categories_Card() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('https://estimate-project.dentalguru.software/api/categories-data',
+        const response = await axios.get('http://localhost:9000/api/categories-data',
           {
             headers: {
               'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ function Categories_Card() {
     <>
       <MainHeader />
       <UserSider />
-      <div className="flex-1 max-w-full 2xl:w-[93%] 2xl:ml-32 mt-[5rem]">
+      <div className="flex-1 max-w-full 2xl:w-[93%] 2xl:ml-32 mt-[1rem]">
         <Selected_Items_Cart/>
         <h1 className="text-2xl text-center font-medium">
           Categories Management
@@ -48,9 +48,12 @@ function Categories_Card() {
               <Link to={`/categories/${category.category_id}`}> {/* Dynamic link */}
                 <div className="shadow-md rounded-2xl overflow-hidden cursor-pointer text-gray-600 border-2">
                   <div className="p-10 flex flex-col items-center text-center">
-                    {/* <div className="text-3xl text-gray-700">
-                      <GiFiles /> 
-                    </div> */}
+                    <div className="text-3xl text-gray-700">
+                  <img src={category.icon}
+                   alt="Preview"
+        className=" w-22 3xl:h-[8rem] xl:h-[3rem] lg:h-[4rem] object-cover rounded"
+                   />  
+                    </div>
                     <div className="mt-2">
                       <h5 className="text-gray-800 text-xl font-semibold">
                         {category.category_name} {/* Category name */}

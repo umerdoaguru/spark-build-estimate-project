@@ -55,7 +55,7 @@ function UserProfileEdit(){
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          `https://estimate-project.dentalguru.software/api/user-profile-data/${id}`,
+          `http://localhost:9000/api/user-profile-data/${id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ function UserProfileEdit(){
     const fetchUserSelection = async () => {
       try {
         const response = await axios.get(
-          `https://estimate-project.dentalguru.software/api/user-selection-by-userid-data/${id}`,
+          `http://localhost:9000/api/user-selection-by-userid-data/${id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ function UserProfileEdit(){
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `https://estimate-project.dentalguru.software/api/user-profile/${id}`,
+              `http://localhost:9000/api/user-profile/${id}`,
               UserProfileData , {
             headers: {
               'Content-Type': 'application/json',
@@ -157,7 +157,7 @@ function UserProfileEdit(){
             closePopup();
           } else {
             // Create new lead
-            await axios.post("https://estimate-project.dentalguru.software/api/user-register", UserProfileData);
+            await axios.post("http://localhost:9000/api/user-register", UserProfileData);
     
             // Construct WhatsApp message link with encoded parameters
          
@@ -273,25 +273,25 @@ function UserProfileEdit(){
                              
                              
                               <div>
-                                <label className="text-info">total_construction_area</label>
+                                <label className="text-info">Total Construction Area</label>
                                 <div className="p-2 bg-gray-100 rounded">
                                   <p className="m-0">{user?.total_construction_area}</p>
                                 </div>
                               </div>
                               <div>
-                                <label className="text-info">budgest</label>
+                                <label className="text-info">Budgest</label>
                                 <div className="p-2 bg-gray-100 rounded">
                                   <p className="m-0">{user?.budgest}</p>
                                 </div>
                               </div>
                               <div>
-                                <label className="text-info">per_sq_fit</label>
+                                <label className="text-info">Per Sq Fit</label>
                                 <div className="p-2 bg-gray-100 rounded">
                                   <p className="m-0">{user?.per_sq_fit}</p>
                                 </div>
                               </div>
                               <div>
-                                <label className="text-info">after_selection_amount</label>
+                                <label className="text-info">Estimated Cost</label>
                                 <div className="p-2 bg-gray-100 rounded">
                                   <p className="m-0">{user?.after_selection_amount}</p>
                                 </div>

@@ -135,7 +135,7 @@ const UserSider = ({refresh}) => {
   
   const fetchUserProfile = async () => {
     try {
-      const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-profile/${user.id}`,
+      const response = await axios.get(`http://localhost:9000/api/user-profile/${user.id}`,
         {
           headers: {
             'Content-Type': 'application/json',

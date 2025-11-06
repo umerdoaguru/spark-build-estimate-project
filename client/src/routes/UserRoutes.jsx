@@ -11,6 +11,7 @@ import Selecteditems from "../components/User/SeletedItems";
 import EstimateCalculator from "../components/User/EstimateCalculator";
 import Categories_Card from "../components/User/Categories_Card";
 import UserAllSelecteditems from "../components/User/UserAllSelectedItems";
+import AutoTypingHeadline from "../components/AutoTypingHeadline";
 
 
 
@@ -22,6 +23,7 @@ function EmployeeRoutes() {
   return (
     <>
       <div style={{ overflow: "hidden" }}>
+        <AutoTypingHeadline />
         <Routes>
           {/* Admin routes */}
 

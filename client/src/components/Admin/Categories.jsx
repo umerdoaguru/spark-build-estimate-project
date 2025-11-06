@@ -7,6 +7,7 @@ import  axios  from 'axios';
 import moment from 'moment';
 import { BsPencilSquare, BsTrash } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
+import cogoToast from 'cogo-toast';
 
 
 function Categories() {
@@ -15,7 +16,9 @@ function Categories() {
     const user = useSelector((state) => state.auth.user);
     const [employees, setEmployees] = useState([]);
     const [currentLead, setCurrentLead] = useState({
-     category_name: ""
+     category_name: "",
+     icon: null,
+     icon_preview: "", 
     });
     const token = user?.token;
 
@@ -39,7 +42,7 @@ function Categories() {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "https://estimate-project.dentalguru.software/api/categories",
+          "http://localhost:9000/api/categories",
           {
             headers: {
               'Content-Type': 'application/json',
@@ -53,9 +56,9 @@ function Categories() {
       }
     };
     const handleInputChange = (e) => {
-      const { name, value } = e.target;
+      const { name, value,files } = e.target;
       setCurrentLead((prevLead) => {
-        const updatedLead = { ...prevLead, [name]: value };
+        const updatedLead = { ...prevLead, [name]: files && files.length > 0 ? files[0] : value  };
   
         // If createdTime changes, update actual_date accordingly
        
@@ -66,8 +69,8 @@ function Categories() {
     const handleCreateClick = () => {
       setIsEditing(false);
       setCurrentLead({
-        category_name: ""
-       
+        category_name: "",
+       icon: ""
       });
       setShowPopup(true);
     };
@@ -75,8 +78,10 @@ function Categories() {
     const handleEditClick = (category) => {
       setIsEditing(true);
       setCurrentLead({
-        ...category,
-        
+        category_id: category.category_id,
+       category_name: category.category_name,
+       icon: null,
+      icon_preview: category.icon, 
       });
       setShowPopup(true);
     };
@@ -88,7 +93,7 @@ function Categories() {
       );
       if (isConfirmed) {
         try {
-          await axios.delete(`https://estimate-project.dentalguru.software/api/categories/${id}`,
+          await axios.delete(`http://localhost:9000/api/categories/${id}`,
             {
               headers: {
                 'Content-Type': 'application/json',
@@ -119,11 +124,13 @@ function Categories() {
     
     const saveChanges = async () => {
       if (validateForm()) {
-
-      const leadData = {
-        ...currentLead,
-      
-      };
+ const formData = new FormData();
+      formData.append("category_name", currentLead.category_name);
+    if (currentLead.icon) {
+      formData.append("icon", currentLead.icon);
+    } else if (currentLead.icon_preview) {
+      formData.append("icon", currentLead.icon_preview);
+    }
     
    
         try {
@@ -131,11 +138,11 @@ function Categories() {
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `https://estimate-project.dentalguru.software/api/categories/${currentLead.category_id}`,
-              leadData,
+              `http://localhost:9000/api/categories/${currentLead.category_id}`,
+              formData,
               {
                 headers: {
-                  'Content-Type': 'application/json',
+                  'Content-Type': "multipart/form-data",
                   'Authorization': `Bearer ${token}`
               }}
             );
@@ -143,10 +150,10 @@ function Categories() {
             closePopup();
           } else {
             // Create new lead
-            await axios.post("https://estimate-project.dentalguru.software/api/categories", leadData,
+            await axios.post("http://localhost:9000/api/categories", formData,
               {
                 headers: {
-                  'Content-Type': 'application/json',
+                  'Content-Type': "multipart/form-data",
                   'Authorization': `Bearer ${token}`
               }});
     
@@ -160,6 +167,7 @@ function Categories() {
         catch (error) {
           setLoading(false)
           console.error("Error saving lead:", error);
+           cogoToast.error(error?.response?.data?.message || "An error occurred formate is image Invalid file type. Only JPG, JPEG, WEBP, and PNG are allowed");
         }
       }
       
@@ -230,6 +238,9 @@ function Categories() {
                     Categories Name
                     </th>
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                  icon
+                  </th>
+                    <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                       Date
                     </th>
                     
@@ -266,6 +277,14 @@ function Categories() {
                         
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                           {category.category_name}
+                        </td>
+                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                        <img
+        src={category.icon}
+        alt="Preview"
+        className=" w-22 3xl:h-[8rem] xl:h-[3rem] lg:h-[4rem] object-cover rounded"
+      />
+     
                         </td>
                        
                         
@@ -325,7 +344,7 @@ function Categories() {
   
             {showPopup && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="w-full max-w-md p-6 mx-2 bg-white rounded-lg shadow-lg h-[25%] overflow-y-auto">
+                <div className="w-full max-w-md p-6 mx-2 bg-white rounded-lg shadow-lg h-[40%] overflow-y-auto">
                   <h2 className="text-xl mb-4">
                     {isEditing ? "Edit Category" : "Add Category"}
                   </h2>
@@ -344,6 +363,29 @@ function Categories() {
                     <span className="text-red-500">{errors.category_name}</span>
                   )}
               </div>
+                 <div className="mb-4">
+  <label className="block text-gray-700">Image Items</label>
+  {currentLead.icon_preview && (
+    <div className="mb-2">
+      <img
+        src={currentLead.icon_preview}
+        alt="Preview"
+        className="w-32 h-32 object-cover rounded"
+      />
+    </div>
+  )}
+  <input
+    type="file"
+    name="icon"
+    onChange={handleInputChange}
+    className={`w-full px-3 py-2 border ${
+      errors.icon ? "border-red-500" : "border-gray-300"
+    } rounded`}
+  />
+   {errors.icon && (
+                    <span className="text-red-500">{errors.icon}</span>
+                  )}
+</div>
                  
                 
                 

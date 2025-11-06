@@ -30,7 +30,7 @@ function Selected_Items_Cart({refresh}) {
 
     const fetchAllSelectedData = async () => {
       try {
-        const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-selection-by-userid/${user.id}`,
+        const response = await axios.get(`http://localhost:9000/api/user-selection-by-userid/${user.id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ function Selected_Items_Cart({refresh}) {
     };
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-profile/${user.id}`,
+        const response = await axios.get(`http://localhost:9000/api/user-profile/${user.id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ function Selected_Items_Cart({refresh}) {
     const fetchDiscount = async () => {
       try {
         const response = await axios.get(
-          "https://estimate-project.dentalguru.software/api/discount-data",
+          "http://localhost:9000/api/discount-data",
           {
             headers: {
               'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ function Selected_Items_Cart({refresh}) {
 
  
     const fetchCategories = async () => {
-      const response = await axios.get(`https://estimate-project.dentalguru.software/api/categories-data`,
+      const response = await axios.get(`http://localhost:9000/api/categories-data`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ function Selected_Items_Cart({refresh}) {
       if (isConfirmed) {
         try {
           const response = await axios.put(
-            `https://estimate-project.dentalguru.software/api/user-final-amount/${user.id}`,
+            `http://localhost:9000/api/user-final-amount/${user.id}`,
             { after_selection_amount: finalAmount },
             {
               headers: {
@@ -175,7 +175,7 @@ function Selected_Items_Cart({refresh}) {
     </button>
 
     <div className="border-t flex justify-start gap-3 mx-7 text-end items-center">
-      <span className="text-sm font-medium">Final Amount:</span>
+      <span className="text-sm font-medium">Estimated Cost:</span>
       <span className="text-lg font-bold text-green-600">
         ₹{alluserselection.reduce((sum, item) => sum + item.total_price, 0)}
       </span>
