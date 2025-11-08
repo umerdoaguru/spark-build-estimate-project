@@ -160,6 +160,16 @@ function  EstimateCalculator() {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         }});
+        const responsess = await axios.put(
+            `http://localhost:9000/api/user-final-amount/${user.id}`,
+            { after_selection_amount: "pending" },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+              },
+            }
+          );
         setRefresh(prev => !prev);
       // Check response for success or error
       if (response.data.success) {

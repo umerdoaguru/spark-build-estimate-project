@@ -14,7 +14,7 @@ const createUser = (req, res) => {
       // Extract numeric value from `plot_area`
   
       // Calculate per square foot budget
-      const per_sq_fit = Math.floor(budgest || 0  / total_construction_area || 0); 
+      const per_sq_fit = total_construction_area? Math.floor(budgest  / total_construction_area) : 0; 
       console.log(`Per square foot budget: ${per_sq_fit}`);
   
     
@@ -112,10 +112,18 @@ console.log( Math.floor(budgest / total_construction_area));
       const {
         name,email,plot_area,project_type,construction_area,no_floor,total_construction_area,budgest
       } = req.body;
+
+            const no_floormulti = no_floor  * construction_area 
+
+      const per_sq_fit = total_construction_area ? Math.floor(budgest / no_floormulti) : 0; 
+      console.log(per_sq_fit);
+      const total_construction_area_edit_floor = total_construction_area ? no_floormulti : 0;
+      console.log(total_construction_area_edit_floor);
+      
   
       // Construct SQL query to update the item
       const sql = `UPDATE user_profile 
-                   SET     name = ?,email = ?,plot_area = ?,project_type = ?,no_floor = ?, budgest = ?
+                   SET     name = ?,email = ?,plot_area = ?,project_type = ?,no_floor = ?, total_construction_area = ?, budgest = ?,per_sq_fit = ?
                    WHERE user_id  = ?`;
   
       // Execute the update query asynchronously
@@ -123,7 +131,7 @@ console.log( Math.floor(budgest / total_construction_area));
         db.query(
           sql,
           [
-           name,email,plot_area,project_type,no_floor,budgest,id
+           name,email,plot_area,project_type,no_floor,total_construction_area_edit_floor,budgest,per_sq_fit,id
           ],
           (err, results) => {
             if (err) {

@@ -501,40 +501,54 @@ console.log(ItemImagePath);
   
   
   const updateuser = async (req, res) => {
-    try {
-      const { id  } = req.params;
-      const {
-        user_name, email, phone_no
-      } = req.body;
-  console.log(user_name,email,phone_no);
-  
-      // Construct SQL query to update the item
-      const sql = `UPDATE user_enroll 
-                   SET  user_name = ? , email = ?, phone_no = ?
-                   WHERE id  = ?`;
-  
-      // Execute the update query asynchronously
-      await new Promise((resolve, reject) => {
-        db.query(
-          sql,
-          [
-            user_name, email, phone_no ,id
-          ],
-          (err, results) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(results);
-            }
-          }
-        );
+  try {
+    const { id } = req.params;
+    const { user_name, email, phone_no } = req.body;
+
+    console.log(user_name, email, phone_no);
+
+    const sqlEnroll = `
+      UPDATE user_enroll
+      SET user_name = ?, email = ?, phone_no = ?
+      WHERE id = ?
+    `;
+
+    const sqlProfile = `
+      UPDATE user_profile
+      SET name = ?, email = ?
+      WHERE user_id = ?
+    `;
+
+    // Convert db.query to promise
+    const executeQuery = (sql, params) => {
+      return new Promise((resolve, reject) => {
+        db.query(sql, params, (err, result) => {
+          if (err) reject(err);
+          else resolve(result);
+        });
       });
-  
-      res.status(200).json({ message: "user updated successfully" });
-    } catch (error) {
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  };
+    };
+
+    // First update user_enroll
+    await executeQuery(sqlEnroll, [user_name, email, phone_no, id]);
+
+    // Then update user_profile
+    await executeQuery(sqlProfile, [user_name, email, id]);
+
+    res.status(200).json({
+      status: "Success",
+      message: "User updated successfully"
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      status: "Failure",
+      error: "Internal Server Error"
+    });
+  }
+};
+
   
   const deleteuser = (req, res) => {
     const { id  } = req.params;
