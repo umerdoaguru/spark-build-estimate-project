@@ -410,6 +410,7 @@ function TaskMangement() {
                       className={`w-full px-3 py-2 border ${
                         errors.phone_no ? "border-red-500" : "border-gray-300"
                       } rounded`}
+                      maxLength={10}
                     />
                      {errors.phone_no && (
                     <span className="text-red-500">{errors.phone_no}</span>

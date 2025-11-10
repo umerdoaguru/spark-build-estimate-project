@@ -10,13 +10,15 @@ import MainHeader from "../../pages/MainHeader";
 import UserSider from './UserSider';
 import Selected_Items_Cart from "./Selected_Items_Cart";
 import { useSelector } from "react-redux";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function UserAllSelecteditems() {
 
   const [alluserselection, setAllUserSelection] = useState([]);
   const user = useSelector((state) => state.auth.user);
   const [currentPage, setCurrentPage] = useState(0);
-  const [leadsPerPage, setLeadsPerPage] = useState(10);
+  const [leadsPerPage, setLeadsPerPage] = useState(5);
  const [refresh, setRefresh] = useState(false);
  const token = user?.token;
 
@@ -91,6 +93,64 @@ function UserAllSelecteditems() {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
+const downloadPDF = () => {
+  const doc = new jsPDF("p", "mm", "a4");
+
+  doc.setFontSize(16);
+  doc.text("All Selected Items", 14, 12);
+
+  const columns = ["S.No","Sub Category","Item Name","Description","Total Price","Date"];
+
+  // table body (no total row here)
+  const body = alluserselection.map((item, i) => ([
+    String(i + 1),
+    String(item.subcategory_name ?? ""),
+    String(item.item_name ?? ""),
+    String(item.description ?? ""),
+    String(Number(item.total_price || 0).toLocaleString("en-IN")),
+    moment(item.created_at).format("DD MMM YYYY"),
+  ]));
+
+  // grand total
+  const grandTotal = alluserselection.reduce(
+    (s, it) => s + Number(it.total_price || 0), 0
+  );
+  const formattedTotal = grandTotal.toLocaleString("en-IN");
+
+  // footer (shows only once, at the end)
+  const foot = [[
+    { content: "Final Total", colSpan: 5, styles: { halign: "right", fontStyle: "bold",} },
+    { content: `Rs. ${formattedTotal}`, styles: { halign: "right", fontStyle: "bold" } },
+    "" // keep 6 columns total
+  ]];
+
+  autoTable(doc, {
+    head: [columns],
+    body,
+    foot,
+    showFoot: "lastPage",          // only on the last page
+    startY: 20,
+    margin: { left: 10, right: 10 },
+    styles: { fontSize: 9, overflow: "linebreak", cellWidth: "wrap" },
+    columnStyles: {
+      0: { cellWidth: 12 },
+      1: { cellWidth: 32 },
+      2: { cellWidth: 38 },
+      3: { cellWidth: 45 },
+      4: { cellWidth: 22, halign: "right" },
+      5: { cellWidth: 25 }
+    },
+   footStyles: {
+    fillColor: [100, 100, 100],   
+    textColor: [255, 255, 255],   
+    fontStyle: "bold"
+  }
+  });
+
+  doc.save(`${user.name}.pdf`);
+};
+
+
 
   return (
     <>
@@ -105,7 +165,13 @@ function UserAllSelecteditems() {
             </h1>
             <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
 
-          
+          <button
+  onClick={downloadPDF}
+  className="bg-blue-600 text-white px-4 py-2 rounded mb-4"
+>
+  Download PDF
+</button>
+
           </div>
 
           <div className=" overflow-x-auto mt-4 ">

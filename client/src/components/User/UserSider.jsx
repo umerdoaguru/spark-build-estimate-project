@@ -115,6 +115,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import cogoToast from "cogo-toast";
 
 const UserSider = ({refresh}) => {
   const location = useLocation();
@@ -142,7 +143,7 @@ const UserSider = ({refresh}) => {
             'Authorization': `Bearer ${token}`
         }});
       setUserProfile(response.data[0]);
-      console.log(userProfile);
+      console.log(userProfile);   
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
@@ -158,12 +159,19 @@ const UserSider = ({refresh}) => {
   };
 
   const handleNavigation = (path) => {
-    if (!userProfile) {
-      alert("Please create your user profile first!");
-      return;
-    }
-    navigate(path);
-  };
+  if (!userProfile) {
+    cogoToast.warn("Please create your user profile first!");
+    return;
+  }
+
+  if (!userProfile.total_construction_area) {
+    cogoToast.warn("Please Contact Admin For to Set Construction Area!");
+    return;
+  }
+
+  navigate(path);
+};
+
 
   return (
     <>

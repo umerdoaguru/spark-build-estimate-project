@@ -19,55 +19,7 @@ function Selected_Items_Cart({refresh}) {
     const token = user?.token;
     const [userprofile, setUserProfile] = useState([]);
 
-
-    useEffect(() => {
-
-      fetchAllSelectedData();
-      fetchUserProfile();
-      fetchDiscount();
-       fetchCategories();
-    }, [refresh]);
-
-    const fetchAllSelectedData = async () => {
-      try {
-        const response = await axios.get(`http://localhost:9000/api/user-selection-by-userid/${user.id}`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-          }});
-        setAllUserSelection(response.data);
-        console.log(response.data);
-        const finalAmount = alluserselection.reduce((sum, item) => sum + item.total_price, 0);
-  
-        // Check for eligible discount
-        const applicableDiscount = discount.find((d) => finalAmount >= d.value);
-        console.log(applicableDiscount);
-        
-    
-        if (applicableDiscount) {
-          setEligibleDiscount(applicableDiscount); // Store the eligible discount object
-          setIsPopupOpen(true); // Open the popup
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    const fetchUserProfile = async () => {
-      try {
-        const response = await axios.get(`http://localhost:9000/api/user-profile/${user.id}`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-          }});
-        setUserProfile(response.data[0]);
-        console.log(categories);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-  
+      
     const fetchDiscount = async () => {
       try {
         const response = await axios.get(
@@ -85,15 +37,74 @@ function Selected_Items_Cart({refresh}) {
       }
     };
 
+const fetchAllSelectedData = async () => {
+  try {
+    const response = await axios.get(
+      `http://localhost:9000/api/user-selection-by-userid/${user.id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+    );
+
+    setAllUserSelection(response.data); // only state update
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
+
+    const fetchUserProfile = async () => {
+      try {
+        const response = await axios.get(`http://localhost:9000/api/user-profile/${user.id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
+        setUserProfile(response.data[0]);
+        console.log(categories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+
+  
+
+
   
 
     useEffect(() => {
-   
-        fetchAllSelectedData();
-        fetchDiscount();
-        fetchCategories();
+      fetchAllSelectedData();
+      fetchDiscount();
+      fetchUserProfile();
+      fetchCategories();
 
     }, [refresh]); 
+
+    useEffect(() => {
+  if (discount.length === 0) return;
+
+  const finalAmount = alluserselection.reduce(
+    (sum, item) => sum + item.total_price,
+    0
+  );
+
+  const applicableDiscount = discount
+    .filter((d) => finalAmount >= d.value)
+    .sort((a, b) => b.value - a.value)[0];
+
+  if (applicableDiscount && finalAmount > 0) {
+    setEligibleDiscount(applicableDiscount);
+    setIsPopupOpen(true);
+  } else {
+    setIsPopupOpen(false);
+  }
+
+}, [alluserselection, discount]); 
+
 
  
     const fetchCategories = async () => {
@@ -175,9 +186,9 @@ function Selected_Items_Cart({refresh}) {
     </button>
 
     <div className="border-t flex justify-start gap-3 mx-7 text-end items-center">
-      <span className="text-sm font-medium">Estimated Cost:</span>
+      <span className="text-sm font-medium">Estimated Cost (Approx):</span>
       <span className="text-lg font-bold text-green-600">
-        ₹{alluserselection.reduce((sum, item) => sum + item.total_price, 0)}
+      ₹{alluserselection.reduce((sum, item) => sum + item.total_price, 0)}
       </span>
     </div>
   </div>

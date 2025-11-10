@@ -291,7 +291,7 @@ function UserProfileEdit(){
                                 </div>
                               </div>
                               <div>
-                                <label className="text-info">Estimated Cost</label>
+                                <label className="text-info">Estimated Cost (Approx)</label>
                                 <div className="p-2 bg-gray-100 rounded">
                                   <p className="m-0">{user?.after_selection_amount}</p>
                                 </div>
@@ -469,137 +469,141 @@ function UserProfileEdit(){
 
   
 {showPopup && ( 
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-              <div className="w-full max-w-md p-6 mx-2 bg-white rounded-lg shadow-lg h-[65%] overflow-y-auto">
-                <h2 className="text-xl mb-4">
-                  {isEditing ? "Edit User Profile" : "Add User Profile"}
-                </h2>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={user.name}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
-                  />
-                </div>
+           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  <div className="w-full max-w-3xl p-6 mx-2 bg-white rounded-lg shadow-lg max-h-[90vh] overflow-y-auto">
 
-                <div className="mb-4">
-                  <label className="block text-gray-700">Email Id</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={user.email}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
-                  />
-                </div>
+    <h2 className="text-xl mb-4">
+      {isEditing ? "Edit User Profile" : "Add User Profile"}
+    </h2>
 
-                <div className="mb-4">
-                  <label className="block text-gray-700">Plot Area</label>
-                  <input
-                    type="number"
-                    name="plot_area"
-                    value={currentLead.plot_area}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Construction Area</label>
-                  <input
-                    type="number"
-                    name="construction_area"
-                    value={currentLead.construction_area}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Number of Floor</label>
-                  <input
-                    type="number"
-                    name="no_floor"
-                    value={currentLead.no_floor}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
-                    required
-                  />
-                </div>
-   
-                <div className="mb-4">
-                  <label className="block text-gray-700">Total Construction Area</label>
-                  <input
-                    type="number"
-                    name="total_construction_area"
-                    value={currentLead.total_construction_area}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
-                    required
-                  />
-                </div>
+    {/* Two-column grid */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                <div className="mb-4">
-                  <label className="block text-gray-700">Project Type</label>
-   
-                   <select
-                    type="text"
-                    name="project_type"
-                    id="project_type"
-                    value={currentLead.project_type}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
-                  >
-                    <option value="">Select Lead Source</option>
+      <div>
+        <label className="block text-gray-700">Name</label>
+        <input
+          type="text"
+          name="name"
+          value={user.name}
+          onChange={handleInputChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
 
-                    <option value="Commercial">Commercial</option>
-                    <option value="Residential">Residential</option>
-                    <option value="Semi Residential">Semi Residential</option>
-                    <option value="Other">Other</option>
-                  </select>
-                  {currentLead.project_type === "Other" && (
-                    <input
-                      type="text"
-                      value={customProjectType}
-                      onChange={handleCustomProjectTypeChange}
-                      placeholder="Enter Your Project Type"
-                      className="mt-2 w-full px-3 py-2 border border-gray-300 rounded"
-                    />
-                  )}
-                </div>
+      <div>
+        <label className="block text-gray-700">Email Id</label>
+        <input
+          type="email"
+          name="email"
+          value={user.email}
+          onChange={handleInputChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
 
-                <div className="mb-4">
-                  <label className="block text-gray-700">Budgest</label>
-                  <input
-                    type="number"
-                    name="budgest"
-                    value={currentLead.budgest}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border  rounded`}
-                  />
-                </div>
+      <div>
+        <label className="block text-gray-700">Plot Area</label>
+        <input
+          type="number"
+          name="plot_area"
+          value={currentLead.plot_area}
+          onChange={handleInputChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
 
-                <div className="flex justify-end">
-                  <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
-                    onClick={saveChanges}
-                    disabled={loading}
-                  >
-                    {loading ? "Save..." : "Save"}
-                  </button>
+      <div>
+        <label className="block text-gray-700">Construction Area</label>
+        <input
+          type="number"
+          name="construction_area"
+          value={currentLead.construction_area}
+          onChange={handleInputChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
 
-                  <button
-                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
-                    onClick={closePopup}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
+      <div>
+        <label className="block text-gray-700">Number of Floor</label>
+        <input
+          type="number"
+          name="no_floor"
+          value={currentLead.no_floor}
+          onChange={handleInputChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
+
+      <div>
+        <label className="block text-gray-700">Total Construction Area</label>
+        <input
+          type="number"
+          name="total_construction_area"
+          value={currentLead.total_construction_area}
+          onChange={handleInputChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
+
+      <div className="col-span-1 md:col-span-2">
+        <label className="block text-gray-700">Project Type</label>
+        <select
+          name="project_type"
+          value={currentLead.project_type}
+          onChange={handleInputChange}
+          className="w-full p-2 border rounded"
+        >
+          <option value="">Select Lead Source</option>
+          <option value="Commercial">Commercial</option>
+          <option value="Residential">Residential</option>
+          <option value="Semi Residential">Semi Residential</option>
+          <option value="Other">Other</option>
+        </select>
+
+        {currentLead.project_type === "Other" && (
+          <input
+            type="text"
+            value={customProjectType}
+            onChange={handleCustomProjectTypeChange}
+            placeholder="Enter Your Project Type"
+            className="mt-2 w-full px-3 py-2 border rounded"
+          />
+        )}
+      </div>
+
+      <div>
+        <label className="block text-gray-700">Budget</label>
+        <input
+          type="number"
+          name="budgest"
+          value={currentLead.budgest}
+          onChange={handleInputChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
+
+    </div>
+
+    {/* Buttons */}
+    <div className="flex justify-end mt-6">
+      <button
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
+        onClick={saveChanges}
+        disabled={loading}
+      >
+        {loading ? "Save..." : "Save"}
+      </button>
+
+      <button
+        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
+        onClick={closePopup}
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
           )}
              
           </div>
