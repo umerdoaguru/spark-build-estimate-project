@@ -12,6 +12,7 @@ import Selected_Items_Cart from "./Selected_Items_Cart";
 import { useSelector } from "react-redux";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import CommentBox from "./CommentBox";
 
 function UserAllSelecteditems() {
 
@@ -29,7 +30,7 @@ function UserAllSelecteditems() {
 
   const fetchAllSelectedData = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/user-selection-by-userid/${user.id}`,
+      const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-selection-by-userid/${user.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -53,7 +54,7 @@ function UserAllSelecteditems() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`http://localhost:9000/api/user-selection/${selection_id}`,
+        await axios.delete(`https://estimate-project.dentalguru.software/api/user-selection/${selection_id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -64,7 +65,7 @@ function UserAllSelecteditems() {
         fetchAllSelectedData(); // Refresh the list after deletion
 
          const response = await axios.put(
-            `http://localhost:9000/api/user-final-amount/${user.id}`,
+            `https://estimate-project.dentalguru.software/api/user-final-amount/${user.id}`,
             { after_selection_amount: "pending" },
             {
               headers: {
@@ -160,6 +161,7 @@ const downloadPDF = () => {
         <div className="2xl:w-[89%]  2xl:ml-40 mx-4 ">
           <div className="main mt-[1rem]">
       <Selected_Items_Cart refresh={refresh}/>
+         <div className="mt-10"><CommentBox/></div>
             <h1 className="text-2xl text-center font-medium">
             All Selected Items by {user.name}
             </h1>

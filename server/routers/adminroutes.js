@@ -65,7 +65,7 @@ router.post('/headline',authenticateAdmin,createHeadline);
 router.get("/headline",getHeadline);
 router.put("/headline/:id",authenticateAdmin, updateHeadline);
 router.delete("/headline/:id",authenticateAdmin, deleteHeadline);
-router.post('/comment',authenticateAdmin,createComment);
+router.post('/comment',createComment);
 router.get("/comment/:id", getCommentbyid);
 router.get("/comment",authenticateAdmin,getComment);
 router.put("/comment-admin/:id", updateAdminComment);

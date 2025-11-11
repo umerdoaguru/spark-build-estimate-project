@@ -10,6 +10,7 @@ import moment from 'moment';
 import { BsPencilSquare, BsTrash } from 'react-icons/bs';
 import { FaShoppingCart } from 'react-icons/fa';
 import Selected_Items_Cart from './Selected_Items_Cart';
+import CommentBox from './CommentBox';
 
 function  EstimateCalculator() {
   const [categories, setCategories] = useState([]);
@@ -58,7 +59,7 @@ function  EstimateCalculator() {
   // Fetch categories on initial render
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await axios.get(`http://localhost:9000/api/categories-data/${id}`,
+      const response = await axios.get(`https://estimate-project.dentalguru.software/api/categories-data/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -72,7 +73,7 @@ function  EstimateCalculator() {
   }, [id]);
   useEffect(() => {
     const fetchUserProfile = async () => {
-      const response = await axios.get(`http://localhost:9000/api/user-profile/${user.id}`,
+      const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-profile/${user.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -91,7 +92,7 @@ function  EstimateCalculator() {
       console.log(id);
       
       if (id) {
-        const response = await axios.get(`http://localhost:9000/api/subcategories-data/${id}`,
+        const response = await axios.get(`https://estimate-project.dentalguru.software/api/subcategories-data/${id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -109,7 +110,7 @@ function  EstimateCalculator() {
   useEffect(() => {
     const fetchItems = async () => {
       if (selectedSubcategory) {
-        const response = await axios.get(`http://localhost:9000/api/items-data/${selectedSubcategory}`,
+        const response = await axios.get(`https://estimate-project.dentalguru.software/api/items-data/${selectedSubcategory}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -154,14 +155,14 @@ function  EstimateCalculator() {
     
   
     try {
-      const response = await axios.post('http://localhost:9000/api/user-selection', data,
+      const response = await axios.post('https://estimate-project.dentalguru.software/api/user-selection', data,
         {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         }});
         const responsess = await axios.put(
-            `http://localhost:9000/api/user-final-amount/${user.id}`,
+            `https://estimate-project.dentalguru.software/api/user-final-amount/${user.id}`,
             { after_selection_amount: "pending" },
             {
               headers: {
@@ -205,14 +206,14 @@ function  EstimateCalculator() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`http://localhost:9000/api/user-selection/${selection_id}`,
+        await axios.delete(`https://estimate-project.dentalguru.software/api/user-selection/${selection_id}`,
         {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         }});
          const response = await axios.put(
-            `http://localhost:9000/api/user-final-amount/${user.id}`,
+            `https://estimate-project.dentalguru.software/api/user-final-amount/${user.id}`,
             { after_selection_amount: "pending" },
             {
               headers: {
@@ -241,7 +242,7 @@ function  EstimateCalculator() {
         return;
       }
   
-      const response = await axios.get(`http://localhost:9000/api/user-selection/${user.id}`, {
+      const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-selection/${user.id}`, {
         params: { category_name },
         headers: {
             'Content-Type': 'application/json',
@@ -276,7 +277,7 @@ function  EstimateCalculator() {
   }, []);
   
   const fetchAllSelectedData = async () => {
-        const response = await axios.get(`http://localhost:9000/api/user-selection`,
+        const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-selection`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -295,7 +296,7 @@ function  EstimateCalculator() {
   const fetchUserRecommendationData = async () => {
     const subcategory_name = subcategories.find((c) => c.subcategory_id === Number(selectedSubcategory))?.subcategory_name;
     console.log(subcategory_name);
-        const response = await axios.get(`http://localhost:9000/api/user-recommendation/${user.id}`, 
+        const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-recommendation/${user.id}`, 
         { params: { subcategory_name } ,
         headers: {
           'Content-Type': 'application/json',
@@ -318,6 +319,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
               
              
        <Selected_Items_Cart refresh={refresh}/>
+  
 
 <button
             onClick={() => navigate(-1)}

@@ -14,7 +14,7 @@ const AutoTypingHeadline = () => {
 const fetchHeadline = async () => {
   try {
     const response = await axios.get(
-      "http://localhost:9000/api/headline",
+      "https://estimate-project.dentalguru.software/api/headline",
       {
         headers: {
           "Content-Type": "application/json",

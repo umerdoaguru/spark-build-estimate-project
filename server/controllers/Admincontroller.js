@@ -13,7 +13,7 @@ const createcategories = (req, res) => {
     
     const { filename } = req.file; // Extract file details from multer
  
-    const iconPath = "http://localhost:9000/uploads/" + filename;
+    const iconPath = "https://estimate-project.dentalguru.software/uploads/" + filename;
     const sql = `INSERT INTO categories (category_name,icon) VALUES (?,?)`;
     db.query(
       sql,
@@ -76,7 +76,7 @@ const createcategories = (req, res) => {
 
       if (req.file) {
         const { filename } = req.file; // Get new file details if provided
-        iconPath = `http://localhost:9000/uploads/${filename}`;
+        iconPath = `https://estimate-project.dentalguru.software/uploads/${filename}`;
       }
   
       // Construct SQL query to update the lead
@@ -264,7 +264,7 @@ const createitems = (req, res) => {
     
     const { filename } = req.file; // Extract file details from multer
     console.log(subcategory_id , subcategory_name,item_name,	description,	unit_price,unit_price_type,filename,recommendation_description,sq_fit_range);
-    const ItemImagePath = "http://localhost:9000/uploads/" + filename;
+    const ItemImagePath = "https://estimate-project.dentalguru.software/uploads/" + filename;
     console.log(ItemImagePath);
     
     const sql = `
@@ -348,7 +348,7 @@ console.log(ItemImagePath);
 
       if (req.file) {
         const { filename } = req.file; // Get new file details if provided
-        ItemImagePath = `http://localhost:9000/uploads/${filename}`;
+        ItemImagePath = `https://estimate-project.dentalguru.software/uploads/${filename}`;
       }
       console.log(ItemImagePath);
       
@@ -811,16 +811,16 @@ const deleteHeadline = (req, res) => {
   
   const  createComment = (req, res) => {
   const {
-    question
+    user_id,name,question
   } = req.body;
 
     // Extract numeric value from `plot_area`
   
-  const sql = `INSERT INTO comment (question) VALUES (?)`;
+  const sql = `INSERT INTO comment (user_id,name,question) VALUES (?,?,?)`;
   db.query(
     sql,
     [
-      question
+      user_id,name,question
     ],
     (err, results) => {
       if (err) {
@@ -852,7 +852,7 @@ const getCommentbyid = (req, res) => {
   try {
     const { id } = req.params;
 
-    const getQuery = `SELECT * FROM comment WHERE id  = ?`;
+    const getQuery = `SELECT * FROM comment WHERE user_id  = ?`;
 
     db.query(getQuery, [id], (error, result) => {
       if (error) {
@@ -922,7 +922,7 @@ const updateAdminComment = async (req, res) => {
       db.query(
         sql,
         [
-          question,id
+          answer,id
         ],
         (err, results) => {
           if (err) {

@@ -42,7 +42,7 @@ function TaskMangement() {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:9000/api/user",
+          "https://estimate-project.dentalguru.software/api/user",
           {
             headers: {
               'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ function TaskMangement() {
       );
       if (isConfirmed) {
         try {
-          await axios.delete(`http://localhost:9000/api/user/${id}`,
+          await axios.delete(`https://estimate-project.dentalguru.software/api/user/${id}`,
             {
               headers: {
                 'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ function TaskMangement() {
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `http://localhost:9000/api/user/${currentLead.id}`,
+              `https://estimate-project.dentalguru.software/api/user/${currentLead.id}`,
               leadData,
               {
                 headers: {
@@ -162,7 +162,7 @@ function TaskMangement() {
             closePopup();
           } else {
             // Create new lead
-            await axios.post("http://localhost:9000/api/user-register", leadData,
+            await axios.post("https://estimate-project.dentalguru.software/api/user-register", leadData,
               {
                 headers: {
                   'Content-Type': 'application/json',

@@ -61,7 +61,7 @@ function UserProfileEdit(){
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/user-profile-data/${id}`,
+          `https://estimate-project.dentalguru.software/api/user-profile-data/${id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ function UserProfileEdit(){
     const fetchUserSelection = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/user-selection-by-userid-data/${id}`,
+          `https://estimate-project.dentalguru.software/api/user-selection-by-userid-data/${id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -152,7 +152,7 @@ function UserProfileEdit(){
           if (isEditing) {
             // Update existing lead
             await axios.put(
-              `http://localhost:9000/api/user-profile/${id}`,
+              `https://estimate-project.dentalguru.software/api/user-profile/${id}`,
               UserProfileData , {
             headers: {
               'Content-Type': 'application/json',
@@ -163,7 +163,7 @@ function UserProfileEdit(){
             closePopup();
           } else {
             // Create new lead
-            await axios.post("http://localhost:9000/api/user-register", UserProfileData);
+            await axios.post("https://estimate-project.dentalguru.software/api/user-register", UserProfileData);
     
             // Construct WhatsApp message link with encoded parameters
          
@@ -433,7 +433,7 @@ const downloadExcel = () => {
      
     </div>
                     }    
-                      
+                    
                         
                       </div>
                       

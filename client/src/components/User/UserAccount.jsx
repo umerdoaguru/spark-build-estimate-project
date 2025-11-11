@@ -9,6 +9,7 @@ import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import UserSider from "./UserSider";
 import { useSelector } from "react-redux";          
 import Selected_Items_Cart from "./Selected_Items_Cart";
+import CommentBox from "./CommentBox";
 
 function UserAccount() {
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ function UserAccount() {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/user-profile/${user.id}`,
+      const response = await axios.get(`https://estimate-project.dentalguru.software/api/user-profile/${user.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -115,7 +116,7 @@ function UserAccount() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`http://localhost:9000/api/user-profile/${id}`,
+        await axios.delete(`https://estimate-project.dentalguru.software/api/user-profile/${id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -187,7 +188,7 @@ function UserAccount() {
       if (isEditing) {
         // Update existing lead
         await axios.put(
-          `http://localhost:9000/api/user-profilebyid/${currentLead.user_id}`,UserProfileData,
+          `https://estimate-project.dentalguru.software/api/user-profilebyid/${currentLead.user_id}`,UserProfileData,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -199,7 +200,7 @@ function UserAccount() {
         closePopup();
       } else {
         // Create new lead
-        await axios.post("http://localhost:9000/api/user-profile", UserProfileData,
+        await axios.post("https://estimate-project.dentalguru.software/api/user-profile", UserProfileData,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -250,9 +251,10 @@ function UserAccount() {
         <div className="2xl:w-[89%]  2xl:ml-40 mx-4  ">
           <div className="main  mt-[1rem]">
             <Selected_Items_Cart/>
+            
+ <div className="mt-10"><CommentBox refresh={refresh}/></div>
             <h1 className="text-2xl text-center font-medium">User Account</h1>
             <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
-
             {/* Button to create a new lead */}
             {/* <div className="mb-4">
   {!userprofile && ( // Only render if userprofile has no data
@@ -476,6 +478,7 @@ function UserAccount() {
 
           )}
         </div>
+            
       </>
     </>
   );
