@@ -97,7 +97,7 @@ const downloadPDF = () => {
   const doc = new jsPDF("p", "mm", "a4");
 
   doc.setFontSize(16);
-  doc.text("All Selected Items", 14, 12);
+  doc.text(`All Selected Items By ${user.name}`, 14, 12);
 
   const columns = ["S.No","Sub Category","Item Name","Description","Total Price","Date"];
 
@@ -161,7 +161,7 @@ const downloadPDF = () => {
           <div className="main mt-[1rem]">
       <Selected_Items_Cart refresh={refresh}/>
             <h1 className="text-2xl text-center font-medium">
-            All Selected Items 
+            All Selected Items by {user.name}
             </h1>
             <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
 

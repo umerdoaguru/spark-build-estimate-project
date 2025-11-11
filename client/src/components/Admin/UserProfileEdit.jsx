@@ -7,6 +7,12 @@ import  axios  from 'axios';
 import moment from 'moment';
 import { BsPencilSquare, BsTrash } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+
+
 
 function UserProfileEdit(){
     const navigate = useNavigate();
@@ -198,7 +204,110 @@ function UserProfileEdit(){
     navigate(-1); // -1 navigates to the previous page in history
   };
  
-  
+  // Download PDF (uses full userSelection, puts Final Total in footer)
+const downloadPDF = () => {
+  const doc = new jsPDF("p", "mm", "a4");
+   doc.setFontSize(16);
+   doc.text(`All Selected Items By ${user.name}`, 14, 12);
+ 
+   const columns = ["S.No","Sub Category","Item Name","Description","Total Price","Date"];
+ 
+   // table body (no total row here)
+   const body = userSelection.map((item, i) => ([
+     String(i + 1),
+     String(item.subcategory_name ?? ""),
+     String(item.item_name ?? ""),
+     String(item.description ?? ""),
+     String(Number(item.total_price || 0).toLocaleString("en-IN")),
+     moment(item.created_at).format("DD MMM YYYY"),
+   ]));
+ 
+   // grand total
+   const grandTotal = userSelection.reduce(
+     (s, it) => s + Number(it.total_price || 0), 0
+   );
+   const formattedTotal = grandTotal.toLocaleString("en-IN");
+ 
+   // footer (shows only once, at the end)
+   const foot = [[
+     { content: "Final Total", colSpan: 5, styles: { halign: "right", fontStyle: "bold",} },
+     { content: `Rs. ${formattedTotal}`, styles: { halign: "right", fontStyle: "bold" } },
+     "" // keep 6 columns total
+   ]];
+
+  autoTable(doc, {
+    head: [columns],
+    body,
+    foot,
+    showFoot: "lastPage",
+    startY: 20,
+    margin: { left: 10, right: 10 },
+    styles: { fontSize: 9, overflow: "linebreak", cellWidth: "wrap" },
+    columnStyles: {
+      0: { cellWidth: 12 },
+      1: { cellWidth: 28 },
+      2: { cellWidth: 40 },
+      3: { cellWidth: 40 },
+      4: { cellWidth: 45 },
+      5: { cellWidth: 28, halign: "right" },
+      6: { cellWidth: 25 },
+    },
+    footStyles: {
+      fillColor: [255,255,255], // white background
+      textColor: [0,0,0],
+      fontStyle: "bold",
+    }
+  });
+
+  doc.save(`All Selected Items By ${user.name}`);
+};
+
+// Download Excel (.xlsx) with final total appended
+const downloadExcel = () => {
+  // Build rows for Excel
+  const rows = userSelection.map((item, i) => ({
+    "S.No": i + 1,
+    
+    "Sub Categories Name": item.subcategory_name ?? "",
+    "Items Name": item.item_name ?? "",
+    "Total Price": Number(item.total_price || 0),
+    "Date": moment(item.created_at).format("DD MMM YYYY"),
+  }));
+
+  const grandTotal = userSelection.reduce(
+    (s, it) => s + Number(it.total_price || 0),
+    0
+  );
+
+  // Append a blank row then final total row
+  rows.push({});
+  rows.push({
+    "S.No": "",
+   
+    "Sub Categories Name": "Final Total",
+    "Items Name": "",
+    "Total Price": grandTotal,
+    "Date": "",
+  });
+
+  const ws = XLSX.utils.json_to_sheet(rows, { skipHeader: false });
+
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  for (let R = range.s.r; R <= range.e.r; ++R) {
+    const cellAddress = XLSX.utils.encode_cell({ c: 5, r: R }); // column F (index 5) is "Total Price"
+    const cell = ws[cellAddress];
+    if (cell && typeof cell.v === "number") {
+      // leave as number so Excel can sum/format; to show Rs. prefix you could set as string: cell.v = `Rs. ${cell.v.toLocaleString('en-IN')}`
+    }
+  }
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "UserSelection");
+
+  const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+  saveAs(new Blob([wbout], { type: "application/octet-stream" }), `All Selected Items By ${user.name}.xlsx`);
+};
+
     
   
     return (
@@ -339,7 +448,22 @@ function UserProfileEdit(){
            
             </div>
 
-         
+         <div className="flex gap-2 mb-3">
+  <button
+    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+    onClick={downloadPDF}
+  >
+    Download PDF
+  </button>
+
+  <button
+    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+    onClick={downloadExcel}
+  >
+    Download Excel
+  </button>
+</div>
+
   
          <div className=" overflow-auto h-[100vh] w-[90%]   ">
                      <table className="min-w-full bg-white border ">
@@ -351,9 +475,7 @@ function UserProfileEdit(){
                            <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                              Items Id
                            </th>
-                           <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                             Categories Name
-                           </th>
+                           
                            <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                              Sub Categories Name
                            </th>
@@ -403,9 +525,7 @@ function UserProfileEdit(){
                                    {item.item_id}
                                  </td>
          
-                                 <td className="px-6 py-2 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
-                                   {item.category_name}
-                                 </td>
+                                
                                  <td className="px-6 py-2 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                                    {item.subcategory_name}
                                  </td>

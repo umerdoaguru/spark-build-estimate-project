@@ -19,7 +19,17 @@ const { createcategories,getcategoriesbyid,
     getDiscountbyid,
     getDiscount,
     updateDiscount,
-    deleteDiscount} = require('../controllers/Admincontroller');
+    deleteDiscount,
+    createHeadline,
+    getHeadline,
+    updateHeadline,
+    deleteHeadline,
+    createComment,
+    getCommentbyid,
+    getComment,
+    updateAdminComment,
+    updateUserComment,
+    deleteComment} = require('../controllers/Admincontroller');
 const upload = require('../config/multerConfig');
 const { getuser_profilebyid, getSelectionbyuserid } = require('../controllers/UserEnrolled');
 
@@ -51,6 +61,16 @@ router.get("/discount/:id",authenticateAdmin, getDiscountbyid);
 router.get("/discount",authenticateAdmin,getDiscount);
 router.put("/discount/:id",authenticateAdmin, updateDiscount);
 router.delete("/discount/:id",authenticateAdmin, deleteDiscount);
+router.post('/headline',authenticateAdmin,createHeadline);
+router.get("/headline",getHeadline);
+router.put("/headline/:id",authenticateAdmin, updateHeadline);
+router.delete("/headline/:id",authenticateAdmin, deleteHeadline);
+router.post('/comment',authenticateAdmin,createComment);
+router.get("/comment/:id", getCommentbyid);
+router.get("/comment",authenticateAdmin,getComment);
+router.put("/comment-admin/:id", updateAdminComment);
+router.put("/comment-user/:id", updateUserComment);
+router.delete("/comment/:id", deleteComment);
 router.get("/user-selection-by-userid-data/:id",authenticateAdmin, getSelectionbyuserid);    
 
 

@@ -12,6 +12,8 @@ import User_Selections from "../components/Admin/User_Selections";
 import UserManagement from "../components/Admin/UserManagement";
 import UserProfileEdit from "../components/Admin/UserProfileEdit";
 import DiscountBar from "../components/Admin/DiscountBar";
+import Headline from "../components/Admin/Headline";
+import Comment from "../components/Admin/Comment";
 
 
 
@@ -34,6 +36,8 @@ function AdminRoutes() {
         <Route path="/user-selections" element={<User_Selections />} />
         <Route path="/user-profile-data/:id" element={<UserProfileEdit />} />
         <Route path="/discount-bar" element={<DiscountBar />} />
+        <Route path="/headline" element={<Headline />} />
+        <Route path="/comment" element={<Comment />} />
       </Routes>
     </>
   );

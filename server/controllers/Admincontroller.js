@@ -703,7 +703,271 @@ const deleteDiscount = (req, res) => {
 };
 
 
+  const  createHeadline = (req, res) => {
+  const {
+    hl_text
+  } = req.body;
+
+    // Extract numeric value from `plot_area`
   
+  const sql = `INSERT INTO headline (hl_text) VALUES (?)`;
+  db.query(
+    sql,
+    [
+      hl_text
+    ],
+    (err, results) => {
+      if (err) {
+        res.status(500).json({ error: "Error inserting data" });
+      } else {
+        res
+          .status(201)
+          .json({ success: true, message: "Headline data successfully submitted" });
+      }
+    }
+  );
+};
+
+
+
+
+const getHeadline = (req, res) => {
+  const sql = "SELECT * FROM headline"; 
+  db.query(sql, (err, results) => {
+    if (err) {
+      res.status(500).json({ error: "Error fetching data" });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+};
+
+
+const updateHeadline = async (req, res) => {
+  try {
+    const { id  } = req.params;
+    const {
+      hl_text
+    } = req.body;
+console.log( hl_text,id);
+
+  
+    // Construct SQL query to update the item
+    const sql = `UPDATE headline 
+                 SET    hl_text = ?
+                 WHERE id  = ?`;
+
+    // Execute the update query asynchronously
+    await new Promise((resolve, reject) => {
+      db.query(
+        sql,
+        [
+          hl_text,id
+        ],
+        (err, results) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        }
+      );
+    });
+
+    res.status(200).json({ message: "Headline updated successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const deleteHeadline = (req, res) => {
+  const { id  } = req.params;
+
+  // Validate the id 
+  if (!id ) {
+    return res.status(400).json({ error: " ID is required" });
+  }
+
+  // SQL query to delete the Discount 
+  const sqlDeleteCategory = `DELETE FROM headline WHERE id  = ?`;
+
+  db.query(sqlDeleteCategory, [id], (err, results) => {
+    if (err) {
+      console.error("Error deleting Headline:", err);
+      return res.status(500).json({ error: "Error deleting the Headline" });
+    }
+
+    if (results.affectedRows === 0) {
+      // No rows affected means the id  does not exist
+      return res.status(404).json({ error: "Headline not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Headline successfully deleted",
+    });
+  });
+};
+  
+  const  createComment = (req, res) => {
+  const {
+    question
+  } = req.body;
+
+    // Extract numeric value from `plot_area`
+  
+  const sql = `INSERT INTO comment (question) VALUES (?)`;
+  db.query(
+    sql,
+    [
+      question
+    ],
+    (err, results) => {
+      if (err) {
+        res.status(500).json({ error: "Error inserting data" });
+      } else {
+        res
+          .status(201)
+          .json({ success: true, message: "Comment data successfully submitted" });
+      }
+    }
+  );
+};
+
+
+
+
+const getComment = (req, res) => {
+  const sql = "SELECT * FROM comment"; 
+  db.query(sql, (err, results) => {
+    if (err) {
+      res.status(500).json({ error: "Error fetching data" });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+};
+
+const getCommentbyid = (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const getQuery = `SELECT * FROM comment WHERE id  = ?`;
+
+    db.query(getQuery, [id], (error, result) => {
+      if (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+const updateUserComment = async (req, res) => {
+  try {
+    const { id  } = req.params;
+    const {
+      question
+    } = req.body;
+
+
+  
+    // Construct SQL query to update the item
+    const sql = `UPDATE comment 
+                 SET    question = ?,answer = 'pending'
+                 WHERE id  = ?`;
+
+    // Execute the update query asynchronously
+    await new Promise((resolve, reject) => {
+      db.query(
+        sql,
+        [
+          question,id
+        ],
+        (err, results) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        }
+      );
+    });
+
+    res.status(200).json({ message: "Comment of User updated successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+const updateAdminComment = async (req, res) => {
+  try {
+    const { id  } = req.params;
+    const {
+      answer
+    } = req.body;
+
+
+  
+    // Construct SQL query to update the item
+    const sql = `UPDATE comment 
+                 SET    answer = ?
+                 WHERE id  = ?`;
+
+    // Execute the update query asynchronously
+    await new Promise((resolve, reject) => {
+      db.query(
+        sql,
+        [
+          question,id
+        ],
+        (err, results) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        }
+      );
+    });
+
+    res.status(200).json({ message: "Comment of Admin updated successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const deleteComment = (req, res) => {
+  const { id  } = req.params;
+
+  // Validate the id 
+  if (!id ) {
+    return res.status(400).json({ error: " ID is required" });
+  }
+
+  // SQL query to delete the Discount 
+  const sqlDeleteComment = `DELETE FROM comment WHERE id  = ?`;
+
+  db.query(sqlDeleteComment, [id], (err, results) => {
+    if (err) {
+      console.error("Error deleting Comment:", err);
+      return res.status(500).json({ error: "Error deleting the Comment" });
+    }
+
+    if (results.affectedRows === 0) {
+      // No rows affected means the id  does not exist
+      return res.status(404).json({ error: "Comment not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Comment successfully deleted",
+    });
+  });
+};
   
   
 
@@ -728,6 +992,8 @@ const deleteDiscount = (req, res) => {
   getuser,
   updateuser,
   deleteuser,
-  createDiscount,getDiscountbyid,getDiscount,updateDiscount,deleteDiscount
+  createDiscount,getDiscountbyid,getDiscount,updateDiscount,deleteDiscount,
+  createHeadline,getHeadline,updateHeadline,deleteHeadline,
+  createComment,getCommentbyid,getComment,updateAdminComment,updateUserComment,deleteComment,
   };
   
