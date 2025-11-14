@@ -18,7 +18,7 @@ function Selected_Items_Cart({refresh}) {
     const toggleCart = () => setIsCartOpen(!isCartOpen);
     const token = user?.token;
     const [userprofile, setUserProfile] = useState([]);
-
+const [loading, setLoading] = useState(false); 
       
     const fetchDiscount = async () => {
       try {
@@ -118,37 +118,40 @@ const fetchAllSelectedData = async () => {
       console.log(categories);
       
     };
-    const updateFinalAmount = async () => {
-     
-  
-    
-      const isConfirmed = window.confirm(
-        "Are you sure you want to submit this data?"
-      );
-      const finalAmount = alluserselection.reduce((sum, item) => sum + item.total_price, 0);
-    
-      if (isConfirmed) {
-        try {
-          const response = await axios.put(
-            `https://estimate-project.dentalguru.software/api/user-final-amount/${user.id}`,
-            { after_selection_amount: finalAmount },
-            {
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-              },
-            }
-          );
-    
-          cogoToast.success(response.data.message || "Final amount updated!");
-          console.log("Response:", response.data);
-          fetchUserProfile()
-        } catch (error) {
-          console.error("Error:", error.response?.data || error.message);
-          cogoToast.error("Failed to update final amount.");
+   const updateFinalAmount = async () => {
+  const isConfirmed = window.confirm("Are you sure you want to submit this data?");
+  const finalAmount = alluserselection.reduce((sum, item) => sum + item.total_price, 0);
+
+  if (isConfirmed) {
+    setLoading(true); // show loader
+    try {
+      const response = await axios.put(
+        `https://estimate-project.dentalguru.software/api/user-final-amount/${user.id}`,
+        { after_selection_amount: finalAmount },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
         }
-      }
-    };
+      );
+
+      cogoToast.success(response.data.message || "Estimated Cost (Approx)              updated!");
+      console.log("Response:", response.data);
+      await fetchUserProfile();
+
+      // Delay reload for smooth toast visibility
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (error) {
+      console.error("Error:", error.response?.data || error.message);
+      cogoToast.error("Failed to update Estimated Cost (Approx)             .");
+    } finally {
+      setLoading(false); // hide loader
+    }
+  }
+};
     
   
 
@@ -274,18 +277,29 @@ const fetchAllSelectedData = async () => {
         </div>
     
         <div className="border-t mt-4 pt-4 flex justify-between items-center">
-          <span className="text-sm font-medium">Final Amount:</span>
+          <span className="text-sm font-medium">Estimated Cost (Approx)             :</span>
           <span className="text-lg font-bold text-green-600">
             ₹{alluserselection.reduce((sum, item) => sum + item.total_price, 0)}
           </span>
         </div>
 
-        <button
-            onClick={updateFinalAmount}
-            className="bg-blue-500 text-white w-full py-2 rounded mt-4 hover:bg-blue-600"
-          >
-            Save Final Amount
-          </button>
+       <button
+  onClick={updateFinalAmount}
+  disabled={loading}
+  className={`w-full py-2 rounded mt-4 text-white transition-all duration-300 ${
+    loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+  }`}
+>
+  {loading ? (
+    <div className="flex items-center justify-center gap-2">
+      <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+      <span>Updating...</span>
+    </div>
+  ) : (
+    "Save Estimated Cost"
+  )}
+</button>
+
       </div>
        
     )}
@@ -338,7 +352,7 @@ const fetchAllSelectedData = async () => {
     
 ) : (
   <div className="border-t flex justify-start gap-3 mx-7 text-end items-center">
-    <span className="text-sm font-medium">Final Amount:</span>
+    <span className="text-sm font-medium">Estimated Cost (Approx)             :</span>
     <span className="text-lg font-bold text-green-600">
       ₹{alluserselection.reduce((sum, item) => sum + item.total_price, 0)} (Submitted)
     </span>

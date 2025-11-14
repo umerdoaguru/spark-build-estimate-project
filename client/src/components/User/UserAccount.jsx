@@ -7,12 +7,15 @@ import axios from "axios";
 import moment from "moment";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import UserSider from "./UserSider";
-import { useSelector } from "react-redux";          
+import { useDispatch, useSelector } from "react-redux";          
 import Selected_Items_Cart from "./Selected_Items_Cart";
 import CommentBox from "./CommentBox";
+import { logoutUser } from "../../store/UserSlice";
 
 function UserAccount() {
+    const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const user = useSelector((state) => state.auth.user);
   const [categories, setCategories] = useState([]);
   const [userprofile, setUserProfile] = useState([]);
@@ -60,6 +63,11 @@ function UserAccount() {
       console.log(categories);
     } catch (error) {
       console.error("Error fetching categories:", error);
+      if (error.response && error.response.status === 401) {
+        // Token is invalid or expired
+       dispatch(logoutUser());
+             navigate("/");
+      }
     }
   };
 
@@ -250,7 +258,7 @@ function UserAccount() {
       <>
         <div className="2xl:w-[89%]  2xl:ml-40 mx-4  ">
           <div className="main  mt-[1rem]">
-            <Selected_Items_Cart/>
+            <Selected_Items_Cart refresh={refresh}/>
             
  <div className="mt-10"><CommentBox refresh={refresh}/></div>
             <h1 className="text-2xl text-center font-medium">User Account</h1>

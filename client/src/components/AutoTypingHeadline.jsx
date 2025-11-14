@@ -69,7 +69,7 @@ const fetchHeadline = async () => {
   }, [displayedText, isDeleting, textIndex, texts]);
 
   return (
-    <h1 className="font-bold text-center mt-16 text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-yellow-500 to-pink-500">
+    <h1 className="font-bold text-center  md:mt-16 xs:mt-20 mt-32 text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-yellow-500 to-pink-500">
       {displayedText}
       <span className="border-r-4 border-blue-500 animate-pulse ml-1"></span>
     </h1>

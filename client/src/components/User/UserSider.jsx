@@ -177,7 +177,7 @@ const UserSider = ({refresh}) => {
     <>
       {/* Hamburger Button - Hidden on large screens */}
       <button
-        className="fixed top-16 md:top-20 left-4 z-50 text-black"
+        className="fixed top-24 md:top-20 left-4 z-50 text-black"
         onClick={toggleSidebar}
       >
         <AiOutlineMenu size={25} />

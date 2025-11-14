@@ -47,7 +47,7 @@ function UserLogin() {
       setShowPassword(!showPassword);
     };
   return (
-    <div className="container">
+
     <div className="min-h-screen flex items-center justify-center">
       <section className="vh-100 w-full">
         <div className="flex justify-center items-center h-full">
@@ -141,7 +141,7 @@ function UserLogin() {
           </div>
         </div>
       </section>
-    </div></div>
+    </div>
   );
 }
 

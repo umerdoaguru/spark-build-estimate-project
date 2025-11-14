@@ -26,7 +26,7 @@ function App() {
       
     <Routes>
         <Route path="/register-doaguru-spark-build" element={<RegisteredAdmin />} />
-        <Route path="/register-user" element={<RegisteredUser />} />
+        {/* <Route path="/register-user" element={<RegisteredUser />} /> */}
       
         <Route path="/admin" element={<AdminLoginPage/>} />
      

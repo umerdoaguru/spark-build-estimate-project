@@ -47,7 +47,7 @@ function Comment() {
           'Authorization': `Bearer ${token}`
         }
       });
-      setComments(response.data);
+      setComments(response.data.reverse());
     } catch (error) {
       console.error("Error fetching comments:", error);
     }

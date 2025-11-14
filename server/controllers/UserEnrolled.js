@@ -149,34 +149,43 @@ console.log( Math.floor(budgest / total_construction_area));
     }
   };
   
-  const deleteuser_profile = (req, res) => {
-    const { id  } = req.params;
-  
-    // Validate the id 
-    if (!id ) {
-      return res.status(400).json({ error: " ID is required" });
+ const deleteuser_profile = (req, res) => {
+  const { id } = req.params;
+
+ 
+  if (!id) {
+    return res.status(400).json({ error: "ID is required" });
+  }
+
+ 
+  const sqlDeleteSelections = `DELETE FROM user_selections WHERE user_id = ?`;
+  const sqlDeleteProfile = `DELETE FROM user_profile WHERE user_id = ?`;
+
+ 
+  db.query(sqlDeleteSelections, [id], (err, selectionResult) => {
+    if (err) {
+      console.error("Error deleting user selections:", err);
+      return res.status(500).json({ error: "Error deleting user selections" });
     }
-  
-    // SQL query to delete the User Profile
-    const sqlDeleteCategory = `DELETE FROM user_profile WHERE user_id  = ?`;
-  
-    db.query(sqlDeleteCategory, [id], (err, results) => {
+
+    
+    db.query(sqlDeleteProfile, [id], (err, profileResult) => {
       if (err) {
-        console.error("Error deleting User:", err);
-        return res.status(500).json({ error: "Error deleting the User" });
+        console.error("Error deleting user profile:", err);
+        return res.status(500).json({ error: "Error deleting user profile" });
       }
-  
-      if (results.affectedRows === 0) {
-        // No rows affected means the id  does not exist
+
+      if (profileResult.affectedRows === 0) {
         return res.status(404).json({ error: "User not found" });
       }
-  
-      res.status(200).json({
+
+      return res.status(200).json({
         success: true,
-        message: "Item successfully deleted",
+        message: "User profile and selections successfully deleted",
       });
     });
-  };
+  });
+};
 
   
 

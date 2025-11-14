@@ -348,6 +348,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
       onChange={(e) => setSelectedCategory(e.target.value)}
       value={selectedCategory}
       className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      disabled
     >
     
       {categories.map((category) => (
@@ -356,6 +357,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
         </option>
       ))}
     </select>
+    
   </div>
 
   {/* Subcategory Selection */}
@@ -416,7 +418,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
               />
               
             
-              <span>{item.item_name} - ₹{item.unit_price} per unit   Description : - {item.description}</span> 
+              <span>{item.item_name}    Description : - {item.description}</span> 
           
             </li>
           ))}
@@ -439,7 +441,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
        className="w-32 h-32 object-cover rounded"
        
      />
-      <span>{selectedItem.item_name} - ₹{selectedItem.unit_price} per unit <br /> Description {selectedItem.description}</span>
+      <span>{selectedItem.item_name} <br /> Description {selectedItem.description}</span>
    </div>
  )}
 </div>
