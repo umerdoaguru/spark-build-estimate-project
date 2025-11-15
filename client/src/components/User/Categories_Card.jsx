@@ -34,7 +34,7 @@ function Categories_Card() {
     <>
       <MainHeader />
       <UserSider />
-      <div className="flex-1 max-w-full 2xl:w-[93%] 2xl:ml-32 mt-[1rem]">
+      <div className="flex-1 max-w-full 2xl:w-[89%]  2xl:ml-40 mt-[1rem]">
         <Selected_Items_Cart/>
          
    <div className="mt-10"><CommentBox/></div>
@@ -52,7 +52,7 @@ function Categories_Card() {
             >
               <Link to={`/categories/${category.category_id}`}> {/* Dynamic link */}
                 <div className="shadow-md rounded-2xl overflow-hidden cursor-pointer text-gray-600 border-2">
-                  <div className="p-10 flex flex-col items-center text-center bg-[#ffce08]">
+                  <div className="p-10 flex flex-col items-center text-center bg-yellow-500">
                     <div className="text-3xl text-gray-700  ">
                   <img src={category.icon}
                    alt="Preview"

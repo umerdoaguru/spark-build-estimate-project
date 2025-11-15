@@ -184,7 +184,7 @@ function Comment() {
               <table className="min-w-full bg-white border">
                
                 <thead>
-                  <tr>
+                  <tr className='bg-yellow-500'>
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                       S.no
                     </th>
@@ -285,16 +285,16 @@ function Comment() {
     pageClassName="border rounded cursor-pointer"
     pageLinkClassName="w-full h-full flex items-center justify-center py-2 px-4"
     
-    previousClassName="border rounded cursor-pointer"
+    previousClassName="border rounded cursor-pointer bg-yellow-500"
     previousLinkClassName="w-full h-full flex items-center justify-center py-2 px-3" 
     
-    nextClassName="border rounded cursor-pointer"
+    nextClassName="border rounded cursor-pointer bg-yellow-500"
     nextLinkClassName="w-full h-full flex items-center justify-center py-2 px-3"
     
     breakClassName="border rounded cursor-pointer"
     breakLinkClassName="w-full h-full flex items-center justify-center"
     
-    activeClassName="bg-blue-500 text-white border-blue-500"
+    activeClassName="bg-yellow-500  border-yellow-500"
     disabledClassName="opacity-50 cursor-not-allowed"
   />
 </div>

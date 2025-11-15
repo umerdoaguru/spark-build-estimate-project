@@ -310,7 +310,7 @@ function items() {
       <AdminSider />
       <>
         <div className="2xl:w-[89%]  2xl:ml-40 mx-4 ">
-          <div className="main  mt-[6rem]">
+          <div className="main  mt-[5rem]">
             <h1 className="text-2xl text-center font-medium">
               Items Management
             </h1>
@@ -319,7 +319,7 @@ function items() {
             {/* Button to create a new lead */}
             <div className="mb-4">
               <button
-                className="bg-blue-500 text-white px-4 py-2 mt-5 rounded hover:bg-blue-700 font-medium"
+                className="bg-yellow-500  px-4 py-2 mt-2 rounded hover:bg-yellow-700 font-bold"
                 onClick={handleCreateClick}
               >
                 Itmes Add
@@ -330,7 +330,7 @@ function items() {
           <div className=" overflow-x-auto mt-4  ">
             <table className="min-w-full bg-white border">
               <thead>
-                <tr>
+                <tr className="bg-yellow-500">
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     S.no
                   </th>
@@ -480,237 +480,256 @@ function items() {
     pageClassName="border rounded cursor-pointer"
     pageLinkClassName="w-full h-full flex items-center justify-center py-2 px-4"
     
-    previousClassName="border rounded cursor-pointer"
+    previousClassName="border rounded cursor-pointer bg-yellow-500"
     previousLinkClassName="w-full h-full flex items-center justify-center py-2 px-3" 
     
-    nextClassName="border rounded cursor-pointer"
+    nextClassName="border rounded cursor-pointer bg-yellow-500"
     nextLinkClassName="w-full h-full flex items-center justify-center py-2 px-3"
     
     breakClassName="border rounded cursor-pointer"
     breakLinkClassName="w-full h-full flex items-center justify-center"
     
-    activeClassName="bg-blue-500 text-white border-blue-500"
+    activeClassName="bg-yellow-500  border-yellow-500"
     disabledClassName="opacity-50 cursor-not-allowed"
   />
           </div>
 
           {showPopup && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-              <div className="w-full max-w-md p-6 mx-2 bg-white rounded-lg shadow-lg h-[65%] overflow-y-auto">
+              <div className="w-full max-w-xl p-6 mx-2 bg-white rounded-lg shadow-lg h-[75%] overflow-y-auto">
                 <h2 className="text-xl mb-4">
                   {isEditing ? "Edit Item" : "Add Item"}
                 </h2>
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                <div className="mb-4">
-                  <label className="block text-gray-700">
-                    Sub Categories Name
-                  </label>
-                  <select
-                    name="subcategory_name"
-                    value={currentLead.subcategory_name}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border ${
-                      errors.subcategory_name ? "border-red-500" : "border-gray-300"
-                    } rounded`}
-                  >
-                    <option value="">Select Sub Category</option>
-                    {subcategories.map((subcategory) => (
-                      <option
-                        key={subcategory.subcategory_id}
-                        value={subcategory.subcategory_name}
-                      >
-                        {subcategory.subcategory_name}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.subcategory_name && (
-                    <span className="text-red-500">{errors.subcategory_name}</span>
-                  )}
-                </div>
+  {/* Sub Category */}
+  <div className="mb-4">
+    <label className="block text-gray-700">Sub Categories Name</label>
+    <select
+      name="subcategory_name"
+      value={currentLead.subcategory_name}
+      onChange={handleInputChange}
+      className={`w-full px-3 py-2 border ${
+        errors.subcategory_name ? "border-red-500" : "border-gray-300"
+      } rounded`}
+    >
+      <option value="">Select Sub Category</option>
+      {subcategories.map((subcategory) => (
+        <option
+          key={subcategory.subcategory_id}
+          value={subcategory.subcategory_name}
+        >
+          {subcategory.subcategory_name}
+        </option>
+      ))}
+    </select>
+    {errors.subcategory_name && (
+      <span className="text-red-500">{errors.subcategory_name}</span>
+    )}
+  </div>
 
-                {/* Hidden category_id field */}
-                <input
-                  type="hidden"
-                  id="subcategory_id"
-                  name="subcategory_id"
-                  value={currentLead.subcategory_id}
-                />
-
-                <div className="mb-4">
-                  <label className="block text-gray-700">Item Name</label>
-                  <input
-                    type="text"
-                    name="item_name"
-                    value={currentLead.item_name}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border ${
-                      errors.item_name ? "border-red-500" : "border-gray-300"
-                    } rounded`}
-                    
-                  />
-                {errors.item_name && (
-                    <span className="text-red-500">{errors.item_name}</span>
-                  )}
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Description</label>
-                  <input
-                    type="text"
-                    name="description"
-                    value={currentLead.description}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border ${
-                      errors.description ? "border-red-500" : "border-gray-300"
-                    } rounded`}
-                  />
-                     {errors.description && (
-                    <span className="text-red-500">{errors.description}</span>
-                  )}
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Qty</label>
-                  <input
-                    type="text"
-                    name="qty"
-                    value={currentLead.qty}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border ${
-                      errors.qty ? "border-red-500" : "border-gray-300"
-                    } rounded`}
-                  />
-                     {errors.qty && (
-                    <span className="text-red-500">{errors.qty}</span>
-                  )}
-                </div>
-       
-                <div className="mb-4">
-                  <label className="block text-gray-700">Unit Price</label>
-                  <input
-                    type="text"
-                    name="unit_price"
-                    value={currentLead.unit_price}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border ${
-                      errors.unit_price ? "border-red-500" : "border-gray-300"
-                    } rounded`}
-                  />
-                     {errors.unit_price && (
-                    <span className="text-red-500">{errors.unit_price}</span>
-                  )}
-                </div>
-               
-                <div className="mb-4">
-  <label className="block text-gray-700">Unit Type</label>
-  <select
-    name="unit_price_type"
-    value={currentLead.unit_price_type}
-    onChange={handleInputChange}
-    className={`w-full px-3 py-2 border ${
-      errors.unit_price_type ? "border-red-500" : "border-gray-300"
-    } rounded`}
-  >
-    <option value="" disabled>Select Unit Type</option>
-    <optgroup label="Volume">
-      <option value="per m³">per m³ (per cubic meter)</option>
-      <option value="per ft³">per ft³ (per cubic foot)</option>
-      <option value="per yd³">per yd³ (per cubic yard)</option>
-      <option value="per L">per L (per liter)</option>
-      <option value="per gallon">per gallon</option>
-    </optgroup>
-    <optgroup label="Weight">
-      <option value="per kg">per kg (per kilogram)</option>
-      <option value="per ton">per ton (per metric ton)</option>
-      <option value="per lb">per lb (per pound)</option>
-    </optgroup>
-    <optgroup label="Area">
-      <option value="per m²">per m² (per square meter)</option>
-      <option value="per ft²">per ft² (per square foot)</option>
-      <option value="per yd²">per yd² (per square yard)</option>
-    </optgroup>
-    <optgroup label="Quantity">
-      <option value="per piece">per piece</option>
-      <option value="per unit">per unit</option>
-      <option value="per bag">per bag</option>
-      <option value="per roll">per roll</option>
-    </optgroup>
-    <optgroup label="Time">
-      <option value="per hour">per hour</option>
-      <option value="per day">per day</option>
-      <option value="per week">per week</option>
-    </optgroup>
-    <optgroup label="M SAND">
-      <option value="Tipper 500cft">TIPPER 500CFT</option>
-      
-    </optgroup>
-    <optgroup label="PLINTH FILLING MATERIAL">
-      <option value="Tipper">TIPPER</option>
-      
-    </optgroup>
-    <optgroup label="Brick">
-      <option value="cbm">CBM</option>
-      <option value="nos">NOS</option>
-      
-    </optgroup>
-  </select>
-  {errors.unit_price_type && (
-                    <span className="text-red-500">{errors.unit_price_type}</span>
-                  )}
-</div>
-
-                <div className="mb-4">
-  <label className="block text-gray-700">Image Items</label>
-  {currentLead.image_preview && (
-    <div className="mb-2">
-      <img
-        src={currentLead.image_preview}
-        alt="Preview"
-        className="w-32 h-32 object-cover rounded"
-      />
-    </div>
-  )}
+  {/* Hidden Subcategory ID */}
   <input
-    type="file"
-    name="image_items"
-    onChange={handleInputChange}
-    className={`w-full px-3 py-2 border ${
-      errors.image_items ? "border-red-500" : "border-gray-300"
-    } rounded`}
+    type="hidden"
+    name="subcategory_id"
+    value={currentLead.subcategory_id}
   />
-   {errors.image_items && (
-                    <span className="text-red-500">{errors.image_items}</span>
-                  )}
-</div>
-<div className="mb-4">
-                  <label className="block text-gray-700">Recommendation</label>
-                  <input
-                    type="text"
-                    name="recommendation_description"
-                    value={currentLead.recommendation_description}
-                    onChange={handleInputChange}
-   className={`w-full px-3 py-2 border ${
-                      errors.recommendation_description ? "border-red-500" : "border-gray-300"
-                    } rounded`}
-                  />
-                     {errors.recommendation_description && (
-                    <span className="text-red-500">{errors.recommendation_description}</span>
-                  )}
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Square Fit Range</label>
-                  <input
-                    type="text"
-                    name="sq_fit_range"
-                    value={currentLead.sq_fit_range}
-                    onChange={handleInputChange}
-   className={`w-full px-3 py-2 border ${
-                      errors.sq_fit_range ? "border-red-500" : "border-gray-300"
-                    } rounded`}
-                  />
-                     {errors.sq_fit_range && (
-                    <span className="text-red-500">{errors.sq_fit_range}</span>
-                  )}
-                </div>
 
+  {/* Item Name */}
+  <div className="mb-4">
+    <label className="block text-gray-700">Item Name</label>
+    <input
+      type="text"
+      name="item_name"
+      value={currentLead.item_name}
+      onChange={handleInputChange}
+      className={`w-full px-3 py-2 border ${
+        errors.item_name ? "border-red-500" : "border-gray-300"
+      } rounded`}
+    />
+    {errors.item_name && (
+      <span className="text-red-500">{errors.item_name}</span>
+    )}
+  </div>
+
+  {/* Description */}
+  <div className="mb-4">
+    <label className="block text-gray-700">Description</label>
+    <input
+      type="text"
+      name="description"
+      value={currentLead.description}
+      onChange={handleInputChange}
+      className={`w-full px-3 py-2 border ${
+        errors.description ? "border-red-500" : "border-gray-300"
+      } rounded`}
+    />
+    {errors.description && (
+      <span className="text-red-500">{errors.description}</span>
+    )}
+  </div>
+
+  {/* Qty */}
+  <div className="mb-4">
+    <label className="block text-gray-700">Qty</label>
+    <input
+      type="text"
+      name="qty"
+      value={currentLead.qty}
+      onChange={handleInputChange}
+      className={`w-full px-3 py-2 border ${
+        errors.qty ? "border-red-500" : "border-gray-300"
+      } rounded`}
+    />
+    {errors.qty && <span className="text-red-500">{errors.qty}</span>}
+  </div>
+
+  {/* Unit Price */}
+  <div className="mb-4">
+    <label className="block text-gray-700">Unit Price</label>
+    <input
+      type="text"
+      name="unit_price"
+      value={currentLead.unit_price}
+      onChange={handleInputChange}
+      className={`w-full px-3 py-2 border ${
+        errors.unit_price ? "border-red-500" : "border-gray-300"
+      } rounded`}
+    />
+    {errors.unit_price && (
+      <span className="text-red-500">{errors.unit_price}</span>
+    )}
+  </div>
+
+  {/* Unit Type */}
+  <div className="mb-4">
+    <label className="block text-gray-700">Unit Type</label>
+    <select
+      name="unit_price_type"
+      value={currentLead.unit_price_type}
+      onChange={handleInputChange}
+      className={`w-full px-3 py-2 border ${
+        errors.unit_price_type ? "border-red-500" : "border-gray-300"
+      } rounded`}
+    >
+      <option value="" disabled>Select Unit Type</option>
+
+      <optgroup label="Volume">
+        <option value="per m³">per m³</option>
+        <option value="per ft³">per ft³</option>
+        <option value="per yd³">per yd³</option>
+        <option value="per L">per L</option>
+        <option value="per gallon">per gallon</option>
+      </optgroup>
+
+      <optgroup label="Weight">
+        <option value="per kg">per kg</option>
+        <option value="per ton">per ton</option>
+        <option value="per lb">per lb</option>
+      </optgroup>
+
+      <optgroup label="Area">
+        <option value="per m²">per m²</option>
+        <option value="per ft²">per ft²</option>
+        <option value="per yd²">per yd²</option>
+      </optgroup>
+
+      <optgroup label="Quantity">
+        <option value="per piece">per piece</option>
+        <option value="per unit">per unit</option>
+        <option value="per bag">per bag</option>
+        <option value="per roll">per roll</option>
+      </optgroup>
+
+      <optgroup label="Time">
+        <option value="per hour">per hour</option>
+        <option value="per day">per day</option>
+        <option value="per week">per week</option>
+      </optgroup>
+
+      <optgroup label="M SAND">
+        <option value="Tipper 500cft">TIPPER 500CFT</option>
+      </optgroup>
+
+      <optgroup label="PLINTH FILLING MATERIAL">
+        <option value="Tipper">TIPPER</option>
+      </optgroup>
+
+      <optgroup label="Brick">
+        <option value="cbm">CBM</option>
+        <option value="nos">NOS</option>
+      </optgroup>
+    </select>
+
+    {errors.unit_price_type && (
+      <span className="text-red-500">{errors.unit_price_type}</span>
+    )}
+  </div>
+
+  {/* Image Upload */}
+  <div className="mb-4">
+    <label className="block text-gray-700">Image Items</label>
+    {currentLead.image_preview && (
+      <div className="mb-2">
+        <img
+          src={currentLead.image_preview}
+          alt="Preview"
+          className="w-32 h-32 object-cover rounded"
+        />
+      </div>
+    )}
+    <input
+      type="file"
+      name="image_items"
+      onChange={handleInputChange}
+      className={`w-full px-3 py-2 border ${
+        errors.image_items ? "border-red-500" : "border-gray-300"
+      } rounded`}
+    />
+    {errors.image_items && (
+      <span className="text-red-500">{errors.image_items}</span>
+    )}
+  </div>
+
+  {/* Recommendation */}
+  <div className="mb-4">
+    <label className="block text-gray-700">Recommendation</label>
+    <input
+      type="text"
+      name="recommendation_description"
+      value={currentLead.recommendation_description}
+      onChange={handleInputChange}
+      className={`w-full px-3 py-2 border ${
+        errors.recommendation_description
+          ? "border-red-500"
+          : "border-gray-300"
+      } rounded`}
+    />
+    {errors.recommendation_description && (
+      <span className="text-red-500">
+        {errors.recommendation_description}
+      </span>
+    )}
+  </div>
+
+  {/* Square Fit Range - Full Width */}
+  <div className="mb-4 col-span-1 sm:col-span-2">
+    <label className="block text-gray-700">Square Fit Range</label>
+    <input
+      type="text"
+      name="sq_fit_range"
+      value={currentLead.sq_fit_range}
+      onChange={handleInputChange}
+      className={`w-full px-3 py-2 border ${
+        errors.sq_fit_range ? "border-red-500" : "border-gray-300"
+      } rounded`}
+    />
+    {errors.sq_fit_range && (
+      <span className="text-red-500">{errors.sq_fit_range}</span>
+    )}
+  </div>
+
+</div>
 
                 <div className="flex justify-end">
                   <button

@@ -319,7 +319,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
               
              
        <Selected_Items_Cart refresh={refresh}/>
-  
+   <div className="mt-10"><CommentBox refresh={refresh}/></div>
 
 <button
             onClick={() => navigate(-1)}
@@ -327,7 +327,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
           >
             Back
           </button>
-              <h1 className="text-2xl mt-5 text-center font-medium">
+              <h1 className="text-2xl  text-center font-medium">
              User Selection Mangement 
               </h1>
               
@@ -337,7 +337,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
            
            
     
-            <div className="p-6 max-w-lg mx-auto bg-white shadow-lg rounded-lg border">
+            <div className="p-6 max-w-lg mx-auto bg-yellow-500 shadow-lg font-bold rounded-lg border">
   <h1 className="text-2xl font-bold text-center mb-6">Estimate Calculator {selectedcategory_name}</h1>
 
   {/* Category Selection */}
@@ -368,7 +368,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
         id="subcategory"
         onChange={(e) => setSelectedSubcategory(e.target.value)}
         value={selectedSubcategory}
-        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full p-2 border border-gray-300 bg-yellow-500 rounded-md focus:outline-none "
       >
         <option value="">Select Subcategory</option>
         {subcategories.map((subcategory) => (
@@ -470,7 +470,7 @@ const selectedcategory_name = categories.find((c) => c.category_id === Number(id
   <div className=" overflow-x-auto mt-10  ">
             <table className="min-w-full bg-white border">
               <thead>
-                <tr>
+                <tr className='bg-yellow-500'>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     S.no
                   </th>

@@ -208,18 +208,20 @@ function UserProfileEdit(){
 const downloadPDF = () => {
   const doc = new jsPDF("p", "mm", "a4");
    doc.setFontSize(16);
-   doc.text(`All Selected Items By ${user.name}`, 14, 12);
+   doc.text(`All Selected Items By ${user.name},  Date ${moment(Date.now()).format("DD MMM YYYY")}`, 14, 12);
  
-   const columns = ["S.No","Sub Category","Item Name","Description","Total Price","Date"];
+ 
+  const columns = ["S.No","Category","Sub Category","Item Name","Description","Total Price"];
  
    // table body (no total row here)
    const body = userSelection.map((item, i) => ([
      String(i + 1),
+         String(item.category_name ?? ""),
      String(item.subcategory_name ?? ""),
      String(item.item_name ?? ""),
      String(item.description ?? ""),
      String(Number(item.total_price || 0).toLocaleString("en-IN")),
-     moment(item.created_at).format("DD MMM YYYY"),
+
    ]));
  
    // grand total
@@ -268,10 +270,11 @@ const downloadExcel = () => {
   const rows = userSelection.map((item, i) => ({
     "S.No": i + 1,
     
+    "Categories Name": item.category_name ?? "",
     "Sub Categories Name": item.subcategory_name ?? "",
     "Items Name": item.item_name ?? "",
     "Total Price": Number(item.total_price || 0),
-    "Date": moment(item.created_at).format("DD MMM YYYY"),
+
   }));
 
   const grandTotal = userSelection.reduce(
@@ -284,6 +287,7 @@ const downloadExcel = () => {
   rows.push({
     "S.No": "",
    
+    "Categories Name": "",
     "Sub Categories Name": "Final Total",
     "Items Name": "",
     "Total Price": grandTotal,
@@ -305,7 +309,7 @@ const downloadExcel = () => {
   XLSX.utils.book_append_sheet(wb, ws, "UserSelection");
 
   const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-  saveAs(new Blob([wbout], { type: "application/octet-stream" }), `All Selected Items By ${user.name}.xlsx`);
+  saveAs(new Blob([wbout], { type: "application/octet-stream" }), `All Selected Items By ${user.name}(${moment(Date.now()).format("DD-MM-YY")}).xlsx`);
 };
 
     
@@ -336,46 +340,46 @@ const downloadExcel = () => {
                             <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
                               <div>
                                 <label className="text-info">User ID</label>
-                                <div className="p-2 bg-gray-100 rounded">
+                                <div className="p-2 bg-yellow-500 rounded">
                                   <p className="m-0">{user?.user_id}</p>
                                 </div>
                               </div>
               
                               <div>
                                 <label className="text-info">Name</label>
-                                <div className="p-2 bg-gray-100 rounded">
+                                <div className="p-2 bg-yellow-500 rounded">
                                   <p className="m-0">{user?.name}</p>
                                 </div>
                               </div>
               
                               <div>
                                 <label className="text-info">Email</label>
-                                <div className="p-2 bg-gray-100 rounded">
+                                <div className="p-2 bg-yellow-500 rounded">
                                   <p className="m-0">{user?.email}</p>
                                 </div>
                               </div>
               
                               <div>
                                 <label className="text-info">Plot Area</label>
-                                <div className="p-2 bg-gray-100 rounded">
+                                <div className="p-2 bg-yellow-500 rounded">
                                   <p className="m-0">{user?.plot_area}</p>
                                 </div>
                               </div>
                               <div>
                                 <label className="text-info">Project Type</label>
-                                <div className="p-2 bg-gray-100 rounded">
+                                <div className="p-2 bg-yellow-500 rounded">
                                   <p className="m-0">{user?.project_type}</p>
                                 </div>
                               </div>
                               <div>
                                 <label className="text-info">Construction Area</label>
-                                <div className="p-2 bg-gray-100 rounded">
+                                <div className="p-2 bg-yellow-500 rounded">
                                   <p className="m-0">{user?.construction_area}</p>
                                 </div>
                               </div>
                               <div>
                                 <label className="text-info">No Of Floor</label>
-                                <div className="p-2 bg-gray-100 rounded">
+                                <div className="p-2 bg-yellow-500 rounded">
                                   <p className="m-0">{user?.no_floor}</p>
                                 </div>
                               </div>
@@ -383,32 +387,32 @@ const downloadExcel = () => {
                              
                               <div>
                                 <label className="text-info">Total Construction Area</label>
-                                <div className="p-2 bg-gray-100 rounded">
+                                <div className="p-2 bg-yellow-500 rounded">
                                   <p className="m-0">{user?.total_construction_area}</p>
                                 </div>
                               </div>
                               <div>
                                 <label className="text-info">Budgest</label>
-                                <div className="p-2 bg-gray-100 rounded">
+                                <div className="p-2 bg-yellow-500 rounded">
                                   <p className="m-0">{user?.budgest}</p>
                                 </div>
                               </div>
                               <div>
                                 <label className="text-info">Per Sq Fit</label>
-                                <div className="p-2 bg-gray-100 rounded">
+                                <div className="p-2 bg-yellow-500 rounded">
                                   <p className="m-0">{user?.per_sq_fit}</p>
                                 </div>
                               </div>
                               <div>
                                 <label className="text-info">Estimated Cost (Approx)</label>
-                                <div className="p-2 bg-gray-100 rounded">
+                                <div className="p-2 bg-yellow-500 rounded">
                                   <p className="m-0">{user?.after_selection_amount}</p>
                                 </div>
                               </div>
               
                               <div>
                                 <label className="text-info">Created Date</label>
-                                <div className="p-2 bg-gray-100 rounded">
+                                <div className="p-2 bg-yellow-500 rounded">
                                   <p className="m-0">
                                     {moment(user?.created_date).format("DD/MM/YYYY")}
                                   </p>
@@ -418,7 +422,7 @@ const downloadExcel = () => {
                           </div>
                           <div className="mb-4">
                 <button
-                  className="bg-blue-500 text-white px-4 py-2 mt-5 rounded hover:bg-blue-700 font-medium"
+                  className="bg-yellow-500  px-4 py-2 mt-5 rounded hover:bg-yellow-700 font-bold"
                   onClick={() => handleEditClick(user)}
                 >
                 Edit Profile 
@@ -450,14 +454,14 @@ const downloadExcel = () => {
 
          <div className="flex gap-2 mb-3">
   <button
-    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+    className="bg-yellow-500  px-4 py-2 font-bold rounded hover:bg-yellow-600"
     onClick={downloadPDF}
   >
     Download PDF
   </button>
 
   <button
-    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+    className="bg-[#96160e] font-bold px-4 py-2 rounded hover:bg-[#96160e]"
     onClick={downloadExcel}
   >
     Download Excel

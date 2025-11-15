@@ -14,7 +14,7 @@ function UserProfile() {
       <>
         <MainHeader />
         <UserSider />
-        <div className="2xl:w-[89%]  2xl:ml-40 mx-4  ">
+        <div className="2xl:w-[89%]  2xl:ml-40 mt-4 mx-4  ">
           <Selected_Items_Cart/>
              <div className="mt-10"><CommentBox/></div>
         <div className="flex flex-col  lg:flex-row mt-1">
@@ -22,39 +22,39 @@ function UserProfile() {
 
 
             
-            <center className="text-2xl text-center font-medium">
+            <center className="text-2xl text-center font-medium ">
              User Profile
             </center>
             <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
             <div className="flex flex-wrap  mb-4">
               <div className="w-full md:w-2/3 md:mx-0 mx-3">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-3  gap-4">
                  
   
                   <div>
-                    <label className="text-info">Name</label>
-                    <div className="p-2 bg-gray-100 rounded">
+                    <label className="text-info ">Name</label>
+                    <div className="p-2 bg-yellow-500 rounded">
                       <p className="m-0">{User?.name}</p>
                     </div>
                   </div>
   
                   <div>
                     <label className="text-info">Email</label>
-                    <div className="p-2 bg-gray-100 rounded">
+                    <div className="p-2 bg-yellow-500 rounded">
                       <p className="m-0">{User?.email}</p>
                     </div>
                   </div>
   
                   <div>
                     <label className="text-info">Role</label>
-                    <div className="p-2 bg-gray-100 rounded">
+                    <div className="p-2 bg-yellow-500 rounded">
                       <p className="m-0">{User?.roles}</p>
                     </div>
                   </div>
   
                   <div>
                     <label className="text-info">Created Date</label>
-                    <div className="p-2 bg-gray-100 rounded">
+                    <div className="p-2 bg-yellow-500 rounded">
                       <p className="m-0">
                         {moment(User?.created_date).format("DD/MM/YYYY")}
                       </p>

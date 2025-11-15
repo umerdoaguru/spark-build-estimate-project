@@ -177,10 +177,10 @@ const fetchAllSelectedData = async () => {
  <div className="">
     <button
       onClick={toggleCart}
-      className="fixed top-15 right-5 bg-gray-800 text-white p-3 rounded-full shadow-lg focus:outline-none"
+      className="fixed top-15 mt-1 right-5 bg-yellow-500  p-3 rounded-full shadow-lg focus:outline-none"
       aria-label="Toggle Cart"
     >
-      <FaShoppingCart className="text-2xl" />
+      <FaShoppingCart className="text-2xl " />
       {alluserselection.length > 0 && (
         <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
           {alluserselection.length}
@@ -188,8 +188,8 @@ const fetchAllSelectedData = async () => {
       )}
     </button>
 
-    <div className="border-t flex justify-start gap-3 mx-7 text-end items-center">
-      <span className="text-sm font-medium">Estimated Cost (Approx):</span>
+    <div className="border-t border-black  flex justify-start gap-3 mx-7 text-end items-center">
+      <span className="text-sm font-bold">Estimated Cost (Approx):</span>
       <span className="text-lg font-bold text-green-600">
       ₹{alluserselection.reduce((sum, item) => sum + item.total_price, 0)}
       </span>
@@ -208,7 +208,7 @@ const fetchAllSelectedData = async () => {
         </button>
     
         <h2 className="text-lg font-semibold text-center mb-4">Selected Items</h2>
-        <div className=" overflow-auto  ">
+        <div className=" overflow-auto h-[15rem]  ">
         
                     <table className="min-w-full bg-white border">
                       <thead>
@@ -305,7 +305,7 @@ const fetchAllSelectedData = async () => {
     )}
 
 {isPopupOpen && eligibleDiscount && (
-        <div className="fixed top-20 right-10 bg-white shadow-xl rounded-lg p-6 border border-gray-300 max-w-sm">
+        <div className="fixed top-20 z-10  right-10 bg-white shadow-xl rounded-lg p-6 border border-gray-300 max-w-sm">
           {/* Close Button */}
           <button
             className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"

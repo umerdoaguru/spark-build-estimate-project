@@ -66,20 +66,23 @@ const [comments, setComments] = useState([]);
     <>
 
   <>
- <div className="">
+ <div className="flex ">
     <button
       onClick={toggleCart}
-      className="fixed top-15 right-5 bg-gray-800 text-white p-3 rounded-full shadow-lg focus:outline-none"
+      className="fixed top-15 right-5 bg-yellow-500 font-bold  p-3 rounded-full shadow-lg focus:outline-none"
       aria-label="Toggle Cart"
     >
+      <div className="text-center flex">
       <FaComment className="text-2xl" />
+       <h2 className='mx-2'>Ask for help</h2> 
+        </div>
       {comments.length > 0 && (
         <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
           {comments.length}
         </span>
       )}
-    </button>
 
+    </button>
    
   </div>
 

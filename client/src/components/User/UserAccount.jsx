@@ -256,7 +256,7 @@ function UserAccount() {
       <MainHeader />
       <UserSider refresh={refresh} />
       <>
-        <div className="2xl:w-[89%]  2xl:ml-40 mx-4  ">
+        <div className="2xl:w-[89%]  2xl:ml-40 mx-4   ">
           <div className="main  mt-[1rem]">
             <Selected_Items_Cart refresh={refresh}/>
             
@@ -279,7 +279,7 @@ function UserAccount() {
 
           <div className=" overflow-x-auto mt-4   mx-1">
           {userprofile? ( 
-        <div className="max-w-md mx-auto bg-gradient-to-br from-yellow-400 via-orange-400 to-red-400 shadow-xl rounded-2xl overflow-hidden transform transition duration-500 ">
+        <div className="max-w-md mx-auto bg-gradient-to-br from-[#96160e] via-yellow-500 to-[#96160e] shadow-xl rounded-2xl overflow-hidden transform transition duration-500 ">
   <div className="bg-white/90 backdrop-blur-md p-6">
     <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-yellow-600 text-center mb-4">
       {userprofile?.name}
@@ -350,7 +350,7 @@ function UserAccount() {
       <div className="p-6 text-center">
        <h1 className="text-center font-bold text-2xl ">Please Create User Profile</h1>
         <button
-      className="bg-blue-500 text-white px-4 py-2 mt-5 mx-1 rounded hover:bg-blue-700 font-medium"
+      className="bg-yellow-500 font-bold px-4 py-2 mt-5 mx-1 rounded hover:bg-blue-700 "
       onClick={handleCreateClick}
     >
       Add User Profile

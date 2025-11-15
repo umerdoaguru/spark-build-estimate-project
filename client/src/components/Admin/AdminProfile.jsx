@@ -26,35 +26,35 @@ function AdminProfile() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                   <div>
                     <label className="text-info">User ID</label>
-                    <div className="p-2 bg-gray-100 rounded">
+                    <div className="p-2 bg-yellow-500 rounded">
                       <p className="m-0">{User?.id}</p>
                     </div>
                   </div>
   
                   <div>
                     <label className="text-info">Name</label>
-                    <div className="p-2 bg-gray-100 rounded">
+                    <div className="p-2 bg-yellow-500 rounded">
                       <p className="m-0">{User?.name}</p>
                     </div>
                   </div>
   
                   <div>
                     <label className="text-info">Email</label>
-                    <div className="p-2 bg-gray-100 rounded">
+                    <div className="p-2 bg-yellow-500 rounded">
                       <p className="m-0">{User?.email}</p>
                     </div>
                   </div>
   
                   <div>
                     <label className="text-info">Role</label>
-                    <div className="p-2 bg-gray-100 rounded">
+                    <div className="p-2 bg-yellow-500 rounded">
                       <p className="m-0">{User?.roles}</p>
                     </div>
                   </div>
   
                   <div>
                     <label className="text-info">Created Date</label>
-                    <div className="p-2 bg-gray-100 rounded">
+                    <div className="p-2 bg-yellow-500 rounded">
                       <p className="m-0">
                         {moment(User?.created_date).format("DD/MM/YYYY")}
                       </p>

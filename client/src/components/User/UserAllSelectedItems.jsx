@@ -98,18 +98,19 @@ const downloadPDF = () => {
   const doc = new jsPDF("p", "mm", "a4");
 
   doc.setFontSize(16);
-  doc.text(`All Selected Items By ${user.name}`, 14, 12);
+  doc.text(`All Selected Items By ${user.name},  Date ${moment(Date.now()).format("DD MMM YYYY")}`, 14, 12);
 
-  const columns = ["S.No","Sub Category","Item Name","Description","Total Price","Date"];
+  const columns = ["S.No","Category","Sub Category","Item Name","Description","Total Price"];
 
   // table body (no total row here)
   const body = alluserselection.map((item, i) => ([
     String(i + 1),
+    String(item.category_name ?? ""),
     String(item.subcategory_name ?? ""),
     String(item.item_name ?? ""),
     String(item.description ?? ""),
     String(Number(item.total_price || 0).toLocaleString("en-IN")),
-    moment(item.created_at).format("DD MMM YYYY"),
+   
   ]));
 
   // grand total
@@ -169,7 +170,7 @@ const downloadPDF = () => {
 
           <button
   onClick={downloadPDF}
-  className="bg-blue-600 text-white px-4 py-2 rounded mb-4"
+  className="bg-yellow-500 font-bold px-4 py-2 rounded mb-4"
 >
   Download PDF
 </button>
@@ -179,7 +180,7 @@ const downloadPDF = () => {
           <div className=" overflow-x-auto mt-4 ">
             <table className="min-w-full bg-white border">
               <thead>
-                <tr>
+                <tr className="bg-yellow-500 text-black">
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     S.no
                   </th>
@@ -187,6 +188,9 @@ const downloadPDF = () => {
                     Items Id
                   </th>
                 
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                   Categories Name
+                  </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Sub Categories Name
                   </th>
@@ -239,6 +243,9 @@ const downloadPDF = () => {
                           {item.item_id}
                         </td>
                  
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          {item.category_name}
+                        </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
                           {item.subcategory_name}
                         </td>
