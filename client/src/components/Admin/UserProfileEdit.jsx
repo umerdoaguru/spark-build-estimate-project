@@ -461,7 +461,7 @@ const downloadExcel = () => {
   </button>
 
   <button
-    className="bg-[#96160e] font-bold px-4 py-2 rounded hover:bg-[#96160e]"
+    className="bg-green-600 font-bold px-4 py-2 rounded hover:bg-green-700"
     onClick={downloadExcel}
   >
     Download Excel

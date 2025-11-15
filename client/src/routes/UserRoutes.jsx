@@ -12,6 +12,7 @@ import EstimateCalculator from "../components/User/EstimateCalculator";
 import Categories_Card from "../components/User/Categories_Card";
 import UserAllSelecteditems from "../components/User/UserAllSelectedItems";
 import AutoTypingHeadline from "../components/AutoTypingHeadline";
+import DiscountBarUser from "../components/User/DiscountBarUser";
 
 
 
@@ -38,6 +39,7 @@ function EmployeeRoutes() {
         <Route path="/categories/:id" element={<EstimateCalculator />} />
         <Route path="/user-categories-cards" element={<Categories_Card />} />
         <Route path="/user-all-selection" element={<UserAllSelecteditems />} />
+        <Route path="/discount-user" element={<DiscountBarUser />} />
         </Routes>
       </div>
     </>

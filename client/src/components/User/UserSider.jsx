@@ -213,6 +213,19 @@ const UserSider = ({refresh}) => {
 
             <hr className="w-full border-gray-400" />
 
+            <li className={`xl:w-full ${getSidebarClass("/discount-user")}`}>
+              <button
+                onClick={() => handleNavigation("/discount-user")}
+                className="flex flex-col items-center py-3 w-full"
+              >
+                <FaUserCircle className="text-[#ffce08] text-2xl md:text-3xl" />
+                <h3 className="text-xs text-center max-md:pt-3 lg:inline text-[#ffce08] md:text-base">
+                  User Discount
+                </h3>
+              </button>
+            </li>
+
+            <hr className="w-full border-gray-400" />
             <li className={`xl:w-full ${getSidebarClass("/user-categories-cards")}`}>
               <button
                 onClick={() => handleNavigation("/user-categories-cards")}

@@ -58,7 +58,7 @@ router.put("/user/:id",authenticateAdmin, updateuser);
 router.delete("/user/:id",authenticateAdmin, deleteuser);
 router.post('/discount',authenticateAdmin,createDiscount);
 router.get("/discount/:id",authenticateAdmin, getDiscountbyid);
-router.get("/discount",authenticateAdmin,getDiscount);
+router.get("/discount",getDiscount);
 router.put("/discount/:id",authenticateAdmin, updateDiscount);
 router.delete("/discount/:id",authenticateAdmin, deleteDiscount);
 router.post('/headline',authenticateAdmin,createHeadline);
